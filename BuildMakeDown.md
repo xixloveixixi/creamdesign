@@ -47,7 +47,7 @@ project-root/
     ├── styles/              # 全局样式、变量、工具函数等
     │   ├── _variables.scss  # SCSS 变量（颜色、字体等）
     │   ├── _mixins.scss     # SCSS 混入
-    │   ├── _reset.scss      # 样式重置或规范化
+    │   ├── _reboot.scss      # 用于重置浏览器默认样式
     │   └── index.scss       # 全局样式入口文件
     └── index.tsx            # 整个组件库的总入口文件
 
@@ -117,3 +117,378 @@ npm install --save-dev sass
     // 引入我们自己的变量和全局样式
     @import 'variables';
     ```
+### 二、创建一个组件(button为例子)
+
+### 2.1 **项目结构**
+
+```markdown
+creamdesign/
+├── src/
+│   ├── component/
+│   │   └── Button/
+│   │       ├── index.tsx        # Button组件核心实现
+│   │       └── buttonStyle.scss # Button样式定义
+│   └── style/
+│       ├── _creamdesign.scss    # 颜色和变量定义
+│       ├── _mixin.scss          # 样式混合器
+│       └── index.scss           # 主样式入口
+└── package.json                 # 项目依赖配置
+```
+
+```
+
+### 2.2 功能需求
+
+```
+在开始编码前，我们需要明确Button组件的功能需求：
+1. 按钮类型：primary、secondary、danger、warning、info、success、outline、ghost、text
+2. 按钮尺寸：large、normal、small
+3. 交互状态：默认、悬停(hover)、点击(active)、禁用(disabled)、加载(loading)
+4. 额外功能：支持图标、响应式设计、无障碍访问
+
+```
+
+### 2.3 基础结构搭建
+
+```markdown
+首先，我们创建Button组件的基础结构和类型定义：
+
+```typescript
+// Button/index.tsx
+import React from "react";
+import "./buttonStyle.scss";
+
+// 按钮类型枚举
+export enum ButtonType {
+  Primary = "primary",
+  Secondary = "secondary",
+  Danger = "danger",
+  Warning = "warning",
+  Info = "info",
+  Success = "success",
+  Outline = "outline",
+  Ghost = "ghost",
+  Text = "text",
+}
+
+// 按钮尺寸枚举
+export enum ButtonSize {
+  Large = "large",
+  Normal = "normal",
+  Small = "small",
+}
+
+// Button属性接口
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  type?: ButtonType;
+  size?: ButtonSize;
+  disabled?: boolean;
+  loading?: boolean;
+  icon?: React.ReactNode;
+  children?: React.ReactNode;
+  'aria-label'?: string;
+}
+```
+```
+
+### 2.4  **样式架构设计**
+
+```markdown
+为了保持样式的可维护性和可复用性，我们使用SCSS的mixin功能来组织按钮样式：
+
+```scss
+// _mixin.scss
+// 按钮基础样式Mixin
+@mixin btn-base() {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  outline: none;
+  user-select: none;
+}
+
+// 按钮变体样式Mixin
+@mixin btn-variant($bg-color, $text-color, $hover-bg-color, $active-bg-color, $border-color: transparent) {
+  background-color: $bg-color;
+  color: $text-color;
+  border: 1px solid $border-color;
+  
+  &:hover:not(:disabled) {
+    background-color: $hover-bg-color;
+    transform: translateY(-0.5px);
+  }
+  
+  &:active:not(:disabled) {
+    background-color: $active-bg-color;
+    transform: translateY(0);
+  }
+}
+
+// 按钮尺寸样式Mixin
+@mixin btn-size($padding, $font-size, $border-radius, $line-height: 1.5) {
+  padding: $padding;
+  font-size: $font-size;
+  border-radius: $border-radius;
+  line-height: $line-height;
+}
+
+// 按钮禁用状态Mixin
+@mixin btn-disabled() {
+  cursor: not-allowed !important;
+  opacity: 0.6;
+  
+  &:hover,
+  &:active,
+  &:focus-visible {
+    // 禁用状态下不响应交互
+    all: unset;
+    cursor: not-allowed !important;
+    opacity: 0.6;
+  }
+}
+```
+```
+
+### 2.5 组件核心实现
+
+```markdown
+现在，我们实现Button组件的核心逻辑：
+
+```typescript
+// Button/index.tsx 继续
+
+export const Button: React.FC<ButtonProps> = ({
+  type = ButtonType.Primary,
+  size = ButtonSize.Normal,
+  disabled = false,
+  loading = false,
+  icon,
+  children,
+  className,
+  onClick,
+  ...rest
+}) => {
+  const isDisabled = disabled || loading;
+  const buttonClassName = `btn btn-${type} btn-${size} ${
+    isDisabled ? "btn-disabled" : ""
+  } ${loading ? "btn-loading" : ""} ${className || ""}`.trim();
+  
+  // 为无障碍访问添加ARIA属性
+  const ariaProps = {
+    'aria-disabled': isDisabled,
+    'aria-busy': loading,
+  };
+
+  return (
+    <button
+      className={buttonClassName}
+      disabled={isDisabled}
+      onClick={onClick}
+      {...ariaProps}
+      {...rest}
+    >
+      {loading && <span className="btn-loading-spinner" aria-hidden="true"></span>}
+      {icon && !loading && <span className="btn-icon" aria-hidden={!children}>{icon}</span>}
+      {children}
+    </button>
+  );
+};
+
+export default Button;
+```
+```
+
+### 2.6 完整样式的实现
+
+```markdown
+接下来，我们实现按钮的完整样式，包括各种变体、尺寸和状态：
+
+```scss
+// buttonStyle.scss
+@import '../../style/_creamdesign.scss'; // 颜色和变量
+@import '../../style/_mixin.scss'; // Mixins
+
+// 按钮基础样式
+.btn {
+  @include btn-base();
+  gap: 0.5rem;
+}
+
+// 按钮类型样式
+.btn-primary {
+  @include btn-variant(
+    $color-primary-600, 
+    white, 
+    $color-primary-700, 
+    $color-primary-800
+  );
+}
+
+.btn-secondary {
+  @include btn-variant(
+    $color-primary-400, 
+    white, 
+    $color-primary-500, 
+    $color-primary-600
+  );
+}
+
+.btn-danger {
+  @include btn-variant(
+    $color-error, 
+    white, 
+    darken-color($color-error, 10%), 
+    darken-color($color-error, 20%)
+  );
+}
+
+.btn-warning {
+  @include btn-variant(
+    $color-warning, 
+    white, 
+    darken-color($color-warning, 10%), 
+    darken-color($color-warning, 20%)
+  );
+}
+
+.btn-info {
+  @include btn-variant(
+    $color-info, 
+    white, 
+    darken-color($color-info, 10%), 
+    darken-color($color-info, 20%)
+  );
+}
+
+.btn-success {
+  @include btn-variant(
+    $color-success, 
+    white, 
+    darken-color($color-success, 10%), 
+    darken-color($color-success, 20%)
+  );
+}
+
+.btn-outline {
+  @include btn-variant(
+    transparent, 
+    $color-primary-900, 
+    $color-primary-100, 
+    $color-primary-200,
+    $color-primary-600
+  );
+}
+
+.btn-ghost {
+  @include btn-variant(
+    transparent, 
+    $color-text-primary, 
+    $color-primary-100, 
+    $color-primary-200
+  );
+}
+
+.btn-text {
+  @include btn-variant(
+    transparent, 
+    $color-primary-600, 
+    $color-primary-100, 
+    $color-primary-100
+  );
+  font-weight: 400;
+  
+  &:hover:not(:disabled) {
+    color: $color-primary-700;
+  }
+}
+
+// 按钮尺寸样式
+.btn-small {
+  @include btn-size(0.2rem 0.75rem, 0.875rem, 0.25rem);
+}
+
+.btn-normal {
+  @include btn-size(0.625rem 1.5rem, 1rem, 0.375rem);
+}
+
+.btn-large {
+  @include btn-size(1rem 2rem, 1.25rem, 0.5rem);
+}
+
+// 加载状态
+.btn-loading {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+// 加载指示器动画
+.btn-loading-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+// 加载动画关键帧
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// 按钮图标样式
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25em;
+  height: 1.25em;
+}
+
+// 禁用状态
+.btn-disabled,
+button[disabled] {
+  @include btn-disabled();
+}
+
+// 焦点样式优化
+.btn:focus {
+  outline: none;
+}
+
+.btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba($color-primary-500, 0.2);
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .btn {
+    gap: 0.375rem;
+  }
+  
+  .btn-large {
+    @include btn-size(0.75rem 1.5rem, 1.125rem, 0.5rem);
+  }
+  
+  .btn-normal {
+    @include btn-size(0.5rem 1.25rem, 0.9375rem, 0.375rem);
+  }
+  
+  .btn-small {
+    @include btn-size(0.1875rem 0.625rem, 0.8125rem, 0.25rem);
+  }
+}
+```
+```

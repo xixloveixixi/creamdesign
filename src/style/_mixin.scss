@@ -1,0 +1,61 @@
+// 按钮样式相关Mixin
+
+// 按钮基础样式Mixin
+@mixin btn-base() {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  outline: none;
+  user-select: none;
+}
+
+// 按钮变体样式Mixin
+@mixin btn-variant($bg-color, $text-color, $hover-bg-color, $active-bg-color, $border-color: transparent) {
+  background-color: $bg-color;
+  color: $text-color;
+  border: 1px solid $border-color;
+  
+  &:hover:not(:disabled) {
+    background-color: $hover-bg-color;
+    transform: translateY(-0.5px);
+  }
+  
+  &:active:not(:disabled) {
+    background-color: $active-bg-color;
+    transform: translateY(0);
+  }
+}
+
+// 按钮尺寸样式Mixin
+@mixin btn-size($padding, $font-size, $border-radius, $line-height: 1.5) {
+  padding: $padding;
+  font-size: $font-size;
+  border-radius: $border-radius;
+  line-height: $line-height;
+}
+
+// 按钮禁用状态Mixin
+@mixin btn-disabled() {
+  cursor: not-allowed !important;
+  opacity: 0.6;
+  
+  &:hover,
+  &:active,
+  &:focus-visible {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+// 按钮焦点样式Mixin
+@mixin btn-focus($focus-color: rgba($color-primary-500, 0.2)) {
+  &:focus-visible {
+    box-shadow: 0 0 0 3px $focus-color;
+  }
+}

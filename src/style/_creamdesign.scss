@@ -169,6 +169,9 @@ $color-neutral-900-dark: rgba($color-neutral-900, $opacity-dark);
   @return rgba($color, $opacity);
 }
 
+// 导入混合器
+@import '_mixin.scss';
+
 // ===== 色彩工具类 =====
 // 文本颜色工具类
 .text-primary { color: $color-primary-500; }
@@ -350,53 +353,41 @@ a {
 .rounded-lg { border-radius: 0.5rem; }
 .rounded-full { border-radius: 9999px; }
 
-// ===== 组件样式示例 =====
-// 按钮样式
-.btn {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-weight: 500;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
+// ===== 布局工具类 =====
+.flex {
+  display: flex;
 }
 
-.btn-primary {
-  background-color: $color-primary-600;
-  color: $color-neutral-900;
-  
-  &:hover {
-    background-color: $color-primary-700;
-  }
-  
-  &:active {
-    background-color: $color-primary-800;
-  }
+.flex-wrap {
+  flex-wrap: wrap;
 }
 
-.btn-secondary {
-  background-color: $color-primary-400;
-  color: $color-neutral-900;
-  
-  &:hover {
-    background-color: $color-primary-500;
-  }
-  
-  &:active {
-    background-color: $color-primary-600;
-  }
+.items-center {
+  align-items: center;
 }
 
-.btn-outline {
-  background-color: transparent;
-  border: 1px solid $color-primary-600;
-  color: $color-primary-900;
-  
-  &:hover {
-    background-color: $color-primary-100;
-  }
+.justify-center {
+  justify-content: center;
+}
+
+.gap-3 {
+  gap: 0.75rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.min-h-screen {
+  min-height: 100vh;
 }
 
 // 卡片样式
