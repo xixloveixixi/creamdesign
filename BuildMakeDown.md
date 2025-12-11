@@ -492,3 +492,294 @@ button[disabled] {
 }
 ```
 ```
+### 三、组件测试
+
+> 在现代前端开发中，单元测试是保证代码质量和稳定性的重要手段。本文将以Button组件为例，详细介绍如何使用Jest和React Testing Library进行React组件的单元测试实践。
+> 
+
+### 3.1 测试的好处
+
+- 自动化验证：计算机可重复执行复杂流程，避免人为错误
+- 质量保障：确保代码可运行且无bug，产出高质量代码
+- 早期发现bug：大幅降低修复成本，避免上线后造成业务损失
+- 重构安全性：升级或重构时快速验证功能完整性
+- 开发敏捷性：已有测试保障下可快速开发新特性
+- 持续集成：支持每次代码提交自动运行测试套件
+
+### 3.2 测试工具
+
+测试的工具是使用的 **React Testing Library**，他是基于react-dom和react-dom/test-utils的轻量级封装，而且已经集成在了create-react-app 3.3.0+默认模板
+
+如果需要安装可以执行
+
+```
+ npm install --save-dev @testing-library/react
+```
+
+可以通过`npm test`命令运行测试。
+
+```
+{
+  "scripts": {
+    "test": "react-scripts test"
+  }
+}
+```
+
+在`package.json`中配置了测试脚本：
+
+### 3.3 测试策略规定
+
+在开始编写测试用例之前，我们需要制定明确的测试策略，确定需要测试的功能和场景。对于Button组件，我们确定了以下测试范围：
+
+1. **基本渲染**：确保组件能够正确渲染为按钮元素
+2. **样式变化**：验证不同类型、尺寸的按钮应用了正确的CSS类
+3. **状态管理**：测试禁用、加载等状态的表现
+4. **交互行为**：验证点击事件的触发和阻止
+5. **无障碍支持**：确保组件符合无障碍标准
+6. **特殊场景**：如纯图标按钮、加载状态与图标的交互
+
+### **3.4 测试用例实现**
+
+**1. 基础设置**
+
+首先，我们需要导入必要的测试工具和被测试组件：
+
+```
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import Button, { ButtonProps, ButtonType, ButtonSize } from "./index";
+
+```
+
+为了测试图标功能，我们创建了一个模拟的Ant Design风格图标组件：
+
+```
+
+const MockIcon = () => <span className="anticon" data-testid="mock-icon"><svg /></span>;
+```
+
+**2. 基本渲染测试**
+
+```
+
+test("should render a button element with default props", () => {
+  const wrapper = render(<Button>Click Me</Button>);
+  const button = wrapper.getByText("Click Me");
+  expect(button).toBeInTheDocument();
+  expect(button.tagName).toBe("BUTTON");
+  expect(button).toHaveClass("btn btn-primary btn-normal");
+});
+```
+
+这个测试验证了：
+
+- 组件能够正确渲染
+- 渲染结果是一个button元素
+- 默认应用了正确的CSS类
+
+**3. 参数化测试：按钮类型和尺寸**
+
+使用Jest的`test.each`方法，我们可以高效地测试多种按钮类型和尺寸：
+
+```
+// 测试不同按钮类型
+test.each([
+  ButtonType.Primary,
+  ButtonType.Secondary,
+  ButtonType.Danger,
+  ButtonType.Warning,
+  ButtonType.Info,
+  ButtonType.Success,
+  ButtonType.Outline,
+  ButtonType.Ghost,
+  ButtonType.Text
+])('should render %s button correctly', (type) => {
+  const wrapper = render(<Button type={type}>{type}</Button>);
+  const button = wrapper.getByText(type);
+  expect(button).toHaveClass(`btn-${type}`);
+});
+
+// 测试不同按钮尺寸
+test.each([
+  [ButtonSize.Large, 'btn-large'],
+  [ButtonSize.Normal, 'btn-normal'],
+  [ButtonSize.Small, 'btn-small']
+])('should render %s button correctly', (size, expectedClass) => {
+  const wrapper = render(<Button size={size}>Size Test</Button>);
+  const button = wrapper.getByText('Size Test');
+  expect(button).toHaveClass(expectedClass);
+});
+```
+
+**4. 状态测试：禁用和加载**
+
+```
+
+// 测试禁用状态
+test('should render a disabled button when disabled prop is true', () => {
+  const wrapper = render(<Button disabled>Disabled</Button>);
+  const button = wrapper.getByText('Disabled');
+  expect(button).toBeDisabled();
+  expect(button).toHaveClass('btn-disabled');
+  expect(button).toHaveAttribute('aria-disabled', 'true');
+});
+
+// 测试加载状态
+test('should render loading state correctly', () => {
+  const wrapper = render(<Button loading>Loading</Button>);
+  const button = wrapper.getByText('Loading');
+  expect(button).toBeDisabled();
+  expect(button).toHaveClass('btn-loading btn-disabled');
+  expect(button).toHaveAttribute('aria-busy', 'true');
+  expect(button).toHaveAttribute('aria-disabled', 'true');
+  expect(button).toContainHTML('<span class="btn-loading-spinner" aria-hidden="true"></span>');
+});
+```
+
+**5. 图标按钮测试**
+
+```
+
+// 测试图标按钮
+test('should render button with icon', () => {
+  const wrapper = render(<Button icon={<MockIcon />}>With Icon</Button>);
+  const button = wrapper.getByText('With Icon');
+  const icon = wrapper.getByTestId('mock-icon');
+  expect(button).toContainElement(icon);
+  expect(icon.closest('.btn-icon')).toBeInTheDocument();
+});
+
+// 测试只有图标的按钮：只有图标时必须提供aria-label，这里不能通过之前的文本的方法来获取组件，使用getByRole结合name选项，它会考虑aria-label属性
+test('should render icon-only button with proper accessibility attributes', () => {
+  const wrapper = render(<Button icon={<MockIcon />} aria-label="Icon Button" />);
+  const button = wrapper.getByRole('button', { name: 'Icon Button' });
+  const icon = wrapper.getByTestId('mock-icon');
+  expect(button).toContainElement(icon);
+  expect(button).toHaveAttribute('aria-label', 'Icon Button');
+  expect(icon).not.toHaveAttribute('aria-hidden');
+});
+```
+
+**6. 交互测试：点击事件**
+
+```
+
+// 测试点击事件
+test('should call onClick handler when button is clicked', () => {
+  const handleClick = jest.fn();// 模拟点击事件处理函数
+  const wrapper = render(<Button onClick={handleClick}>Click Me</Button>);
+  const button = wrapper.getByText('Click Me');
+
+  fireEvent.click(button);// 模拟点击事件
+  expect(handleClick).toHaveBeenCalledTimes(1);// 验证点击事件处理函数未被调用
+});
+
+// 测试禁用状态下不触发点击事件
+test('should not call onClick handler when button is disabled', () => {
+  const handleClick = jest.fn();
+  const wrapper = render(<Button onClick={handleClick} disabled>Click Me</Button>);
+  const button = wrapper.getByText('Click Me');
+
+  fireEvent.click(button);
+  expect(handleClick).not.toHaveBeenCalled();
+});
+```
+
+**7. 其他**
+
+```
+// 测试自定义类名
+    test('should apply custom className to button', () => {
+      const wrapper = render(<Button className="custom-button">Custom Class</Button>);
+      const button = wrapper.getByText('Custom Class'); 
+      expect(button).toHaveClass('custom-button');
+    });
+
+    // 测试传递额外的属性
+    test('should pass additional props to button element', () => {
+      const wrapper = render(<Button data-testid="custom-button" title="Custom Title">Test</Button>);
+      const button = wrapper.getByTestId('custom-button');
+      expect(button).toHaveAttribute('title', 'Custom Title');
+    });
+
+    // 测试无障碍属性
+    test('should apply aria-label when provided', () => {
+      const wrapper = render(<Button aria-label="Accessibility Test">Test</Button>);
+      const button = wrapper.getByText('Test');
+      expect(button).toHaveAttribute('aria-label', 'Accessibility Test');
+    });
+```
+
+### **3.5 测试最佳实践**
+
+通过Button组件的测试实践，我们总结了以下React组件单元测试的最佳实践：
+
+**1. 测试用户行为而非实现细节**
+
+使用React Testing Library的查询方式（如`getByText`、`getByRole`）模拟用户的实际行为，而不是直接测试组件的内部实现。
+
+**2. 全面覆盖各种场景**
+
+测试应该覆盖组件的所有功能点，包括：
+
+- 基本渲染
+- 所有属性组合
+- 各种状态（正常、禁用、加载等）
+- 交互行为
+- 边缘情况
+
+**3. 使用参数化测试减少重复代码**
+
+对于类似的测试场景（如不同类型、尺寸的按钮），使用`test.each`可以减少重复代码，提高测试的可维护性。
+
+**4. 确保无障碍支持**
+
+测试组件的无障碍属性（如`aria-label`、`aria-disabled`、`aria-busy`），确保组件符合无障碍标准。
+
+**5. 测试组件的集成性**
+
+除了测试组件的独立功能外，还应该测试组件与其他元素的集成（如图标、加载指示器等）。
+
+### **3.6 常见测试问题及解决方案**
+
+**1. 如何测试只有图标的按钮？**
+
+对于没有可见文本的按钮，我们需要使用`aria-label`提供无障碍标签，并使用`getByRole('button', { name: '标签内容' })`来查找元素。
+
+```
+
+// 错误的方式
+const button = wrapper.getByText('Icon Button'); // 会失败，因为没有可见文本
+
+// 正确的方式
+const button = wrapper.getByRole('button', { name: 'Icon Button' }); // 会考虑aria-label
+```
+
+**2. 如何测试组件的内部HTML结构？**
+
+使用`toContainHTML`可以测试组件是否包含特定的HTML结构：
+
+```
+
+expect(button).toContainHTML('<span class="btn-loading-spinner" aria-hidden="true"></span>');
+```
+
+**3. 如何模拟用户交互？**
+
+使用`fireEvent`可以模拟用户的各种交互行为：
+
+```
+
+fireEvent.click(button); // 模拟点击事件
+fireEvent.mouseEnter(button); // 模拟鼠标进入事件
+```
+
+---
+
+**参考资料**：
+
+- [Jest官方文档](https://jestjs.io/docs/getting-started)
+- [React Testing Library官方文档](https://testing-library.com/docs/react-testing-library/intro/)
+- [WAI-ARIA无障碍标准](https://www.w3.org/TR/wai-aria/)
