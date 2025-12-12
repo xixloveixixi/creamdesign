@@ -1,3 +1,11 @@
 @import 'creamdesign';
 @import 'reboot';
 @import 'mixin';
+// button
+@import '../component/Button/buttonStyle.scss';
+
+// menu
+@import '../component/Menu/style.scss';
+
+//icon
+@import '../component/Icon/iconstyle.scss'

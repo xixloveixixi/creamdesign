@@ -1,6 +1,9 @@
 import Button, { ButtonType, ButtonSize } from './component/Button/index.tsx';
 import { Menu, MenuItem, SubMenu } from './component/Menu/index.ts';
-
+import Icon from './component/Icon/icon.tsx';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+library.add(fas);
 function App() {
   const handleClick = () => {
     console.log('Button clicked!');
@@ -9,7 +12,7 @@ function App() {
   return (
     <div className="app-container bg-neutral-50 min-h-screen p-4">
       <h1 className="mb-6">Menu Component Examples</h1>
-
+      <Icon icon="user" theme="primary" size="2x" />
       {/* 带有下拉功能的水平菜单 */}
       <div className="mb-6">
         <h2 className="text-lg mb-2">Horizontal Menu with Dropdown</h2>
