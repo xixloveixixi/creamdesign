@@ -5,50 +5,50 @@
 
 // ===== 颜色系统 - 首先定义所有颜色变量 =====
 // 中性色系统（必须最先定义，因为其他变量会引用）
-$color-neutral-50: #FFFFFF;
-$color-neutral-100: #F9F9F9;
-$color-neutral-200: #F0F0F0;
-$color-neutral-300: #E0E0E0;
-$color-neutral-400: #BDBDBD;
-$color-neutral-500: #9E9E9E;
+$color-neutral-50: #ffffff;
+$color-neutral-100: #f9f9f9;
+$color-neutral-200: #f0f0f0;
+$color-neutral-300: #e0e0e0;
+$color-neutral-400: #bdbdbd;
+$color-neutral-500: #9e9e9e;
 $color-neutral-600: #757575;
 $color-neutral-700: #616161;
 $color-neutral-800: #424242;
 $color-neutral-900: #212121;
 
-// 主色系统
-$color-primary-100: #FFF9F0; // 最浅奶油色，用于背景
-$color-primary-200: #FFF3E0; // 浅奶油色，用于卡片
-$color-primary-300: #FFEAD1; // 中奶油色，用于强调区域
-$color-primary-400: #FFDFC2; // 深奶油色，用于次要按钮
-$color-primary-500: #FFD4B3; // 标准奶油色，品牌主色
-$color-primary-600: #FFC9A4; // 饱和奶油色，用于主要按钮
-$color-primary-700: #FFBE95; // 深色奶油色，用于悬停状态
-$color-primary-800: #FFB386; // 更深色奶油色，用于激活状态
-$color-primary-900: #FFA877; // 最深奶油色，用于重要文本
+// 主色系统 - 紫色
+$color-primary-100: #f5f3ff; // 最浅紫色，用于背景
+$color-primary-200: #ede9fe; // 浅紫色，用于卡片
+$color-primary-300: #ddd6fe; // 中紫色，用于强调区域
+$color-primary-400: #c4b5fd; // 深紫色，用于次要按钮
+$color-primary-500: #a855f7; // 标准紫色，品牌主色
+$color-primary-600: #9333ea; // 饱和紫色，用于主要按钮
+$color-primary-700: #7e22ce; // 深紫色，用于悬停状态
+$color-primary-800: #6b21a8; // 更深紫色，用于激活状态
+$color-primary-900: #581c87; // 最深紫色，用于重要文本
 
 // 辅助色系统
-$color-secondary-blue-100: #F0F7FF;
-$color-secondary-blue-300: #D6EAF8;
-$color-secondary-blue-500: #AED6F1;
-$color-secondary-blue-700: #85C1E9;
+$color-secondary-blue-100: #f0f7ff;
+$color-secondary-blue-300: #d6eaf8;
+$color-secondary-blue-500: #aed6f1;
+$color-secondary-blue-700: #85c1e9;
 
-$color-secondary-pink-100: #FDF2F8;
-$color-secondary-pink-300: #FADBD8;
-$color-secondary-pink-500: #F5CBA7;
-$color-secondary-pink-700: #F39C12;
+$color-secondary-pink-100: #fdf2f8;
+$color-secondary-pink-300: #fadbd8;
+$color-secondary-pink-500: #f5cba7;
+$color-secondary-pink-700: #f39c12;
 
-$color-secondary-green-100: #F4F6F0;
-$color-secondary-green-300: #E8F5E9;
-$color-secondary-green-500: #A5D6A7;
-$color-secondary-green-700: #66BB6A;
+$color-secondary-green-100: #f4f6f0;
+$color-secondary-green-300: #e8f5e9;
+$color-secondary-green-500: #a5d6a7;
+$color-secondary-green-700: #66bb6a;
 
 // 功能色系统
-$color-success: #4CAF50;
-$color-warning: #FFC107;
-$color-error: #F44336;
-$color-info: #2196F3;
-$color-disabled: #9E9E9E;
+$color-success: #4caf50;
+$color-warning: #ffc107;
+$color-error: #f44336;
+$color-info: #2196f3;
+$color-disabled: #9e9e9e;
 
 // 语义化颜色变量
 $color-background: $color-neutral-50;
@@ -62,7 +62,9 @@ $color-divider: $color-neutral-200;
 
 // ===== 字体系统 =====
 // 字体家族设置
-$font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-sans-serif:
+  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+  Arial, sans-serif;
 $font-family-monospace: monospace;
 $font-family-base: $font-family-sans-serif;
 
@@ -85,11 +87,11 @@ $line-height-sm: 1.25; // 小行距
 
 // 标题大小设置
 $font-size-h1: $font-size-base * 2.5; // 2.5rem
-$font-size-h2: $font-size-base * 2;    // 2rem
+$font-size-h2: $font-size-base * 2; // 2rem
 $font-size-h3: $font-size-base * 1.75; // 1.75rem
-$font-size-h4: $font-size-base * 1.5;  // 1.5rem
+$font-size-h4: $font-size-base * 1.5; // 1.5rem
 $font-size-h5: $font-size-base * 1.25; // 1.25rem
-$font-size-h6: $font-size-base;        // 1rem
+$font-size-h6: $font-size-base; // 1rem
 
 // Body基础样式
 $body-bg: $color-neutral-50;
@@ -174,68 +176,160 @@ $color-neutral-900-dark: rgba($color-neutral-900, $opacity-dark);
 
 // ===== 色彩工具类 =====
 // 文本颜色工具类
-.text-primary { color: $color-primary-500; }
-.text-primary-dark { color: $color-primary-900; }
-.text-secondary { color: $color-secondary-blue-700; }
-.text-success { color: $color-success; }
-.text-warning { color: $color-warning; }
-.text-error { color: $color-error; }
-.text-info { color: $color-info; }
-.text-disabled { color: $color-disabled; }
+.text-primary {
+  color: $color-primary-500;
+}
+.text-primary-dark {
+  color: $color-primary-900;
+}
+.text-secondary {
+  color: $color-secondary-blue-700;
+}
+.text-success {
+  color: $color-success;
+}
+.text-warning {
+  color: $color-warning;
+}
+.text-error {
+  color: $color-error;
+}
+.text-info {
+  color: $color-info;
+}
+.text-disabled {
+  color: $color-disabled;
+}
 
 // 中性文本颜色
-.text-neutral-50 { color: $color-neutral-50; }
-.text-neutral-100 { color: $color-neutral-100; }
-.text-neutral-200 { color: $color-neutral-200; }
-.text-neutral-300 { color: $color-neutral-300; }
-.text-neutral-400 { color: $color-neutral-400; }
-.text-neutral-500 { color: $color-neutral-500; }
-.text-neutral-600 { color: $color-neutral-600; }
-.text-neutral-700 { color: $color-neutral-700; }
-.text-neutral-800 { color: $color-neutral-800; }
-.text-neutral-900 { color: $color-neutral-900; }
+.text-neutral-50 {
+  color: $color-neutral-50;
+}
+.text-neutral-100 {
+  color: $color-neutral-100;
+}
+.text-neutral-200 {
+  color: $color-neutral-200;
+}
+.text-neutral-300 {
+  color: $color-neutral-300;
+}
+.text-neutral-400 {
+  color: $color-neutral-400;
+}
+.text-neutral-500 {
+  color: $color-neutral-500;
+}
+.text-neutral-600 {
+  color: $color-neutral-600;
+}
+.text-neutral-700 {
+  color: $color-neutral-700;
+}
+.text-neutral-800 {
+  color: $color-neutral-800;
+}
+.text-neutral-900 {
+  color: $color-neutral-900;
+}
 
 // 语义化文本颜色
-.text-heading { color: $color-text-primary; }
-.text-body { color: $color-text-secondary; }
-.text-muted { color: $color-text-tertiary; }
+.text-heading {
+  color: $color-text-primary;
+}
+.text-body {
+  color: $color-text-secondary;
+}
+.text-muted {
+  color: $color-text-tertiary;
+}
 
 // 字体大小工具类
-.font-size-base { font-size: $font-size-base; }
-.font-size-lg { font-size: $font-size-lg; }
-.font-size-sm { font-size: $font-size-sm; }
-.font-size-xs { font-size: $font-size-sm * 0.875; }
+.font-size-base {
+  font-size: $font-size-base;
+}
+.font-size-lg {
+  font-size: $font-size-lg;
+}
+.font-size-sm {
+  font-size: $font-size-sm;
+}
+.font-size-xs {
+  font-size: $font-size-sm * 0.875;
+}
 
 // 标题字体大小工具类
-.font-size-h1 { font-size: $font-size-h1; }
-.font-size-h2 { font-size: $font-size-h2; }
-.font-size-h3 { font-size: $font-size-h3; }
-.font-size-h4 { font-size: $font-size-h4; }
-.font-size-h5 { font-size: $font-size-h5; }
-.font-size-h6 { font-size: $font-size-h6; }
+.font-size-h1 {
+  font-size: $font-size-h1;
+}
+.font-size-h2 {
+  font-size: $font-size-h2;
+}
+.font-size-h3 {
+  font-size: $font-size-h3;
+}
+.font-size-h4 {
+  font-size: $font-size-h4;
+}
+.font-size-h5 {
+  font-size: $font-size-h5;
+}
+.font-size-h6 {
+  font-size: $font-size-h6;
+}
 
 // 字重工具类
-.font-weight-light { font-weight: $font-weight-light; }
-.font-weight-normal { font-weight: $font-weight-base; }
-.font-weight-bold { font-weight: $font-weight-bold; }
-.font-weight-lighter { font-weight: $font-weight-lighter; }
-.font-weight-bolder { font-weight: $font-weight-bolder; }
+.font-weight-light {
+  font-weight: $font-weight-light;
+}
+.font-weight-normal {
+  font-weight: $font-weight-base;
+}
+.font-weight-bold {
+  font-weight: $font-weight-bold;
+}
+.font-weight-lighter {
+  font-weight: $font-weight-lighter;
+}
+.font-weight-bolder {
+  font-weight: $font-weight-bolder;
+}
 
 // 行高工具类
-.line-height-base { line-height: $line-height-base; }
-.line-height-lg { line-height: $line-height-lg; }
-.line-height-sm { line-height: $line-height-sm; }
-.line-height-none { line-height: 1; }
+.line-height-base {
+  line-height: $line-height-base;
+}
+.line-height-lg {
+  line-height: $line-height-lg;
+}
+.line-height-sm {
+  line-height: $line-height-sm;
+}
+.line-height-none {
+  line-height: 1;
+}
 
 // 文本对齐工具类
-.text-left { text-align: left; }
-.text-center { text-align: center; }
-.text-right { text-align: right; }
-.text-justify { text-align: justify; }
+.text-left {
+  text-align: left;
+}
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.text-justify {
+  text-align: justify;
+}
 
 // 字体家族工具类
-.font-family-sans-serif { font-family: $font-family-sans-serif; }
-.font-family-monospace { font-family: $font-family-monospace; }
+.font-family-sans-serif {
+  font-family: $font-family-sans-serif;
+}
+.font-family-monospace {
+  font-family: $font-family-monospace;
+}
 
 // Body样式
 body {
@@ -253,19 +347,36 @@ body {
 }
 
 // 标题样式
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: $font-weight-bold;
   line-height: $line-height-sm;
   margin-top: 0;
   margin-bottom: 0.5rem;
 }
 
-h1 { font-size: $font-size-h1; }
-h2 { font-size: $font-size-h2; }
-h3 { font-size: $font-size-h3; }
-h4 { font-size: $font-size-h4; }
-h5 { font-size: $font-size-h5; }
-h6 { font-size: $font-size-h6; }
+h1 {
+  font-size: $font-size-h1;
+}
+h2 {
+  font-size: $font-size-h2;
+}
+h3 {
+  font-size: $font-size-h3;
+}
+h4 {
+  font-size: $font-size-h4;
+}
+h5 {
+  font-size: $font-size-h5;
+}
+h6 {
+  font-size: $font-size-h6;
+}
 
 // 段落样式
 p {
@@ -279,12 +390,12 @@ a {
   color: $color-primary-500;
   text-decoration: none;
   transition: color 0.2s ease;
-  
+
   &:hover {
     color: darken-color($color-primary-500, 15%);
     text-decoration: underline;
   }
-  
+
   &:focus {
     outline: 2px solid $color-primary-500;
     outline-offset: 2px;
@@ -292,66 +403,158 @@ a {
 }
 
 // 背景颜色工具类
-.bg-primary { background-color: $color-primary-500; }
-.bg-primary-100 { background-color: $color-primary-100; }
-.bg-primary-200 { background-color: $color-primary-200; }
-.bg-primary-300 { background-color: $color-primary-300; }
-.bg-primary-400 { background-color: $color-primary-400; }
-.bg-primary-600 { background-color: $color-primary-600; }
-.bg-primary-700 { background-color: $color-primary-700; }
-.bg-primary-800 { background-color: $color-primary-800; }
-.bg-primary-900 { background-color: $color-primary-900; }
+.bg-primary {
+  background-color: $color-primary-500;
+}
+.bg-primary-100 {
+  background-color: $color-primary-100;
+}
+.bg-primary-200 {
+  background-color: $color-primary-200;
+}
+.bg-primary-300 {
+  background-color: $color-primary-300;
+}
+.bg-primary-400 {
+  background-color: $color-primary-400;
+}
+.bg-primary-600 {
+  background-color: $color-primary-600;
+}
+.bg-primary-700 {
+  background-color: $color-primary-700;
+}
+.bg-primary-800 {
+  background-color: $color-primary-800;
+}
+.bg-primary-900 {
+  background-color: $color-primary-900;
+}
 
 // 辅助色背景
-.bg-secondary-blue-100 { background-color: $color-secondary-blue-100; }
-.bg-secondary-blue-300 { background-color: $color-secondary-blue-300; }
-.bg-secondary-blue-500 { background-color: $color-secondary-blue-500; }
+.bg-secondary-blue-100 {
+  background-color: $color-secondary-blue-100;
+}
+.bg-secondary-blue-300 {
+  background-color: $color-secondary-blue-300;
+}
+.bg-secondary-blue-500 {
+  background-color: $color-secondary-blue-500;
+}
 
-.bg-secondary-pink-100 { background-color: $color-secondary-pink-100; }
-.bg-secondary-pink-300 { background-color: $color-secondary-pink-300; }
-.bg-secondary-pink-500 { background-color: $color-secondary-pink-500; }
+.bg-secondary-pink-100 {
+  background-color: $color-secondary-pink-100;
+}
+.bg-secondary-pink-300 {
+  background-color: $color-secondary-pink-300;
+}
+.bg-secondary-pink-500 {
+  background-color: $color-secondary-pink-500;
+}
 
-.bg-secondary-green-100 { background-color: $color-secondary-green-100; }
-.bg-secondary-green-300 { background-color: $color-secondary-green-300; }
-.bg-secondary-green-500 { background-color: $color-secondary-green-500; }
+.bg-secondary-green-100 {
+  background-color: $color-secondary-green-100;
+}
+.bg-secondary-green-300 {
+  background-color: $color-secondary-green-300;
+}
+.bg-secondary-green-500 {
+  background-color: $color-secondary-green-500;
+}
 
 // 状态背景
-.bg-success { background-color: $color-success; }
-.bg-warning { background-color: $color-warning; }
-.bg-error { background-color: $color-error; }
-.bg-info { background-color: $color-info; }
+.bg-success {
+  background-color: $color-success;
+}
+.bg-warning {
+  background-color: $color-warning;
+}
+.bg-error {
+  background-color: $color-error;
+}
+.bg-info {
+  background-color: $color-info;
+}
 
 // 中性背景
-.bg-neutral-50 { background-color: $color-neutral-50; }
-.bg-neutral-100 { background-color: $color-neutral-100; }
-.bg-neutral-200 { background-color: $color-neutral-200; }
-.bg-neutral-300 { background-color: $color-neutral-300; }
-.bg-neutral-400 { background-color: $color-neutral-400; }
-.bg-neutral-500 { background-color: $color-neutral-500; }
-.bg-neutral-600 { background-color: $color-neutral-600; }
-.bg-neutral-700 { background-color: $color-neutral-700; }
-.bg-neutral-800 { background-color: $color-neutral-800; }
-.bg-neutral-900 { background-color: $color-neutral-900; }
+.bg-neutral-50 {
+  background-color: $color-neutral-50;
+}
+.bg-neutral-100 {
+  background-color: $color-neutral-100;
+}
+.bg-neutral-200 {
+  background-color: $color-neutral-200;
+}
+.bg-neutral-300 {
+  background-color: $color-neutral-300;
+}
+.bg-neutral-400 {
+  background-color: $color-neutral-400;
+}
+.bg-neutral-500 {
+  background-color: $color-neutral-500;
+}
+.bg-neutral-600 {
+  background-color: $color-neutral-600;
+}
+.bg-neutral-700 {
+  background-color: $color-neutral-700;
+}
+.bg-neutral-800 {
+  background-color: $color-neutral-800;
+}
+.bg-neutral-900 {
+  background-color: $color-neutral-900;
+}
 
 // 带透明度的背景
-.bg-primary-light { background-color: $color-primary-500-light; }
-.bg-primary-medium { background-color: $color-primary-500-medium; }
-.bg-primary-dark { background-color: $color-primary-500-dark; }
+.bg-primary-light {
+  background-color: $color-primary-500-light;
+}
+.bg-primary-medium {
+  background-color: $color-primary-500-medium;
+}
+.bg-primary-dark {
+  background-color: $color-primary-500-dark;
+}
 
 // 边框颜色工具类
-.border { border: 1px solid $color-border; }
-.border-primary { border-color: $color-primary-500; }
-.border-secondary { border-color: $color-secondary-blue-500; }
-.border-success { border-color: $color-success; }
-.border-warning { border-color: $color-warning; }
-.border-error { border-color: $color-error; }
-.border-neutral { border-color: $color-border; }
-.border-divider { border-color: $color-divider; }
+.border {
+  border: 1px solid $color-border;
+}
+.border-primary {
+  border-color: $color-primary-500;
+}
+.border-secondary {
+  border-color: $color-secondary-blue-500;
+}
+.border-success {
+  border-color: $color-success;
+}
+.border-warning {
+  border-color: $color-warning;
+}
+.border-error {
+  border-color: $color-error;
+}
+.border-neutral {
+  border-color: $color-border;
+}
+.border-divider {
+  border-color: $color-divider;
+}
 
 // 圆角工具类
-.rounded { border-radius: 0.375rem; }
-.rounded-lg { border-radius: 0.5rem; }
-.rounded-full { border-radius: 9999px; }
+.rounded {
+  border-radius: 0.375rem;
+}
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+.rounded-full {
+  border-radius: 9999px;
+}
 
 // ===== 布局工具类 =====
 .flex {
@@ -397,10 +600,12 @@ a {
   box-shadow: 0 2px 8px rgba($color-neutral-900, 0.1);
   padding: 1.5rem;
   margin-bottom: 1rem;
-  
+
   &.card-hover {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba($color-neutral-900, 0.15);
@@ -417,10 +622,22 @@ a {
   font-weight: 500;
 }
 
-.tag-primary { background-color: $color-primary-300; color: $color-neutral-900; }
-.tag-blue { background-color: $color-secondary-blue-300; color: $color-neutral-900; }
-.tag-pink { background-color: $color-secondary-pink-300; color: $color-neutral-900; }
-.tag-green { background-color: $color-secondary-green-300; color: $color-neutral-900; }
+.tag-primary {
+  background-color: $color-primary-300;
+  color: $color-neutral-900;
+}
+.tag-blue {
+  background-color: $color-secondary-blue-300;
+  color: $color-neutral-900;
+}
+.tag-pink {
+  background-color: $color-secondary-pink-300;
+  color: $color-neutral-900;
+}
+.tag-green {
+  background-color: $color-secondary-green-300;
+  color: $color-neutral-900;
+}
 
 // 表单元素样式
 .form-input {
@@ -430,13 +647,13 @@ a {
   border-radius: 0.375rem;
   background-color: $color-neutral-50;
   color: $color-text-primary;
-  
+
   &:focus {
     outline: none;
     border-color: $color-primary-500;
     box-shadow: 0 0 0 3px rgba($color-primary-500, 0.2);
   }
-  
+
   &:disabled {
     background-color: $color-neutral-100;
     color: $color-disabled;
@@ -455,8 +672,9 @@ a {
 @mixin card-shadow($level: 1) {
   $shadow-depth: $level * 2;
   $shadow-opacity: 0.08 + ($level * 0.02);
-  
-  box-shadow: 0 $shadow-depth px $shadow-depth * 2 px rgba($color-neutral-900, $shadow-opacity);
+
+  box-shadow: 0 $shadow-depth px $shadow-depth * 2 px
+    rgba($color-neutral-900, $shadow-opacity);
 }
 
 // ===== 导出变量（用于JavaScript） =====
