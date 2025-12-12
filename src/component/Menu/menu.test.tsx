@@ -19,18 +19,19 @@ const testVerticalProps: MenuProps = {
 };
 const normalMenu = (props: MenuProps) => (
   <Menu {...props}>
-    <MenuItem index={0}>active</MenuItem>
-    <MenuItem index={1} disabled>
-      disabled
-    </MenuItem>
-    <MenuItem index={2}>Item 3</MenuItem>
+    <MenuItem>active</MenuItem>
+    <MenuItem disabled>disabled</MenuItem>
+    <MenuItem>Item 3</MenuItem>
+    <li>
+      <a href="https://github.com/creamdesign/creamdesign">GitHub Repository</a>
+    </li>
   </Menu>
 );
 const verticalMenu = (props: MenuProps) => (
   <Menu {...props}>
-    <MenuItem index={0}>Item 1</MenuItem>
-    <MenuItem index={1}>Item 2</MenuItem>
-    <MenuItem index={2}>Item 3</MenuItem>
+    <MenuItem>Item 1</MenuItem>
+    <MenuItem>Item 2</MenuItem>
+    <MenuItem>Item 3</MenuItem>
   </Menu>
 );
 // 通用的放在beforeEach中

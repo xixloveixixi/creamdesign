@@ -1,6 +1,5 @@
 import Button, { ButtonType, ButtonSize } from './component/Button/index.tsx';
-import Menu from './component/Menu/Menu.tsx';
-import MenuItem from './component/Menu/MenuItems.tsx';
+import { Menu, MenuItem, SubMenu } from './component/Menu/index.ts';
 
 function App() {
   const handleClick = () => {
@@ -9,11 +8,50 @@ function App() {
 
   return (
     <div className="app-container bg-neutral-50 min-h-screen p-4">
-      <Menu onSelect={index => console.log(index)} defaultIndex={0}>
-        <MenuItem index={0}>Home</MenuItem>
-        <MenuItem index={1}>About</MenuItem>
-        <MenuItem index={2}>Contact</MenuItem>
-      </Menu>
+      <h1 className="mb-6">Menu Component Examples</h1>
+
+      {/* 带有下拉功能的水平菜单 */}
+      <div className="mb-6">
+        <h2 className="text-lg mb-2">Horizontal Menu with Dropdown</h2>
+        <Menu onSelect={index => console.log(index)} defaultIndex="0">
+          <MenuItem>Home</MenuItem>
+          <SubMenu title="Products">
+            <MenuItem>Product 1</MenuItem>
+            <MenuItem>Product 2</MenuItem>
+            <MenuItem>Product 3</MenuItem>
+          </SubMenu>
+          <SubMenu title="Services">
+            <MenuItem>Service 1</MenuItem>
+            <MenuItem>Service 2</MenuItem>
+            <MenuItem>Service 3</MenuItem>
+          </SubMenu>
+          <MenuItem>Contact</MenuItem>
+        </Menu>
+      </div>
+
+      {/* 带有下拉功能的垂直菜单 */}
+      <div className="mb-6">
+        <h2 className="text-lg mb-2">Vertical Menu with Dropdown</h2>
+        <Menu
+          onSelect={index => console.log(index)}
+          defaultIndex="0"
+          mode="vertical"
+          style={{ width: 200 }}
+        >
+          <MenuItem>Home</MenuItem>
+          <SubMenu title="Products">
+            <MenuItem>Product 1</MenuItem>
+            <MenuItem>Product 2</MenuItem>
+            <MenuItem>Product 3</MenuItem>
+          </SubMenu>
+          <SubMenu title="Services">
+            <MenuItem>Service 1</MenuItem>
+            <MenuItem>Service 2</MenuItem>
+            <MenuItem>Service 3</MenuItem>
+          </SubMenu>
+          <MenuItem>Contact</MenuItem>
+        </Menu>
+      </div>
       <h1 className="mb-6">Button Component Examples</h1>
 
       <div className="mb-6">
