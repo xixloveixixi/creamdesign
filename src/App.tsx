@@ -42,11 +42,6 @@ function App() {
           style={{ width: 200 }}
         >
           <MenuItem>Home</MenuItem>
-          <SubMenu title="Products">
-            <MenuItem>Product 1</MenuItem>
-            <MenuItem>Product 2</MenuItem>
-            <MenuItem>Product 3</MenuItem>
-          </SubMenu>
           <SubMenu title="Services">
             <MenuItem>Service 1</MenuItem>
             <MenuItem>Service 2</MenuItem>

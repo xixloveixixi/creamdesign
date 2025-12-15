@@ -1,7 +1,7 @@
 // Menu组件样式文件
 
 // 导入全局样式变量
-@import '../../style/_creamdesign.scss';
+@import '../../style/_creamdesign';
 
 // 菜单变量定义
 $menu-border-color: $color-border;
@@ -208,21 +208,13 @@ $menu-item-disabled-color: $color-disabled;
 .submenu-arrow {
   margin-left: 8px;
   font-size: 12px;
-  transition: $menu-transition;
 }
 
-// 子菜单展开时箭头旋转
+
 .submenu-expanded .submenu-arrow {
   transform: rotate(90deg);
 }
 
-// 子菜单项样式
-.submenu .menu-item {
-  padding: $menu-item-padding-y $menu-item-padding-x;
-  justify-content: flex-start;
-  border: none;
-  background-color: $color-primary-100;
-}
 
 .submenu .menu-item:hover,
 .submenu .menu-item:focus {
