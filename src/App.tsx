@@ -1,6 +1,6 @@
-import Button, { ButtonType, ButtonSize } from './component/Button/index.tsx';
-import { Menu, MenuItem, SubMenu } from './component/Menu/index.ts';
-import Icon from './component/Icon/icon.tsx';
+import Button, { ButtonType, ButtonSize } from './component/Button';
+import { Menu, MenuItem, SubMenu } from './component/Menu';
+import Icon from './component/Icon/icon';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 library.add(fas);
@@ -56,35 +56,35 @@ function App() {
         <h2 className="text-lg mb-2">Button Types</h2>
         <div className="flex flex-wrap gap-3">
           <Button
-            type={ButtonType.Primary}
+            btnType={ButtonType.Primary}
             size={ButtonSize.Normal}
             onClick={handleClick}
           >
             Primary Button
           </Button>
           <Button
-            type={ButtonType.Secondary}
+            btnType={ButtonType.Secondary}
             size={ButtonSize.Normal}
             onClick={handleClick}
           >
             Secondary Button
           </Button>
           <Button
-            type={ButtonType.Danger}
+            btnType={ButtonType.Danger}
             size={ButtonSize.Normal}
             onClick={handleClick}
           >
             Danger Button
           </Button>
           <Button
-            type={ButtonType.Info}
+            btnType={ButtonType.Info}
             size={ButtonSize.Normal}
             onClick={handleClick}
           >
             Info Button
           </Button>
           <Button
-            type={ButtonType.Success}
+            btnType={ButtonType.Success}
             size={ButtonSize.Normal}
             onClick={handleClick}
           >
@@ -109,10 +109,18 @@ function App() {
       <div className="mb-6">
         <h2 className="text-lg mb-2">Disabled State</h2>
         <div className="flex flex-wrap gap-3">
-          <Button type={ButtonType.Primary} size={ButtonSize.Normal} disabled>
+          <Button
+            btnType={ButtonType.Primary}
+            size={ButtonSize.Normal}
+            disabled
+          >
             Disabled Primary
           </Button>
-          <Button type={ButtonType.Outline} size={ButtonSize.Normal} disabled>
+          <Button
+            btnType={ButtonType.Outline}
+            size={ButtonSize.Normal}
+            disabled
+          >
             Disabled Outline
           </Button>
         </div>

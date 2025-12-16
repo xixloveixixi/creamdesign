@@ -31,7 +31,7 @@ describe('Button Component', () => {
     ButtonType.Ghost,
     ButtonType.Text,
   ])('should render %s button correctly', type => {
-    const wrapper = render(<Button type={type}>{type}</Button>);
+    const wrapper = render(<Button btnType={type}>{type}</Button>);
     const button = wrapper.getByText(type);
     expect(button).toHaveClass(`btn-${type}`);
   });

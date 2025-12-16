@@ -1,12 +1,12 @@
 import React, { useContext, ReactNode } from 'react';
 import classNames from 'classnames';
-import { MenuContext } from './Menu.tsx';
-import { MenuItemProps } from './MenuItems.tsx';
-import Icon from '../Icon/icon.tsx';
+import { MenuContext } from './Menu';
+import { MenuItemProps } from './MenuItems';
+import Icon from '../Icon/icon';
 
 // SubMenuProps接口
 export interface SubMenuProps {
-  index: string | number;
+  index?: string | number;
   title: ReactNode;
   disabled?: boolean;
   className?: string;
@@ -22,36 +22,48 @@ const SubMenu: React.FC<SubMenuProps> = (props: SubMenuProps) => {
   // 子菜单是否展开，由MenuContext的expandedIndex控制
   const expanded = expandedIndex === index;
 
-  // 处理子菜单标题点击事件
+  // 点击子菜单标题，展开/收起子菜单
   const handleTitleClick = () => {
-    if (!disabled && onToggleSubMenu) {
+    if (!disabled && onToggleSubMenu && index !== undefined) {
       onToggleSubMenu(index);
     }
   };
 
-  // 渲染子菜单
+  // 渲染子菜单内容
   const renderChildren = () => {
+    if (!children) return null;
     return React.Children.map(
-      children,
+      children as React.ReactElement[],
       (child: React.ReactElement, childIndex: number) => {
         if (!React.isValidElement(child)) return null;
 
         const childElement = child as React.ReactElement<
           MenuItemProps | SubMenuProps
         >;
-        const { displayName } = childElement.type;
 
-        // 为子菜单项生成新的索引，格式为：父索引-子索引
-        const newIndex = `${index}-${childIndex}`;
+        // 检查是否是React组件
+        const isComponent = typeof childElement.type === 'function';
 
-        if (displayName === 'MenuItem' || displayName === 'SubMenu') {
-          return React.cloneElement(childElement, {
-            key: newIndex,
-            index: newIndex,
-          });
+        if (isComponent) {
+          const { displayName } = childElement.type as React.ComponentType;
+
+          if (displayName === 'MenuItem' || displayName === 'SubMenu') {
+            // 为子菜单添加index属性，当index是undefined时，只使用childIndex
+            const newIndex =
+              index !== undefined ? `${index}-${childIndex}` : childIndex;
+            return React.cloneElement(childElement, {
+              key: newIndex,
+              index: newIndex,
+            });
+          } else {
+            console.warn(
+              `SubMenu only accepts MenuItem or SubMenu as children, but got ${displayName}`
+            );
+            return null;
+          }
         } else {
           console.warn(
-            `SubMenu only accepts MenuItem or SubMenu as children, but got ${displayName}`
+            `SubMenu only accepts MenuItem or SubMenu as children, but got a ${typeof childElement.type}`
           );
           return null;
         }

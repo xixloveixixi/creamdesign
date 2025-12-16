@@ -76,25 +76,36 @@ const Menu: React.FC<MenuProps> = (props: MenuProps) => {
   // 直接使用React.Children.map遍历children的话如果子元素不是React元素，会报错
   // 所以需要判断是否是React元素，不是的话就直接返回null
   const renderChild = () => {
+    if (!children) return null;
     return React.Children.map(
-      children,
+      children as React.ReactElement[],
       (child: React.ReactElement, index: any) => {
         if (!React.isValidElement(child)) return null;
 
         const childElement = child as React.ReactElement<
           MenuItemProps | SubMenuProps
         >;
-        const { displayName } = childElement.type;
+
+        // 检查是否是React组件（函数组件或类组件）
+        const isComponent = typeof childElement.type === 'function';
 
         // 支持MenuItem和SubMenu组件
-        if (displayName === 'MenuItem' || displayName === 'SubMenu') {
-          // 为菜单项添加index属性
-          return React.cloneElement(childElement, {
-            index,
-          });
+        if (isComponent) {
+          const { displayName } = childElement.type as React.ComponentType;
+          if (displayName === 'MenuItem' || displayName === 'SubMenu') {
+            // 为菜单项添加index属性
+            return React.cloneElement(childElement, {
+              index,
+            });
+          } else {
+            console.warn(
+              `Menu only accepts MenuItem or SubMenu as children, but got ${displayName}`
+            );
+            return null;
+          }
         } else {
           console.warn(
-            `Menu only accepts MenuItem or SubMenu as children, but got ${displayName}`
+            `Menu only accepts MenuItem or SubMenu as children, but got a ${typeof childElement.type}`
           );
           return null;
         }

@@ -24,7 +24,7 @@ export enum ButtonSize {
 }
 // 2、创建interface：ButtonProps
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  type?: ButtonType;
+  btnType?: ButtonType;
   size?: ButtonSize;
   disabled?: boolean;
   loading?: boolean;
@@ -34,7 +34,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 // 3、创建Button组件
 export const Button: React.FC<ButtonProps> = ({
-  type = ButtonType.Primary,
+  btnType = ButtonType.Primary,
   size = ButtonSize.Normal,
   disabled = false,
   loading = false,
@@ -45,7 +45,7 @@ export const Button: React.FC<ButtonProps> = ({
   ...rest
 }) => {
   const isDisabled = disabled || loading;
-  const buttonClassName = `btn btn-${type} btn-${size} ${
+  const buttonClassName = `btn btn-${btnType} btn-${size} ${
     isDisabled ? 'btn-disabled' : ''
   } ${loading ? 'btn-loading' : ''} ${className || ''}`.trim();
   // 为无障碍访问添加ARIA属性

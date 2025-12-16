@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import classNames from 'classnames';
-import { MenuContext } from './Menu.tsx';
+import { MenuContext } from './Menu';
 
 // MenuItemProps接口
 // index: 菜单项唯一标识
 // disabled: 是否禁用该菜单项
 // className: 自定义样式类名
 export interface MenuItemProps {
-  index: string | number;
+  index?: string | number;
   disabled?: boolean;
   className?: string;
   style?: React.CSSProperties;
@@ -23,10 +23,10 @@ const MenuItem: React.FC<MenuItemProps> = (props: MenuItemProps) => {
     'menu-item-disabled': disabled,
     'menu-item-active': activeIndex === index,
   });
-  // 为菜单项添加点击事件
+  // 菜单项点击事件处理函数
   const handleClick = () => {
-    // 只有当菜单项不是禁用状态时才触发点击事件
-    if (!disabled && onSelect) {
+    // 只有当菜单项不是禁用状态且index存在时才触发点击事件
+    if (!disabled && onSelect && index !== undefined) {
       onSelect(index);
     }
   };
