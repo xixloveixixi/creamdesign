@@ -23,6 +23,8 @@ export interface MenuProps {
 interface MenuContextProps {
   onSelect?: MenuSelectType;
   activeIndex?: string | number;
+  setActiveIndex?: (index: string | number) => void;
+  childActiveIndex?: string | number;
   mode?: 'vertical' | 'horizontal';
   expandedIndex?: string | number;
   onToggleSubMenu?: (index: string | number) => void;
@@ -31,6 +33,8 @@ interface MenuContextProps {
 export const MenuContext = createContext<MenuContextProps>({
   onSelect: () => {}, //默认空函数，防止undefined调用
   activeIndex: 0, //默认高亮项的索引
+  setActiveIndex: () => {}, //默认空函数，防止undefined调用
+  childActiveIndex: 0, //默认子项高亮项的索引
 });
 
 const Menu: React.FC<MenuProps> = (props: MenuProps) => {
@@ -69,6 +73,7 @@ const Menu: React.FC<MenuProps> = (props: MenuProps) => {
   const menuContextValue: MenuContextProps = {
     onSelect: handleSelect,
     activeIndex,
+    setActiveIndex, // 传递setActiveIndex给子组件
     mode,
     expandedIndex, //默认展开项的索引
     onToggleSubMenu: handleToggleSubMenu, //处理子菜单展开/收起的回调函数
@@ -93,9 +98,9 @@ const Menu: React.FC<MenuProps> = (props: MenuProps) => {
         if (isComponent) {
           const { displayName } = childElement.type as React.ComponentType;
           if (displayName === 'MenuItem' || displayName === 'SubMenu') {
-            // 为菜单项添加index属性
+            // 为菜单项添加index属性，仅当子元素没有index属性时
             return React.cloneElement(childElement, {
-              index,
+              index: childElement.props.index || index,
             });
           } else {
             console.warn(

@@ -6,6 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 const buttonMeta: Meta<typeof Button> = {
   title: 'Button',
   component: Button,
+  tags: ['autodocs'],
   argTypes: {
     // 为size属性配置控件，显式指定可用选项
     size: {

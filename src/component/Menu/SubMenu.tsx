@@ -17,13 +17,23 @@ export interface SubMenuProps {
 const SubMenu: React.FC<SubMenuProps> = (props: SubMenuProps) => {
   const { index, title, disabled, className, style, children } = props;
   const context = useContext(MenuContext);
-  const { activeIndex, expandedIndex, onToggleSubMenu, mode } = context;
+  const {
+    activeIndex,
+    setActiveIndex,
+    expandedIndex,
+    onToggleSubMenu,
+    mode,
+    childActiveIndex,
+  } = context;
 
   // 子菜单是否展开，由MenuContext的expandedIndex控制
   const expanded = expandedIndex === index;
 
   // 点击子菜单标题，展开/收起子菜单
   const handleTitleClick = () => {
+    if (index !== undefined && setActiveIndex) {
+      setActiveIndex(index);
+    }
     if (!disabled && onToggleSubMenu && index !== undefined) {
       onToggleSubMenu(index);
     }
@@ -85,7 +95,7 @@ const SubMenu: React.FC<SubMenuProps> = (props: SubMenuProps) => {
   return (
     <li className={menuItemClassName} style={style}>
       <div className="menu-item-title" onClick={handleTitleClick}>
-        {title} {/* 使用title属性作为菜单标题 */}
+        {title}
         <span className="submenu-arrow">
           {mode === 'vertical' ? (
             <Icon icon="caret-right" className="submenu-arrow-icon" />

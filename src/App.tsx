@@ -17,11 +17,11 @@ function App() {
       <div className="mb-6">
         <h2 className="text-lg mb-2">Horizontal Menu with Dropdown</h2>
         <Menu onSelect={index => console.log(index)} defaultIndex="0">
-          <MenuItem>Home</MenuItem>
-          <SubMenu title="Products">
-            <MenuItem>Product 1</MenuItem>
-            <MenuItem>Product 2</MenuItem>
-            <MenuItem>Product 3</MenuItem>
+          <MenuItem>首页</MenuItem>
+          <SubMenu title="产品中心">
+            <MenuItem>产品1</MenuItem>
+            <MenuItem>产品2</MenuItem>
+            <MenuItem>产品3</MenuItem>
           </SubMenu>
           <SubMenu title="Services">
             <MenuItem>Service 1</MenuItem>

@@ -52,6 +52,7 @@ $menu-item-disabled-color: $color-disabled;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  white-space: nowrap; // 防止文本换行，确保中文和英文都能横向显示
 }
 
 // 菜单项文本样式

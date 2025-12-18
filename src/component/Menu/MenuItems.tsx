@@ -17,7 +17,7 @@ export interface MenuItemProps {
 const MenuItem: React.FC<MenuItemProps> = (props: MenuItemProps) => {
   const { index, disabled, className, style, children } = props;
   const context = useContext(MenuContext);
-  const { activeIndex, onSelect } = context;
+  const { activeIndex, onSelect, childActiveIndex } = context;
   //添加默认索引类名
   const menuItemClassName = classNames('menu-item', className, {
     'menu-item-disabled': disabled,
@@ -38,7 +38,6 @@ const MenuItem: React.FC<MenuItemProps> = (props: MenuItemProps) => {
 };
 
 MenuItem.defaultProps = {
-  index: 0,
   disabled: false,
 };
 MenuItem.displayName = 'MenuItem'; //在判断是否是MenuItem时需要使用displayName
