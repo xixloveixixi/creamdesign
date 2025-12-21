@@ -1,0 +1,120 @@
+// Input组件样式
+@import '../../style/_creamdesign.scss';
+
+// 基础输入框样式
+.input {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid $color-border;
+  border-radius: 0.375rem;
+  background-color: $color-neutral-50;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus-within {
+    border-color: $color-primary-500;
+    box-shadow: 0 0 0 3px rgba($color-primary-500, 0.2);
+  }
+
+  // 禁用状态
+  &.input-disabled {
+    background-color: $color-neutral-100;
+    border-color: $color-neutral-300;
+    cursor: not-allowed;
+
+    input {
+      background-color: transparent;
+      color: $color-disabled;
+      cursor: not-allowed;
+    }
+
+    .input-icon {
+      color: $color-disabled;
+    }
+
+    .input-prefix,
+    .input-suffix {
+      color: $color-disabled;
+    }
+  }
+
+  // 尺寸变体
+  &.input-large {
+    padding: 0.75rem 1rem;
+
+    input {
+      font-size: $font-size-lg;
+      padding: 0.25rem 0;
+    }
+
+    .input-icon {
+      font-size: 1.25rem;
+    }
+
+    .input-prefix,
+    .input-suffix {
+      font-size: $font-size-lg;
+      padding: 0 0.5rem;
+    }
+  }
+
+  &.input-small {
+    padding: 0.375rem 0.75rem;
+
+    input {
+      font-size: $font-size-sm;
+      padding: 0.125rem 0;
+    }
+
+    .input-icon {
+      font-size: 1rem;
+    }
+
+    .input-prefix,
+    .input-suffix {
+      font-size: $font-size-sm;
+      padding: 0 0.375rem;
+    }
+  }
+
+  // 输入框
+  input {
+    border: none;
+    background-color: transparent;
+    color: $color-text-primary;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+    padding: 0;
+    width: 100%;
+
+    &::placeholder {
+      color: $color-text-tertiary;
+    }
+  }
+
+  // 图标
+  .input-icon {
+    color: $color-text-tertiary;
+    margin-left: 0.25rem;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $color-primary-500;
+    }
+  }
+
+  // 前缀
+  .input-prefix {
+    color: $color-text-secondary;
+    margin-right: 0.5rem;
+    white-space: nowrap;
+  }
+
+  // 后缀
+  .input-suffix {
+    color: $color-text-secondary;
+    margin-left: 0.5rem;
+    white-space: nowrap;
+  }
+}
