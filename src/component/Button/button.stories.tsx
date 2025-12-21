@@ -1,6 +1,5 @@
 import { Button, ButtonSize, ButtonType } from './index';
 import React from 'react';
-
 import type { Meta, StoryObj } from '@storybook/react';
 
 const buttonMeta: Meta<typeof Button> = {

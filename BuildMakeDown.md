@@ -12,11 +12,11 @@
 - **测试策略**：组件作为独立的逻辑单元，非常适合进行单元测试，以保证质量。
 - **打包输出**：需要支持 TypeScript 源码转译，并输出多种模块格式（如 CommonJS, ES6, UMD）。
 - **发布流程**：支持发布到 npm，并集成 CI/CD 流程，实现文档自动生成等。
-带着这些目标，我们开始动手搭建。
+  带着这些目标，我们开始动手搭建。
 
 ---
 
-### 一、组件库的基本搭建
+## 一、组件库的基本搭建
 
 我们将使用 `create-react-app` 作为脚手架工具，因为它为我们预配置了 Webpack、Babel、ESLint 等复杂工具链，让我们能更专注于组件库本身的开发。
 
@@ -66,7 +66,7 @@ project-root/
 
 - **内置规则**：其规则集继承自 `eslint-config-react-app`，你可以在 [GitHub 仓库](https://github.com/facebook/create-react-app/tree/main/packages/eslint-config-react-app) 查看详细的规则说明。
 - **TypeScript 支持**：对于 TypeScript 项目，相关的解析器和规则也已配置好，无需手动干预。
-为了在开发过程中获得最佳体验，我们可以在项目根目录下创建 `.vscode/settings.json` 文件，配置 VS Code 与 ESLint 的无缝集成：
+  为了在开发过程中获得最佳体验，我们可以在项目根目录下创建 `.vscode/settings.json` 文件，配置 VS Code 与 ESLint 的无缝集成：
 
 ```json
 {
@@ -83,7 +83,6 @@ project-root/
   "eslint.enable": true,
   "eslint.run": "onType"
 }
-
 ```
 
 此配置的作用是：
@@ -105,18 +104,18 @@ npm install --save-dev sass
 **第二步：构建样式体系**
 在 `src/styles` 目录下，我们可以开始搭建我们的设计系统。
 
-1. **色彩体系**：在 `_variables.scss` 中定义全局的颜色变量。
-2. **字体系统**：同样在 `_variables.scss` 中定义字体相关的变量。
-3. **样式规范化**：为了解决不同浏览器下 HTML 元素默认样式不一致的问题，我们引入 `normalize.css`。它并非完全重置样式，而是保留有用的默认值，并提供跨浏览器的一致性。
-我是直接在git上找的这个css然后复制到normalize.scss当中的
-    
-    ```scss
-    // src/styles/index.scss
-    // 引入 normalize.css
-    @import 'normalize';
-    // 引入我们自己的变量和全局样式
-    @import 'variables';
-    ```
+1.  **色彩体系**：在 `_variables.scss` 中定义全局的颜色变量。
+2.  **字体系统**：同样在 `_variables.scss` 中定义字体相关的变量。
+3.  **样式规范化**：为了解决不同浏览器下 HTML 元素默认样式不一致的问题，我们引入 `normalize.css`。它并非完全重置样式，而是保留有用的默认值，并提供跨浏览器的一致性。
+    我是直接在git上找的这个css然后复制到normalize.scss当中的
+        ```scss
+        // src/styles/index.scss
+        // 引入 normalize.css
+        @import 'normalize';
+        // 引入我们自己的变量和全局样式
+        @import 'variables';
+        ```
+
 ### 二、创建一个组件(button为例子)
 
 ### 2.1 **项目结构**
@@ -124,15 +123,15 @@ npm install --save-dev sass
 ```markdown
 creamdesign/
 ├── src/
-│   ├── component/
-│   │   └── Button/
-│   │       ├── index.tsx        # Button组件核心实现
-│   │       └── buttonStyle.scss # Button样式定义
-│   └── style/
-│       ├── _creamdesign.scss    # 颜色和变量定义
-│       ├── _mixin.scss          # 样式混合器
-│       └── index.scss           # 主样式入口
-└── package.json                 # 项目依赖配置
+│ ├── component/
+│ │ └── Button/
+│ │ ├── index.tsx # Button组件核心实现
+│ │ └── buttonStyle.scss # Button样式定义
+│ └── style/
+│ ├── \_creamdesign.scss # 颜色和变量定义
+│ ├── \_mixin.scss # 样式混合器
+│ └── index.scss # 主样式入口
+└── package.json # 项目依赖配置
 ```
 
 ```
@@ -140,13 +139,15 @@ creamdesign/
 ### 2.2 功能需求
 
 ```
+
 在开始编码前，我们需要明确Button组件的功能需求：
+
 1. 按钮类型：primary、secondary、danger、warning、info、success、outline、ghost、text
 2. 按钮尺寸：large、normal、small
 3. 交互状态：默认、悬停(hover)、点击(active)、禁用(disabled)、加载(loading)
 4. 额外功能：支持图标、响应式设计、无障碍访问
 
-```
+````
 
 ### 2.3 基础结构搭建
 
@@ -189,8 +190,9 @@ export interface ButtonProps
   children?: React.ReactNode;
   'aria-label'?: string;
 }
-```
-```
+````
+
+````
 
 ### 2.4  **样式架构设计**
 
@@ -219,12 +221,12 @@ export interface ButtonProps
   background-color: $bg-color;
   color: $text-color;
   border: 1px solid $border-color;
-  
+
   &:hover:not(:disabled) {
     background-color: $hover-bg-color;
     transform: translateY(-0.5px);
   }
-  
+
   &:active:not(:disabled) {
     background-color: $active-bg-color;
     transform: translateY(0);
@@ -243,7 +245,7 @@ export interface ButtonProps
 @mixin btn-disabled() {
   cursor: not-allowed !important;
   opacity: 0.6;
-  
+
   &:hover,
   &:active,
   &:focus-visible {
@@ -253,8 +255,9 @@ export interface ButtonProps
     opacity: 0.6;
   }
 }
-```
-```
+````
+
+````
 
 ### 2.5 组件核心实现
 
@@ -279,7 +282,7 @@ export const Button: React.FC<ButtonProps> = ({
   const buttonClassName = `btn btn-${type} btn-${size} ${
     isDisabled ? "btn-disabled" : ""
   } ${loading ? "btn-loading" : ""} ${className || ""}`.trim();
-  
+
   // 为无障碍访问添加ARIA属性
   const ariaProps = {
     'aria-disabled': isDisabled,
@@ -302,8 +305,9 @@ export const Button: React.FC<ButtonProps> = ({
 };
 
 export default Button;
-```
-```
+````
+
+````
 
 ### 2.6 完整样式的实现
 
@@ -324,63 +328,63 @@ export default Button;
 // 按钮类型样式
 .btn-primary {
   @include btn-variant(
-    $color-primary-600, 
-    white, 
-    $color-primary-700, 
+    $color-primary-600,
+    white,
+    $color-primary-700,
     $color-primary-800
   );
 }
 
 .btn-secondary {
   @include btn-variant(
-    $color-primary-400, 
-    white, 
-    $color-primary-500, 
+    $color-primary-400,
+    white,
+    $color-primary-500,
     $color-primary-600
   );
 }
 
 .btn-danger {
   @include btn-variant(
-    $color-error, 
-    white, 
-    darken-color($color-error, 10%), 
+    $color-error,
+    white,
+    darken-color($color-error, 10%),
     darken-color($color-error, 20%)
   );
 }
 
 .btn-warning {
   @include btn-variant(
-    $color-warning, 
-    white, 
-    darken-color($color-warning, 10%), 
+    $color-warning,
+    white,
+    darken-color($color-warning, 10%),
     darken-color($color-warning, 20%)
   );
 }
 
 .btn-info {
   @include btn-variant(
-    $color-info, 
-    white, 
-    darken-color($color-info, 10%), 
+    $color-info,
+    white,
+    darken-color($color-info, 10%),
     darken-color($color-info, 20%)
   );
 }
 
 .btn-success {
   @include btn-variant(
-    $color-success, 
-    white, 
-    darken-color($color-success, 10%), 
+    $color-success,
+    white,
+    darken-color($color-success, 10%),
     darken-color($color-success, 20%)
   );
 }
 
 .btn-outline {
   @include btn-variant(
-    transparent, 
-    $color-primary-900, 
-    $color-primary-100, 
+    transparent,
+    $color-primary-900,
+    $color-primary-100,
     $color-primary-200,
     $color-primary-600
   );
@@ -388,22 +392,22 @@ export default Button;
 
 .btn-ghost {
   @include btn-variant(
-    transparent, 
-    $color-text-primary, 
-    $color-primary-100, 
+    transparent,
+    $color-text-primary,
+    $color-primary-100,
     $color-primary-200
   );
 }
 
 .btn-text {
   @include btn-variant(
-    transparent, 
-    $color-primary-600, 
-    $color-primary-100, 
+    transparent,
+    $color-primary-600,
+    $color-primary-100,
     $color-primary-100
   );
   font-weight: 400;
-  
+
   &:hover:not(:disabled) {
     color: $color-primary-700;
   }
@@ -477,25 +481,27 @@ button[disabled] {
   .btn {
     gap: 0.375rem;
   }
-  
+
   .btn-large {
     @include btn-size(0.75rem 1.5rem, 1.125rem, 0.5rem);
   }
-  
+
   .btn-normal {
     @include btn-size(0.5rem 1.25rem, 0.9375rem, 0.375rem);
   }
-  
+
   .btn-small {
     @include btn-size(0.1875rem 0.625rem, 0.8125rem, 0.25rem);
   }
 }
+````
+
 ```
-```
-### 三、组件测试
+
+## 三、组件测试
 
 > 在现代前端开发中，单元测试是保证代码质量和稳定性的重要手段。本文将以Button组件为例，详细介绍如何使用Jest和React Testing Library进行React组件的单元测试实践。
-> 
+>
 
 ### 3.1 测试的好处
 
@@ -513,17 +519,21 @@ button[disabled] {
 如果需要安装可以执行
 
 ```
- npm install --save-dev @testing-library/react
+
+npm install --save-dev @testing-library/react
+
 ```
 
 可以通过`npm test`命令运行测试。
 
 ```
+
 {
-  "scripts": {
-    "test": "react-scripts test"
-  }
+ "scripts": {
+   "test": "react-scripts test"
 }
+}
+
 ```
 
 在`package.json`中配置了测试脚本：
@@ -546,6 +556,7 @@ button[disabled] {
 首先，我们需要导入必要的测试工具和被测试组件：
 
 ```
+
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
@@ -558,6 +569,7 @@ import Button, { ButtonProps, ButtonType, ButtonSize } from "./index";
 ```
 
 const MockIcon = () => <span className="anticon" data-testid="mock-icon"><svg /></span>;
+
 ```
 
 **2. 基本渲染测试**
@@ -565,12 +577,13 @@ const MockIcon = () => <span className="anticon" data-testid="mock-icon"><svg />
 ```
 
 test("should render a button element with default props", () => {
-  const wrapper = render(<Button>Click Me</Button>);
-  const button = wrapper.getByText("Click Me");
-  expect(button).toBeInTheDocument();
-  expect(button.tagName).toBe("BUTTON");
-  expect(button).toHaveClass("btn btn-primary btn-normal");
+ const wrapper = render(<Button>Click Me</Button>);
+ const button = wrapper.getByText("Click Me");
+ expect(button).toBeInTheDocument();
+ expect(button.tagName).toBe("BUTTON");
+ expect(button).toHaveClass("btn btn-primary btn-normal");
 });
+
 ```
 
 这个测试验证了：
@@ -584,33 +597,35 @@ test("should render a button element with default props", () => {
 使用Jest的`test.each`方法，我们可以高效地测试多种按钮类型和尺寸：
 
 ```
+
 // 测试不同按钮类型
 test.each([
-  ButtonType.Primary,
-  ButtonType.Secondary,
-  ButtonType.Danger,
-  ButtonType.Warning,
-  ButtonType.Info,
-  ButtonType.Success,
-  ButtonType.Outline,
-  ButtonType.Ghost,
-  ButtonType.Text
+ ButtonType.Primary,
+ ButtonType.Secondary,
+ ButtonType.Danger,
+ ButtonType.Warning,
+ ButtonType.Info,
+ ButtonType.Success,
+ ButtonType.Outline,
+ ButtonType.Ghost,
+ ButtonType.Text
 ])('should render %s button correctly', (type) => {
-  const wrapper = render(<Button type={type}>{type}</Button>);
-  const button = wrapper.getByText(type);
-  expect(button).toHaveClass(`btn-${type}`);
+ const wrapper = render(<Button type={type}>{type}</Button>);
+ const button = wrapper.getByText(type);
+ expect(button).toHaveClass(`btn-${type}`);
 });
 
 // 测试不同按钮尺寸
 test.each([
-  [ButtonSize.Large, 'btn-large'],
-  [ButtonSize.Normal, 'btn-normal'],
-  [ButtonSize.Small, 'btn-small']
+[ButtonSize.Large, 'btn-large'],
+[ButtonSize.Normal, 'btn-normal'],
+[ButtonSize.Small, 'btn-small']
 ])('should render %s button correctly', (size, expectedClass) => {
-  const wrapper = render(<Button size={size}>Size Test</Button>);
-  const button = wrapper.getByText('Size Test');
-  expect(button).toHaveClass(expectedClass);
+ const wrapper = render(<Button size={size}>Size Test</Button>);
+ const button = wrapper.getByText('Size Test');
+ expect(button).toHaveClass(expectedClass);
 });
+
 ```
 
 **4. 状态测试：禁用和加载**
@@ -619,23 +634,24 @@ test.each([
 
 // 测试禁用状态
 test('should render a disabled button when disabled prop is true', () => {
-  const wrapper = render(<Button disabled>Disabled</Button>);
-  const button = wrapper.getByText('Disabled');
-  expect(button).toBeDisabled();
-  expect(button).toHaveClass('btn-disabled');
-  expect(button).toHaveAttribute('aria-disabled', 'true');
+ const wrapper = render(<Button disabled>Disabled</Button>);
+ const button = wrapper.getByText('Disabled');
+ expect(button).toBeDisabled();
+ expect(button).toHaveClass('btn-disabled');
+ expect(button).toHaveAttribute('aria-disabled', 'true');
 });
 
 // 测试加载状态
 test('should render loading state correctly', () => {
-  const wrapper = render(<Button loading>Loading</Button>);
-  const button = wrapper.getByText('Loading');
-  expect(button).toBeDisabled();
-  expect(button).toHaveClass('btn-loading btn-disabled');
-  expect(button).toHaveAttribute('aria-busy', 'true');
-  expect(button).toHaveAttribute('aria-disabled', 'true');
-  expect(button).toContainHTML('<span class="btn-loading-spinner" aria-hidden="true"></span>');
+ const wrapper = render(<Button loading>Loading</Button>);
+ const button = wrapper.getByText('Loading');
+ expect(button).toBeDisabled();
+ expect(button).toHaveClass('btn-loading btn-disabled');
+ expect(button).toHaveAttribute('aria-busy', 'true');
+ expect(button).toHaveAttribute('aria-disabled', 'true');
+ expect(button).toContainHTML('<span class="btn-loading-spinner" aria-hidden="true"></span>');
 });
+
 ```
 
 **5. 图标按钮测试**
@@ -644,22 +660,23 @@ test('should render loading state correctly', () => {
 
 // 测试图标按钮
 test('should render button with icon', () => {
-  const wrapper = render(<Button icon={<MockIcon />}>With Icon</Button>);
-  const button = wrapper.getByText('With Icon');
-  const icon = wrapper.getByTestId('mock-icon');
-  expect(button).toContainElement(icon);
-  expect(icon.closest('.btn-icon')).toBeInTheDocument();
+ const wrapper = render(<Button icon={<MockIcon />}>With Icon</Button>);
+ const button = wrapper.getByText('With Icon');
+ const icon = wrapper.getByTestId('mock-icon');
+ expect(button).toContainElement(icon);
+ expect(icon.closest('.btn-icon')).toBeInTheDocument();
 });
 
 // 测试只有图标的按钮：只有图标时必须提供aria-label，这里不能通过之前的文本的方法来获取组件，使用getByRole结合name选项，它会考虑aria-label属性
 test('should render icon-only button with proper accessibility attributes', () => {
-  const wrapper = render(<Button icon={<MockIcon />} aria-label="Icon Button" />);
-  const button = wrapper.getByRole('button', { name: 'Icon Button' });
-  const icon = wrapper.getByTestId('mock-icon');
-  expect(button).toContainElement(icon);
-  expect(button).toHaveAttribute('aria-label', 'Icon Button');
-  expect(icon).not.toHaveAttribute('aria-hidden');
+ const wrapper = render(<Button icon={<MockIcon />} aria-label="Icon Button" />);
+ const button = wrapper.getByRole('button', { name: 'Icon Button' });
+ const icon = wrapper.getByTestId('mock-icon');
+ expect(button).toContainElement(icon);
+ expect(button).toHaveAttribute('aria-label', 'Icon Button');
+ expect(icon).not.toHaveAttribute('aria-hidden');
 });
+
 ```
 
 **6. 交互测试：点击事件**
@@ -668,34 +685,36 @@ test('should render icon-only button with proper accessibility attributes', () =
 
 // 测试点击事件
 test('should call onClick handler when button is clicked', () => {
-  const handleClick = jest.fn();// 模拟点击事件处理函数
-  const wrapper = render(<Button onClick={handleClick}>Click Me</Button>);
-  const button = wrapper.getByText('Click Me');
+ const handleClick = jest.fn();// 模拟点击事件处理函数
+ const wrapper = render(<Button onClick={handleClick}>Click Me</Button>);
+ const button = wrapper.getByText('Click Me');
 
-  fireEvent.click(button);// 模拟点击事件
-  expect(handleClick).toHaveBeenCalledTimes(1);// 验证点击事件处理函数未被调用
+ fireEvent.click(button);// 模拟点击事件
+ expect(handleClick).toHaveBeenCalledTimes(1);// 验证点击事件处理函数未被调用
 });
 
 // 测试禁用状态下不触发点击事件
 test('should not call onClick handler when button is disabled', () => {
-  const handleClick = jest.fn();
-  const wrapper = render(<Button onClick={handleClick} disabled>Click Me</Button>);
-  const button = wrapper.getByText('Click Me');
+ const handleClick = jest.fn();
+ const wrapper = render(<Button onClick={handleClick} disabled>Click Me</Button>);
+ const button = wrapper.getByText('Click Me');
 
-  fireEvent.click(button);
-  expect(handleClick).not.toHaveBeenCalled();
+ fireEvent.click(button);
+ expect(handleClick).not.toHaveBeenCalled();
 });
+
 ```
 
 **7. 其他**
 
 ```
+
 // 测试自定义类名
-    test('should apply custom className to button', () => {
-      const wrapper = render(<Button className="custom-button">Custom Class</Button>);
-      const button = wrapper.getByText('Custom Class'); 
-      expect(button).toHaveClass('custom-button');
-    });
+test('should apply custom className to button', () => {
+const wrapper = render(<Button className="custom-button">Custom Class</Button>);
+const button = wrapper.getByText('Custom Class');
+expect(button).toHaveClass('custom-button');
+});
 
     // 测试传递额外的属性
     test('should pass additional props to button element', () => {
@@ -710,6 +729,7 @@ test('should not call onClick handler when button is disabled', () => {
       const button = wrapper.getByText('Test');
       expect(button).toHaveAttribute('aria-label', 'Accessibility Test');
     });
+
 ```
 
 ### **3.5 测试最佳实践**
@@ -755,6 +775,7 @@ const button = wrapper.getByText('Icon Button'); // 会失败，因为没有可�
 
 // 正确的方式
 const button = wrapper.getByRole('button', { name: 'Icon Button' }); // 会考虑aria-label
+
 ```
 
 **2. 如何测试组件的内部HTML结构？**
@@ -764,6 +785,7 @@ const button = wrapper.getByRole('button', { name: 'Icon Button' }); // 会考�
 ```
 
 expect(button).toContainHTML('<span class="btn-loading-spinner" aria-hidden="true"></span>');
+
 ```
 
 **3. 如何模拟用户交互？**
@@ -774,6 +796,7 @@ expect(button).toContainHTML('<span class="btn-loading-spinner" aria-hidden="tru
 
 fireEvent.click(button); // 模拟点击事件
 fireEvent.mouseEnter(button); // 模拟鼠标进入事件
+
 ```
 
 ---
@@ -783,3 +806,332 @@ fireEvent.mouseEnter(button); // 模拟鼠标进入事件
 - [Jest官方文档](https://jestjs.io/docs/getting-started)
 - [React Testing Library官方文档](https://testing-library.com/docs/react-testing-library/intro/)
 - [WAI-ARIA无障碍标准](https://www.w3.org/TR/wai-aria/)
+
+## 四、menu
+
+### 4.1 概览
+
+横向纵向样式﻿
+
+- 基本样式：分为横向和纵向两种布局方式
+- 子类型：每种布局下又分为基本类型和带下拉菜单的复杂类型
+
+高亮状态属性﻿
+
+- active属性：标识当前高亮的菜单项
+- 交互反馈：点击菜单项时会自动高亮显示
+
+禁用状态属性﻿
+
+- disabled属性：控制菜单项是否可用
+- 视觉表现：禁用状态显示为灰色且不响应点击
+
+下拉菜单功能﻿
+
+- 扩展功能：比基本模式多出下拉菜单项
+- 交互方式：点击可展开显示更多选项，类似手风琴效果
+
+### 4.2 组织架构
+
+- Menu.tsx - 主菜单组件，负责整体布局和状态管理
+- MenuItems.tsx - 菜单项组件，用于展示单个可点击的菜单项
+- SubMenu.tsx - 子菜单组件，用于实现多级菜单结构
+- style.scss - 样式文件，定义了组件的外观和交互效果
+- index.ts - 导出文件，方便用户统一导入组件
+
+### 4.3 支持两种菜单模式
+
+Menu组件支持横向( horizontal )和纵向( vertical )两种模式，可以通过 mode 属性进行切换：
+
+```
+
+// 横向菜单
+
+<Menu mode="horizontal">...</Menu>
+
+// 纵向菜单
+
+<Menu mode="vertical">...</Menu>
+
+```
+
+### 4.4 多级菜单支持
+
+通过SubMenu组件，可以轻松实现多级菜单结构：
+
+```
+
+<Menu>
+  <MenuItem>Home</MenuItem>
+  <SubMenu title="Products">
+    <MenuItem>Product 1</MenuItem>
+    <MenuItem>Product 2</MenuItem>
+  </SubMenu>
+</Menu>
+
+```
+
+### 4.5 菜单项状态管理
+
+- 激活状态 ：支持通过 defaultIndex 设置默认激活项
+- 禁用状态 ：通过 disabled 属性可以禁用特定菜单项
+- 选中回调 ：通过 onSelect 属性可以监听菜单项的选中事件
+
+### 4.6 子菜单交互优化
+
+- 单一展开 ：同一时间只允许一个子菜单展开，避免界面混乱
+- 平滑动画 ：子菜单展开和收起时带有平滑的过渡动画，提升用户体验
+- 箭头指示 ：使用箭头图标直观地指示子菜单的展开状态
+
+### 4.7 响应式设计
+
+Menu组件采用了响应式设计，在小屏幕设备上，横向菜单会自动转换为纵向菜单，确保良好的移动端体验。
+
+### 4.8 实现细节
+
+1. 状态管理
+
+使用React Context API实现组件间的状态共享，避免了props的深层传递：
+
+```
+
+// 创建MenuContext
+export const MenuContext =
+createContext<MenuContextProps>({
+  onSelect: () => {},
+  activeIndex: 0,
+});
+
+// 在Menu组件中提供状态
+<MenuContext.Provider value=
+{menuContextValue}>
+  {renderChild()}
+</MenuContext.Provider>
+
+// 在子组件中使用状态
+const context = useContext
+(MenuContext);
+const { activeIndex, onSelect } =
+context;
+
+```
+
+2. 动态索引生成
+
+为了支持多级菜单，组件会自动为子菜单项生成唯一的索引，格式为 父索引-子索引 ：
+
+```
+
+// 为子菜单项生成新的索引
+const newIndex = `${index}-$
+{childIndex}`;
+
+```
+
+3. 样式管理
+
+使用SCSS变量和混合宏进行样式管理，便于统一维护和主题定制：
+
+```
+
+// 菜单变量定义
+$menu-border-color: $color-border;
+$menu-shadow: 0 1px 6px rgba
+($color-neutral-900, 0.15);
+$menu-transition: all 0.3s ease;
+
+```
+
+4. 动画实现
+
+使用CSS过渡实现子菜单的平滑展开和收起：
+
+```
+
+.submenu {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: $menu-transition;
+}
+
+.submenu-expanded {
+  max-height: 500px;
+  opacity: 1;
+}
+
+```
+
+5. 组件验证
+
+为了确保组件的正确使用，添加了组件类型验证和警告信息：
+
+```
+
+if (displayName !== 'MenuItem' &&
+displayName !== 'SubMenu') {
+  console.warn(
+    `Menu only accepts MenuItem or
+    SubMenu as children, but got $
+    {displayName}`
+  );
+  return null;
+}
+
+```
+
+### 4.9 使用示例
+
+```
+
+import React from 'react';
+import { Menu, MenuItem, SubMenu }
+from './component/Menu';
+
+function App() {
+  return (
+    <div>
+      {/_ 横向菜单 _/}
+      <Menu mode="horizontal"
+      onSelect={index => console.log
+      (index)}>
+        <MenuItem>Home</MenuItem>
+        <SubMenu title="Products">
+          <MenuItem>Product 1</
+          MenuItem>
+          <MenuItem>Product 2</
+          MenuItem>
+          <MenuItem>Product 3</
+          MenuItem>
+        </SubMenu>
+        <SubMenu title="Services">
+          <MenuItem>Service 1</
+          MenuItem>
+          <MenuItem>Service 2</
+          MenuItem>
+          <MenuItem>Service 3</
+          MenuItem>
+        </SubMenu>
+        <MenuItem>Contact</MenuItem>
+      </Menu>
+
+      {/_ 纵向菜单 _/}
+      <Menu mode="vertical" style=
+      {{ width: 200 }}>
+        <MenuItem>Home</MenuItem>
+        <SubMenu title="Products">
+          <MenuItem>Product 1</
+          MenuItem>
+          <MenuItem>Product 2</
+          MenuItem>
+          <MenuItem>Product 3</
+          MenuItem>
+        </SubMenu>
+        <SubMenu title="Services">
+          <MenuItem>Service 1</
+          MenuItem>
+          <MenuItem>Service 2</
+          MenuItem>
+          <MenuItem>Service 3</
+          MenuItem>
+        </SubMenu>
+        <MenuItem>Contact</MenuItem>
+      </Menu>
+    </div>
+  );
+}
+
+```
+
+## 五、引入Storybook
+
+Storybook 是前端开发中最流行的组件文档化工具之一，它可以帮助开发者快速构建、测试和文档化 UI 组件。以目前编写的Menu 和 Button 组件为例，详细介绍 Storybook 的基本使用方法。
+
+### 5.1 什么是 Story
+
+Story 是 Storybook 中最小的展示单元，代表组件的一种特定状态或用法。例如，一个 Button 组件可以有默认状态、禁用状态、不同尺寸等多个 Story。
+
+### 5.2 配置文件结构
+
+Storybook 的配置文件通常位于组件目录下，命名为 [组件名].stories.tsx ，遵循 TypeScript React 语法。
+
+### 5.3 基本使用
+
+1、每个组件都需要定义元数据（Meta），它告诉 Storybook 如何展示和组织组件
+
+```
+
+import type { StoryObj } from '@storybook/react';
+
+// 默认按钮 Story
+export const Default: StoryObj<typeof Button> = {
+args: {
+children: 'Default Button', // 按钮文本
+},
+render: args => <Button {...args} />, // 渲染函数
+};
+
+// 大尺寸按钮 Story
+export const Large: StoryObj<typeof Button> = {
+args: {
+children: 'Large Button',
+},
+render: args => <Button size="large" {...args} />,
+};
+
+```
+
+2、使用 StoryObj 类型定义组件的不同状态
+
+```
+
+import type { StoryObj } from '@storybook/react';
+
+// 默认按钮 Story
+export const Default: StoryObj<typeof Button> = {
+args: {
+children: 'Default Button', // 按钮文本
+},
+render: args => <Button {...args} />, // 渲染函数
+};
+
+// 大尺寸按钮 Story
+export const Large: StoryObj<typeof Button> = {
+args: {
+children: 'Large Button',
+},
+render: args => <Button size="large" {...args} />,
+};
+
+```
+
+3、Storybook 允许为组件参数添加交互控件，让用户可以实时调整组件属性
+
+```
+
+const buttonMeta: Meta<typeof Button> = {
+// ...
+argTypes: {
+// 为 size 属性配置下拉选择控件
+size: {
+control: {
+type: 'select',
+},
+options: ['large', 'normal', 'small'], // 可选值
+description: '按钮尺寸', // 参数描述
+},
+// 为 btnType 属性配置下拉选择控件
+btnType: {
+control: {
+type: 'select',
+},
+options: ['primary', 'default', 'danger', 'link'],
+description: '按钮类型',
+},
+},
+};
+
+```
+
+还能够支持mdx文档支持个性化编写，嵌入到Storybook当中，但是我不太习惯其语法以及写的时候要注意很多，不注意就会报错，所以我就没有引用了。
+```
