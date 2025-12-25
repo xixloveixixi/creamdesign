@@ -118,3 +118,9 @@
     white-space: nowrap;
   }
 }
+
+.suggestion-item-highlighted {
+  background-color: $color-primary-500;
+  color: $color-neutral-50;
+  cursor: pointer;
+}

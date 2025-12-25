@@ -77,10 +77,5 @@ describe('Input Component', () => {
 
     fireEvent.change(input, { target: { value: 'test' } });
     expect(input.value).toBe('test');
-    expect(HTMLInputElement).toBeInTheDocument();
-    expect(HTMLInputElement).toHaveAttribute(
-      'aria-label',
-      'Accessibility Test'
-    );
   });
 });

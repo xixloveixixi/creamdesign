@@ -13,38 +13,25 @@ interface MockDataSourceObject {
 }
 const mockFetchSuggestions = async (
   value: string
-): Promise<MockDataSourceObject[]> => {
-  const suggestions = [
-    'apple',
-    'banana',
-    'cherry',
-    'date',
-    'elderberry',
-    'fig',
-    'grape',
-  ];
+): Promise<DataSourceType<MockDataSourceObject>[]> => {
   // 复杂的数据结构
-  //   const suggestions = [
-  //     { id: 1, name: 'apple' },
-  //     { id: 2, name: 'banana' },
-  //     { id: 3, name: 'cherry' },
-  //     { id: 4, name: 'date' },
-  //     { id: 5, name: 'elderberry' },
-  //     { id: 6, name: 'fig' },
-  //     { id: 7, name: 'grape' },
-  //   ];
+  const suggestions = [
+    { id: 1, name: 'apple', value: 'apple' },
+    { id: 2, name: 'banana', value: 'banana' },
+    { id: 3, name: 'cherry', value: 'cherry' },
+    { id: 4, name: 'date', value: 'date' },
+    { id: 5, name: 'elderberry', value: 'elderberry' },
+    { id: 6, name: 'fig', value: 'fig' },
+    { id: 7, name: 'grape', value: 'grape' },
+  ];
 
   // 模拟网络延迟
   await new Promise(resolve => setTimeout(resolve, 300));
 
   // 根据输入值过滤建议
-  //   return suggestions
-  //     .filter(item => item.name.toLowerCase().includes(value.toLowerCase()))
-  //     .map(item => item);
-  // 渲染建议项
-  return suggestions
-    .filter(item => item.toLowerCase().includes(value.toLowerCase()))
-    .map(item => ({ id: item.length, name: item })); // 模拟返回复杂数据结构
+  return suggestions.filter(item =>
+    item.name.toLowerCase().includes(value.toLowerCase())
+  );
 };
 // 添加renderOption
 const renderOption = (item: DataSourceType<MockDataSourceObject>) => (
