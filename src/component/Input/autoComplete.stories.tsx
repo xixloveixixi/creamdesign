@@ -69,12 +69,12 @@ const autoComplateMeta: Meta<AutoComplateProps> = {
 
 export default autoComplateMeta;
 
-type Story = StoryObj<AutoComplateProps>;
+type Story = StoryObj<typeof autoComplateMeta>;
 
 // 基本用法
 export const 基本用法: Story = {
   args: {
     placeholder: '请输入水果名称...',
-    renderOption,
+    renderOption: renderOption as any,
   },
 };

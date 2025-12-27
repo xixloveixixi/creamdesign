@@ -131,7 +131,7 @@ export const AutoComplate = <T,>({
           <li
             key={item.value}
             ref={el => (suggestionRefs.current[index] = el)}
-            tabIndex="0"
+            tabIndex={0}
             className={classNames('suggestion-item', {
               'suggestion-item-highlighted': index === highlightedIndex,
             })}
