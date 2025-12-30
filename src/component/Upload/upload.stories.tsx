@@ -7,6 +7,36 @@ const uploadMeta: Meta<typeof Upload> = {
   component: Upload,
 };
 export default uploadMeta;
+
+// 创建模拟文件列表，包含uploading状态的文件以显示进度条
+const mockFileList = [
+  {
+    uid: '1',
+    size: 1024,
+    name: 'file1.txt',
+    status: 'success' as const,
+    percent: 100,
+    raw: new File([''], 'file1.txt'),
+    response: { message: 'success' },
+  },
+  {
+    uid: '2',
+    size: 2048,
+    name: 'file2.txt',
+    status: 'uploading' as const,
+    percent: 65,
+    raw: new File([''], 'file2.txt'),
+  },
+  {
+    uid: '3',
+    size: 3072,
+    name: 'file3.txt',
+    status: 'error' as const,
+    percent: 0,
+    raw: new File([''], 'file3.txt'),
+    error: { message: 'upload failed' },
+  },
+];
 // 1、handleBeforeUpload是返回的Promise对象
 // const handleBeforeUpload = (file: File) => {
 //   //   修改文件名字 - 创建新的File对象而不是直接修改
@@ -27,10 +57,19 @@ const handleBeforeUpload = (file: File) => {
 export const UploadStory: StoryObj<typeof Upload> = {
   args: {
     action: 'https://jsonplaceholder.typicode.com/posts',
-    // onSuccess: action('success'),
-    // onError: action('error'),
-    // onProgress: action('progress'),
+    onSuccess: action('success'),
+    onError: action('error'),
+    onProgress: action('progress'),
     onChange: action('changed'),
     // beforeUpload: handleBeforeUpload,
+    name: 'file',
+    data: {
+      token: '123456',
+    },
+    headers: {
+      'X-Powered-By': 'CreamDesign',
+    },
+    withCredentials: true,
+    // defaultFileList: mockFileList,
   },
 };

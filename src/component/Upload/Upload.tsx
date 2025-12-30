@@ -46,6 +46,14 @@ interface UploadProps {
   action: string;
   // 默认文件列表，可选
   defaultFileList?: FileItem[];
+  // 自定义请求头，可选
+  headers?: Record<string, string>;
+  // 文件选择字段名，可选
+  name?: string;
+  // 自定义上传字段名，可选
+  data?: Record<string, any>;
+  // 是否携带cookie，可选
+  withCredentials?: boolean;
   //   用户可以自定义上传前校验或者转换函数，可选
   beforeUpload?: (file: File) => boolean | Promise<File>;
   onProgress?: (progress: number, file: File) => void;
@@ -72,6 +80,10 @@ export interface FileItem {
 export const Upload = ({
   action,
   defaultFileList,
+  headers,
+  name,
+  data,
+  withCredentials,
   //   用户可以自定义上传前校验或者转换函数，可选
   beforeUpload,
   onProgress,
@@ -163,15 +175,24 @@ export const Upload = ({
     const formData = new FormData();
     // 2、追加文件到FormData
     // todo:添加name属性，解决后端接收文件名问题
-    formData.append('file', file);
+    formData.append(name || 'file', file);
+    // todo:添加data属性，解决后端接收自定义字段问题
+    if (data) {
+      Object.keys(data).forEach(key => {
+        formData.append(key, data[key]);
+      });
+    }
     // 3、发送POST请求
     axios
       .post(action, formData, {
         // 4、设置请求头为multipart/form-data
         // todo:自定义请求头
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        // headers: {
+        //   'Content-Type': 'multipart/form-data',
+        // },
+        // todo:自定义请求头
+        headers: headers || {},
+        withCredentials: withCredentials || false,
         // 5、设置上传进度回调
         onUploadProgress: e => {
           // 6、计算上传进度
@@ -300,4 +321,8 @@ export const Upload = ({
       <FileList fileList={fileList} onRemoved={handelRemove} />
     </div>
   );
+};
+// 添加默认值
+Upload.defaultProps = {
+  name: 'file',
 };
