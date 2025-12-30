@@ -58,76 +58,69 @@ export const FileList = ({
 
   return (
     <div className="file-list-container">
-      {fileList.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-icon">📁</div>
-          <p className="empty-text">暂无文件</p>
-        </div>
-      ) : (
-        <div className="file-list">
-          {fileList.map(item => (
-            <div
-              key={item.uid}
-              className={`file-item ${getStatusClass(item.status)}`}
-            >
-              <div className="file-content">
-                <div className="file-left">
-                  <Icon icon={faFile} className="file-main-icon" />
-                  <div className="file-info">
-                    <span className="file-name" title={item.name}>
-                      {item.name}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="file-right">
-                  <div className="status-section">
-                    <div className="status-with-remove">
-                      <button
-                        className="status-icon-btn"
-                        disabled={item.status === 'uploading'}
-                        onMouseEnter={() => setHoveredItem(item.uid)}
-                        onMouseLeave={() => setHoveredItem(null)}
-                        onClick={() => {
-                          // 如果是success状态悬浮时显示error图标，此时点击就是删除
-                          // 如果是error状态，直接点击删除
-                          if (
-                            item.status === 'success' &&
-                            hoveredItem === item.uid
-                          ) {
-                            onRemoved?.(item);
-                          } else if (item.status === 'error') {
-                            onRemoved?.(item);
-                          }
-                        }}
-                      >
-                        <Icon
-                          icon={getStatusIcon(
-                            item.status,
-                            hoveredItem === item.uid
-                          )}
-                          className={`status-icon ${getStatusClass(item.status)}`}
-                        />
-                      </button>
-                    </div>
-                    <span className="file-status">
-                      {item.status === 'uploading' && '上传中...'}
-                      {item.status === 'success' && '上传成功'}
-                      {item.status === 'error' && '上传失败'}
-                    </span>
-                  </div>
+      <div className="file-list">
+        {fileList.map(item => (
+          <div
+            key={item.uid}
+            className={`file-item ${getStatusClass(item.status)}`}
+          >
+            <div className="file-content">
+              <div className="file-left">
+                <Icon icon={faFile} className="file-main-icon" />
+                <div className="file-info">
+                  <span className="file-name" title={item.name}>
+                    {item.name}
+                  </span>
                 </div>
               </div>
 
-              {item.status === 'uploading' && (
-                <div className="progress-section">
-                  <Progress percent={item.percent} showText={false} />
+              <div className="file-right">
+                <div className="status-section">
+                  <div className="status-with-remove">
+                    <button
+                      className="status-icon-btn"
+                      disabled={item.status === 'uploading'}
+                      onMouseEnter={() => setHoveredItem(item.uid)}
+                      onMouseLeave={() => setHoveredItem(null)}
+                      onClick={() => {
+                        // 如果是success状态悬浮时显示error图标，此时点击就是删除
+                        // 如果是error状态，直接点击删除
+                        if (
+                          item.status === 'success' &&
+                          hoveredItem === item.uid
+                        ) {
+                          onRemoved?.(item);
+                        } else if (item.status === 'error') {
+                          onRemoved?.(item);
+                        }
+                      }}
+                    >
+                      <Icon
+                        icon={getStatusIcon(
+                          item.status,
+                          hoveredItem === item.uid
+                        )}
+                        className={`status-icon ${getStatusClass(item.status)}`}
+                      />
+                    </button>
+                  </div>
+                  <span className="file-status">
+                    {item.status === 'uploading' && '上传中...'}
+                    {item.status === 'success' && '上传成功'}
+                    {item.status === 'error' && '上传失败'}
+                  </span>
                 </div>
-              )}
+              </div>
             </div>
-          ))}
-        </div>
-      )}
+
+            {item.status === 'uploading' && (
+              <div className="progress-section">
+                <Progress percent={item.percent} showText={false} />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

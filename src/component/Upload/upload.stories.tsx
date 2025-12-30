@@ -72,6 +72,7 @@ export const UploadStory: StoryObj<typeof Upload> = {
     withCredentials: true,
     accept: '.jpg,.jpeg,.png',
     multiple: true,
+    drag: true,
     // defaultFileList: mockFileList,
   },
 };

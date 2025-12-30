@@ -22,6 +22,7 @@ import { useRef, useState } from 'react';
 import Button, { ButtonType } from '../Button';
 import axios from 'axios';
 import { FileList } from './component/fileList';
+import { Dragger } from './component/dragger';
 // 属性列表：
 // action: 上传接口URL，必填
 // children: 自定义上传按钮内容，可选
@@ -68,6 +69,10 @@ interface UploadProps {
   onBeforeUploadSuccess?: (originalFile: File, processedFile: File) => void;
   // 删除文件回调，可选
   onRemoved?: (file: FileItem) => void;
+  // 自定义上传按钮内容，可选
+  children?: React.ReactNode;
+  // 是否支持拖拽上传，可选
+  drag?: boolean;
 }
 // 创建文件列表接口
 export interface FileItem {
@@ -98,6 +103,8 @@ export const Upload = ({
   onChange,
   onBeforeUploadSuccess,
   onRemoved,
+  children,
+  drag,
 }: UploadProps) => {
   // 创建文件列表状态
   const [fileList, setFileList] = useState<FileItem[]>(defaultFileList || []);
@@ -307,25 +314,35 @@ export const Upload = ({
   };
   return (
     <div style={{ margin: '20px' }}>
-      <Button btnType={ButtonType.Primary} onClick={handelFileChange}>
+      <div className="upload-container" onClick={handelFileChange}>
+        {/* 用child代替原本固定的button */}
+        {/* 将handleClick事件移动到上层包裹的div中
+        保留原有input元素作为文件选择的核心组件 */}
+        {drag ? (
+          <Dragger onFile={handelFileUpload}>{children}</Dragger>
+        ) : (
+          children
+        )}
+        {/* <Button btnType={ButtonType.Primary} onClick={handelFileChange}>
         上传文件
-      </Button>
-      {/* todo:添加input本身的file约束属性 */}
-      {/* 
+      </Button> */}
+        {/* todo:添加input本身的file约束属性 */}
+        {/* 
       multiple属性：支持多文件选择，允许用户同时选中多个文件
       accept属性：限制允许上传的文件类型，支持多种格式： 完整MIME类型：image/png
       文件扩展名：.png 通配符：image/*表示所有图片类型
       withCredentials：控制是否携带cookie，默认false不携带 
       */}
-      <input
-        type="file"
-        className="upload-input"
-        style={{ display: 'none' }}
-        ref={uploadInputRef}
-        onChange={handelChange}
-        accept={accept}
-        multiple={multiple}
-      />
+        <input
+          type="file"
+          className="upload-input"
+          style={{ display: 'none' }}
+          ref={uploadInputRef}
+          onChange={handelChange}
+          accept={accept}
+          multiple={multiple}
+        />
+      </div>
       <FileList fileList={fileList} onRemoved={handelRemove} />
     </div>
   );
