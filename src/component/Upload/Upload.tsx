@@ -54,6 +54,10 @@ interface UploadProps {
   data?: Record<string, any>;
   // 是否携带cookie，可选
   withCredentials?: boolean;
+  // 接受的文件类型，可选
+  accept?: string;
+  // 是否支持多选，可选
+  multiple?: boolean;
   //   用户可以自定义上传前校验或者转换函数，可选
   beforeUpload?: (file: File) => boolean | Promise<File>;
   onProgress?: (progress: number, file: File) => void;
@@ -84,6 +88,8 @@ export const Upload = ({
   name,
   data,
   withCredentials,
+  accept,
+  multiple,
   //   用户可以自定义上传前校验或者转换函数，可选
   beforeUpload,
   onProgress,
@@ -317,6 +323,8 @@ export const Upload = ({
         style={{ display: 'none' }}
         ref={uploadInputRef}
         onChange={handelChange}
+        accept={accept}
+        multiple={multiple}
       />
       <FileList fileList={fileList} onRemoved={handelRemove} />
     </div>

@@ -70,6 +70,8 @@ export const UploadStory: StoryObj<typeof Upload> = {
       'X-Powered-By': 'CreamDesign',
     },
     withCredentials: true,
+    accept: '.jpg,.jpeg,.png',
+    multiple: true,
     // defaultFileList: mockFileList,
   },
 };
