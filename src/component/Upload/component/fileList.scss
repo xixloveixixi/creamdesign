@@ -1,0 +1,363 @@
+/* FileList 组件样式 - 基于 CreamDesign 设计系统 */
+@import '../../../style/_creamdesign.scss'; // 颜色和变量
+@import '../../../style/_mixin.scss'; // Mixins
+
+/* 文件列表容器 */
+.file-list-container {
+  width: 100%;
+  margin-top: 12px;
+  /* 与按钮的间距 */
+  box-sizing: border-box;
+}
+
+/* 空状态样式 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  text-align: center;
+  background-color: $color-neutral-50;
+  border: 2px dashed $color-neutral-300;
+  border-radius: 0.5rem;
+  margin: 12px 0;
+
+  .empty-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    opacity: 0.6;
+  }
+
+  .empty-text {
+    color: $color-neutral-600;
+    font-size: 0.75rem;
+    margin: 0;
+  }
+}
+
+/* 文件列表 */
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 2px 0;
+}
+
+/* 文件项 */
+.file-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background-color: $color-neutral-50;
+  border: 1px solid $color-neutral-200;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+  position: relative;
+
+  &:hover {
+    border-color: $color-primary-300;
+    box-shadow: 0 1px 4px rgba($color-primary-200, 0.3);
+  }
+
+  /* 状态样式 - 移除左边框和特殊背景色，使用统一简洁样式 */
+  &.status-uploading,
+  &.status-success,
+  &.status-error,
+  &.status-ready {
+    border-left: none;
+    background-color: transparent;
+  }
+}
+
+/* 文件内容布局 */
+.file-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+}
+
+/* 进度条区域 */
+.progress-section {
+  width: 100%;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid $color-neutral-200;
+}
+
+.file-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.file-main-icon {
+  font-size: 1.125rem;
+  color: $color-neutral-600;
+  flex-shrink: 0;
+}
+
+.file-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.file-name {
+  font-weight: 500;
+  color: $color-neutral-800;
+  font-size: 0.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-size {
+  font-size: 0.625rem;
+  color: $color-neutral-600;
+  font-weight: 400;
+}
+
+.file-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.status-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.status-with-remove {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-icon-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: relative;
+
+  &:hover {
+    transform: scale(1.1);
+
+    .status-icon {
+      color: $color-error !important;
+    }
+
+    // 悬浮时显示删除按钮
+    &+.remove-btn-overlay:not(.always-show) {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.remove-btn-overlay {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  background: $color-error;
+  color: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  font-size: 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+
+  &.always-show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  // success状态时，删除按钮默认隐藏，悬浮时显示
+  &:not(.always-show) {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  &:hover {
+    transform: scale(1.2);
+    box-shadow: 0 2px 8px rgba($color-error, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.status-icon {
+  font-size: 0.875rem;
+
+  &.status-ready {
+    color: $color-neutral-500;
+  }
+
+  &.status-uploading {
+    color: $color-info;
+    animation: spin 1s linear infinite;
+  }
+
+  &.status-success {
+    color: $color-success;
+  }
+
+  &.status-error {
+    color: $color-error;
+  }
+}
+
+.file-status {
+  font-size: 0.625rem;
+  font-weight: 500;
+
+  &.status-ready {
+    color: $color-neutral-600;
+  }
+
+  &.status-uploading {
+    color: $color-info;
+  }
+
+  &.status-success {
+    color: $color-success;
+  }
+
+  &.status-error {
+    color: $color-error;
+  }
+}
+
+/* 旋转动画 */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// /* 进度条 */
+// .progress-container {
+//   display: flex;
+//   align-items: center;
+//   gap: 12px;
+//   margin-top: 8px;
+//   width: 100%;
+
+//   .progress-bar {
+//     flex: 1;
+//     height: 4px;
+//     background-color: $color-neutral-200;
+//     border-radius: 2px;
+//     overflow: hidden;
+
+//     .progress-fill {
+//       height: 100%;
+//       background: linear-gradient(90deg, $color-primary-500, $color-primary-600);
+//       border-radius: 2px;
+//       transition: width 0.3s ease;
+//     }
+//   }
+
+//   .progress-text {
+//     font-size: 0.75rem;
+//     color: $color-neutral-600;
+//     font-weight: 500;
+//     min-width: 35px;
+//     text-align: right;
+//   }
+// }
+
+/* 删除按钮 */
+.remove-btn {
+  @include btn-base();
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: none;
+  color: $color-neutral-400;
+  border: none;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: $color-error;
+    color: white;
+    border-radius: 50%;
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  .icon {
+    font-size: 0.75rem;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .file-list-container {
+    max-width: 100%;
+    padding: 0 8px;
+  }
+
+  .file-item {
+    padding: 12px;
+  }
+
+  .file-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .progress-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+
+    .progress-text {
+      text-align: left;
+      min-width: auto;
+    }
+  }
+}

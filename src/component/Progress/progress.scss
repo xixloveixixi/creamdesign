@@ -1,0 +1,152 @@
+/* Progress 组件样式 - 基于 CreamDesign 设计系统 */
+@import '../../style/_creamdesign.scss'; // 颜色和变量
+@import '../../style/_mixin.scss'; // Mixins
+
+/* 进度条容器 */
+.progress-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* 进度条轨道 */
+.progress-bar {
+  flex: 1;
+  background-color: $color-neutral-200;
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 进度条填充 */
+.progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  position: relative;
+  transition: width 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  box-sizing: border-box;
+
+  /* 进度文字 */
+  .progress-text {
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+  }
+
+  /* 主题变体 */
+  &.progress-fill-primary {
+    background: linear-gradient(90deg, $color-primary-500, $color-primary-600);
+
+    &:hover {
+      background: linear-gradient(90deg, $color-primary-600, $color-primary-700);
+    }
+  }
+
+  &.progress-fill-secondary {
+    background: linear-gradient(90deg, $color-secondary-blue-500, $color-secondary-blue-700);
+
+    &:hover {
+      background: linear-gradient(90deg, $color-secondary-blue-700, darken-color($color-secondary-blue-700, 10%));
+    }
+  }
+
+  &.progress-fill-success {
+    background: linear-gradient(90deg, $color-success, lighten-color($color-success, 10%));
+
+    &:hover {
+      background: linear-gradient(90deg, lighten-color($color-success, 10%), lighten-color($color-success, 15%));
+    }
+  }
+
+  &.progress-fill-warning {
+    background: linear-gradient(90deg, $color-warning, lighten-color($color-warning, 10%));
+
+    &:hover {
+      background: linear-gradient(90deg, lighten-color($color-warning, 10%), lighten-color($color-warning, 15%));
+    }
+  }
+
+  &.progress-fill-error {
+    background: linear-gradient(90deg, $color-error, lighten-color($color-error, 10%));
+
+    &:hover {
+      background: linear-gradient(90deg, lighten-color($color-error, 10%), lighten-color($color-error, 15%));
+    }
+  }
+
+  &.progress-fill-info {
+    background: linear-gradient(90deg, $color-info, lighten-color($color-info, 10%));
+
+    &:hover {
+      background: linear-gradient(90deg, lighten-color($color-info, 10%), lighten-color($color-info, 15%));
+    }
+  }
+}
+
+/* 无文字显示时的样式 */
+.progress-fill:not(:has(.progress-text)) {
+  justify-content: flex-start;
+  padding-right: 0;
+}
+
+/* 小尺寸进度条 */
+.progress-container.small {
+  .progress-bar {
+    height: 4px;
+  }
+
+  .progress-text {
+    font-size: 0.625rem;
+  }
+}
+
+/* 大尺寸进度条 */
+.progress-container.large {
+  .progress-bar {
+    height: 24px;
+  }
+
+  .progress-text {
+    font-size: 0.875rem;
+  }
+}
+
+/* 动画效果 */
+@keyframes progress-shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.progress-fill.animate {
+  background-size: 200px 100%;
+  background-repeat: no-repeat;
+  background-image: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent);
+  animation: progress-shimmer 1.5s infinite;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .progress-text {
+    font-size: 0.625rem;
+    padding-right: 6px;
+  }
+
+  .progress-container.large .progress-text {
+    font-size: 0.75rem;
+  }
+}

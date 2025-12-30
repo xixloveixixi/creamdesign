@@ -3,7 +3,7 @@ import {
   FontAwesomeIconProps,
 } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
-type IconTheme =
+export type IconTheme =
   | 'primary'
   | 'secondary'
   | 'success'

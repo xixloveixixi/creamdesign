@@ -16,10 +16,10 @@
 // 附加阶段:
 // onRemoved: 点击删除按钮时触发(示例)
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import Button, { ButtonType } from '../Button';
 import axios from 'axios';
-
+import { FileList } from './component/fileList';
 // 属性列表：
 // action: 上传接口URL，必填
 // children: 自定义上传按钮内容，可选
@@ -42,19 +42,83 @@ import axios from 'axios';
 // onError：接收(any, File)参数，返回void
 interface UploadProps {
   action: string;
+  // 默认文件列表，可选
+  defaultFileList?: FileItem[];
+  //   用户可以自定义上传前校验或者转换函数，可选
+  beforeUpload?: (file: File) => boolean | Promise<File>;
   onProgress?: (progress: number, file: File) => void;
   onSuccess?: (response: any, file: File) => void;
   onError?: (error: any, file: File) => void;
   onChange?: (file: File) => void;
+  // 添加beforeUpload处理后的文件对象回调
+  onBeforeUploadSuccess?: (originalFile: File, processedFile: File) => void;
+  // 删除文件回调，可选
+  onRemoved?: (file: FileItem) => void;
 }
-
+// 创建文件列表接口
+export interface FileItem {
+  uid: string;
+  size: number;
+  name: string;
+  status: 'ready' | 'uploading' | 'success' | 'error';
+  percent: number;
+  raw: File;
+  response?: any;
+  error?: any;
+}
 export const Upload = ({
   action,
+  defaultFileList,
+  //   用户可以自定义上传前校验或者转换函数，可选
+  beforeUpload,
   onProgress,
   onSuccess,
   onError,
   onChange,
+  onBeforeUploadSuccess,
+  onRemoved,
 }: UploadProps) => {
+  // 创建文件列表状态
+  const [fileList, setFileList] = useState<FileItem[]>(defaultFileList || []);
+  // 模拟默认文件列表
+  const defaultFileListMock: FileItem[] = [
+    {
+      uid: '1',
+      size: 1024,
+      name: 'file1.txt',
+      status: 'success',
+      percent: 100,
+      raw: new File([''], 'file1.txt'),
+      response: { message: 'success' },
+    },
+    {
+      uid: '2',
+      size: 2048,
+      name: 'file2.txt',
+      status: 'uploading',
+      percent: 100,
+      raw: new File([''], 'file2.txt'),
+      response: { message: 'success' },
+    },
+    {
+      uid: '3',
+      size: 3072,
+      name: 'file3.txt',
+      status: 'error',
+      percent: 0,
+      raw: new File([''], 'file3.txt'),
+      error: { message: 'upload failed' },
+    },
+  ];
+  // 创建一个更新文件列表的函数
+  const updateFileList = (targetUid: string, updateObj: Partial<FileItem>) => {
+    setFileList(prevList => {
+      const newList = prevList.map(item =>
+        item.uid === targetUid ? { ...item, ...updateObj } : item
+      );
+      return newList;
+    });
+  };
   const handelFileChange = () => {
     //触发文件选择对话框
     if (uploadInputRef.current) {
@@ -78,49 +142,136 @@ export const Upload = ({
       uploadInputRef.current.value = '';
     }
   };
+  const post = (file: File) => {
+    // 文件对象创建
+    const fileItem: FileItem = {
+      uid: Date.now() + '-' + file.name,
+      size: file.size,
+      name: file.name,
+      status: 'ready',
+      percent: 0,
+      raw: file,
+    };
+
+    // 更新文件列表状态
+    setFileList(prevList => [...prevList, fileItem]);
+
+    // 1、创建FormData对象
+    const formData = new FormData();
+    // 2、追加文件到FormData
+    formData.append('file', file);
+    // 3、发送POST请求
+    axios
+      .post(action, formData, {
+        // 4、设置请求头为multipart/form-data
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        // 5、设置上传进度回调
+        onUploadProgress: e => {
+          // 6、计算上传进度
+          const progress = Math.round((e.loaded * 100) / e.total!);
+          if (progress < 100) {
+            // 在这个地方需要更新文件列表，在setState中更新
+            // 打印当前文件项的详细信息
+            updateFileList(fileItem.uid, {
+              status: 'uploading',
+              percent: progress,
+            });
+            if (onProgress) {
+              onProgress(progress, file);
+            }
+          } else {
+            console.log(`✅ 上传完成 ${file.name}`);
+          }
+        },
+      })
+      .then(response => {
+        console.log('上传成功:', file.name, response);
+        // 更新文件状态为成功
+        updateFileList(fileItem.uid, {
+          status: 'success',
+          percent: 100,
+          response: response.data,
+        });
+        if (onSuccess) {
+          // 7、调用成功回调
+          onSuccess?.(response.data, file);
+        }
+        if (onChange) {
+          // 9、调用onChange回调
+          onChange?.(file);
+        }
+      })
+      .catch(error => {
+        console.log('上传失败:', file.name, error);
+        // 更新文件状态为失败
+        updateFileList(fileItem.uid, {
+          status: 'error',
+          error: error,
+        });
+        if (onError) {
+          // 8、调用失败回调
+          onError?.(error, file);
+        }
+        if (onChange) {
+          // 10、调用onChange回调
+          onChange?.(file);
+        }
+      });
+  };
   //   文件上传函数
   const handelFileUpload = (files: FileList) => {
     // 1、把文件列表转换为数组
     const fileArray = Array.from(files);
     // 2、遍历文件数组，对每个文件进行上传
     fileArray.forEach(file => {
-      // 3、创建FormData对象
-      const formData = new FormData();
-      // 4、追加文件到FormData
-      formData.append('file', file);
-      // 5、发送POST请求
-      axios
-        .post(action, formData, {
-          // 6、设置请求头为multipart/form-data
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          // 7、设置上传进度回调
-          onUploadProgress: e => {
-            // 计算上传进度
-            const progress = Math.round((e.loaded * 100) / e.total!);
-            if (progress < 100) {
-              if (onProgress) {
-                onProgress(progress, file);
+      // 3、如果beforeUpload存在，调用beforeUpload函数
+      if (beforeUpload) {
+        const result = beforeUpload(file);
+        // 4、判断结果的类型
+        if (result instanceof Promise) {
+          result
+            .then(res => {
+              // 使用返回的新文件对象而不是原始文件
+              if (res) {
+                // 调用beforeUpload成功回调
+                if (onBeforeUploadSuccess) {
+                  onBeforeUploadSuccess(file, res);
+                }
+                post(res);
               }
-            }
-          },
-        })
-        .then(response => {
-          console.log(response);
-          if (onSuccess) {
-            // 调用成功回调
-            onSuccess?.(response.data, file);
+            })
+            .catch(err => {
+              if (onError) {
+                onError?.(err, file);
+              }
+            });
+        } else if (result) {
+          // 5、如果结果为true，调用post函数，传递原始文件
+          if (onBeforeUploadSuccess) {
+            onBeforeUploadSuccess(file, file);
           }
-        })
-        .catch(error => {
-          console.log(error);
+          post(file);
+        } else {
+          console.log('beforeUpload校验失败');
+          // 如果beforeUpload返回false，不上传文件
           if (onError) {
-            // 调用失败回调
-            onError?.(error, file);
+            onError?.(new Error('beforeUpload校验失败'), file);
           }
-        });
+        }
+      } else {
+        // 如果没有beforeUpload，直接上传文件
+        post(file);
+      }
     });
+  };
+  const handelRemove = (file: FileItem) => {
+    // console.log('删除文件:', file);
+    // 1、从文件列表中删除该文件项
+    setFileList(prevList => prevList.filter(item => item.uid !== file.uid));
+    // 2、调用onRemoved回调
+    onRemoved?.(file);
   };
   return (
     <div style={{ margin: '20px' }}>
@@ -134,6 +285,7 @@ export const Upload = ({
         ref={uploadInputRef}
         onChange={handelChange}
       />
+      <FileList fileList={fileList} onRemoved={handelRemove} />
     </div>
   );
 };
