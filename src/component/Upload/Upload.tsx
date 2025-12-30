@@ -15,7 +15,9 @@
 // onError: 接收error和file对象(示例)
 // 附加阶段:
 // onRemoved: 点击删除按钮时触发(示例)
-
+// todo:
+// 1、添加拖拽区域，用户可以将文件拖拽到区域内
+// 2、onPreview: 点击文件预览时触发
 import { useRef, useState } from 'react';
 import Button, { ButtonType } from '../Button';
 import axios from 'axios';
@@ -65,6 +67,7 @@ export interface FileItem {
   raw: File;
   response?: any;
   error?: any;
+  // todo:添加data属性，用于存储上传接口返回的数据
 }
 export const Upload = ({
   action,
@@ -159,11 +162,13 @@ export const Upload = ({
     // 1、创建FormData对象
     const formData = new FormData();
     // 2、追加文件到FormData
+    // todo:添加name属性，解决后端接收文件名问题
     formData.append('file', file);
     // 3、发送POST请求
     axios
       .post(action, formData, {
         // 4、设置请求头为multipart/form-data
+        // todo:自定义请求头
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -278,6 +283,13 @@ export const Upload = ({
       <Button btnType={ButtonType.Primary} onClick={handelFileChange}>
         上传文件
       </Button>
+      {/* todo:添加input本身的file约束属性 */}
+      {/* 
+      multiple属性：支持多文件选择，允许用户同时选中多个文件
+      accept属性：限制允许上传的文件类型，支持多种格式： 完整MIME类型：image/png
+      文件扩展名：.png 通配符：image/*表示所有图片类型
+      withCredentials：控制是否携带cookie，默认false不携带 
+      */}
       <input
         type="file"
         className="upload-input"
