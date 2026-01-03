@@ -8,7 +8,6 @@
 // 异步处理: 支持返回Promise实现服务端校验
 // 传输阶段:
 // onProgress: 接收event对象包含上传百分比
-
 // onChange: 无论成功失败都会触发(含file对象)
 // 结束阶段:
 // onSuccess: 接收response和file对象
@@ -18,11 +17,14 @@
 // todo:
 // 1、添加拖拽区域，用户可以将文件拖拽到区域内
 // 2、onPreview: 点击文件预览时触发
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import Button, { ButtonType } from '../Button';
 import axios from 'axios';
 import { FileList } from './component/fileList';
 import { Dragger } from './component/dragger';
+import { useLargeFileUpload } from './hooks/useLargeFileUpload';
+import { createDefaultAdapter } from './hooks/useLargeFileUpload/adapter';
+import { UploadAdapter } from './hooks/useLargeFileUpload/types';
 // 属性列表：
 // action: 上传接口URL，必填
 // children: 自定义上传按钮内容，可选
@@ -73,6 +75,20 @@ interface UploadProps {
   children?: React.ReactNode;
   // 是否支持拖拽上传，可选
   drag?: boolean;
+
+  // 大文件上传配置（新增）
+  enableLargeFileUpload?: boolean; // 是否启用大文件上传，默认 true
+  chunkSize?: number; // 分片大小，默认 5MB
+  chunkThreshold?: number; // 启用分片的文件大小阈值，默认 10MB
+  concurrent?: number; // 并发数，默认 3
+  maxRetries?: number; // 重试次数，默认 3
+  retryDelay?: number; // 重试延迟（ms），默认 1000
+
+  // 适配器配置（新增）
+  adapter?: UploadAdapter; // 自定义适配器（可选）
+  initUrl?: string; // 初始化接口，默认 ${action}/init
+  chunkUrl?: string; // 分片上传接口，默认 ${action}/chunk
+  mergeUrl?: string; // 合并接口，默认 ${action}/merge
 }
 // 创建文件列表接口
 export interface FileItem {
@@ -105,9 +121,80 @@ export const Upload = ({
   onRemoved,
   children,
   drag,
+  // 大文件上传配置
+  enableLargeFileUpload = true,
+  chunkSize = 5 * 1024 * 1024, // 默认 5MB
+  chunkThreshold = 10 * 1024 * 1024, // 默认 10MB
+  concurrent = 3,
+  maxRetries = 3,
+  retryDelay = 1000,
+  adapter,
+  initUrl,
+  chunkUrl,
+  mergeUrl,
 }: UploadProps) => {
   // 创建文件列表状态
   const [fileList, setFileList] = useState<FileItem[]>(defaultFileList || []);
+
+  // 存储当前上传的文件信息（用于进度更新）
+  const currentUploadingFileIdRef = useRef<string | null>(null);
+  const currentUploadingFileRef = useRef<File | null>(null);
+
+  // 创建默认适配器（如果未提供自定义适配器）
+  const defaultAdapter = useMemo(() => {
+    if (adapter) {
+      return adapter;
+    }
+    return createDefaultAdapter({
+      action,
+      initUrl,
+      chunkUrl,
+      mergeUrl,
+      headers,
+      data,
+      withCredentials,
+      name,
+    });
+  }, [
+    adapter,
+    action,
+    initUrl,
+    chunkUrl,
+    mergeUrl,
+    headers,
+    data,
+    withCredentials,
+    name,
+  ]);
+
+  // 大文件上传 Hook
+  const largeFileUpload = useLargeFileUpload({
+    adapter: defaultAdapter,
+    chunkSize,
+    concurrent,
+    maxRetries,
+    retryDelay,
+    onProgress: progress => {
+      // 更新文件列表中的进度
+      if (currentUploadingFileIdRef.current) {
+        updateFileList(currentUploadingFileIdRef.current, {
+          status: 'uploading',
+          percent: progress.percent,
+        });
+
+        // 调用原有的 onProgress 回调（兼容原有 API）
+        if (onProgress && currentUploadingFileRef.current) {
+          onProgress(progress.percent, currentUploadingFileRef.current);
+        }
+      }
+    },
+    onSuccess: result => {
+      // 大文件上传成功的处理在 uploadLargeFile 中完成
+    },
+    onError: (error, file) => {
+      // 大文件上传失败的处理在 uploadLargeFile 中完成
+    },
+  });
   // 模拟默认文件列表
   const defaultFileListMock: FileItem[] = [
     {
@@ -259,6 +346,69 @@ export const Upload = ({
         }
       });
   };
+  // 大文件上传函数
+  const uploadLargeFile = async (file: File) => {
+    console.log('🚀 开始大文件上传:', file.name, file.size);
+    const fileId = Date.now() + '-' + file.name;
+    currentUploadingFileIdRef.current = fileId;
+    currentUploadingFileRef.current = file;
+
+    // 创建文件项
+    const fileItem: FileItem = {
+      uid: fileId,
+      size: file.size,
+      name: file.name,
+      status: 'ready',
+      percent: 0,
+      raw: file,
+    };
+
+    // 添加到文件列表
+    setFileList(prevList => [...prevList, fileItem]);
+
+    try {
+      console.log('🚀 开始大文件上传:', file.name, file.size);
+      // 更新状态为上传中
+      updateFileList(fileId, { status: 'uploading' });
+
+      // 调用大文件上传
+      const result = await largeFileUpload.upload(file);
+
+      // 上传成功
+      updateFileList(fileId, {
+        status: 'success',
+        percent: 100,
+        response: result.response || result,
+      });
+
+      if (onSuccess) {
+        onSuccess(result.response || result, file);
+      }
+      if (onChange) {
+        onChange(file);
+      }
+      console.log('🚀 大文件上传成功:', file.name, file.size);
+    } catch (error) {
+      console.log('🚀 大文件上传失败:', file.name, file.size);
+      // 上传失败
+      updateFileList(fileId, {
+        status: 'error',
+        error: error,
+      });
+
+      if (onError) {
+        onError(error as any, file);
+      }
+      if (onChange) {
+        onChange(file);
+      }
+    } finally {
+      // 清除当前上传的文件信息
+      currentUploadingFileIdRef.current = null;
+      currentUploadingFileRef.current = null;
+    }
+  };
+
   //   文件上传函数
   const handelFileUpload = (files: FileList) => {
     // 1、把文件列表转换为数组
@@ -278,7 +428,14 @@ export const Upload = ({
                 if (onBeforeUploadSuccess) {
                   onBeforeUploadSuccess(file, res);
                 }
-                post(res);
+                // 判断是否需要分片上传
+                const shouldChunk =
+                  enableLargeFileUpload && res.size >= chunkThreshold;
+                if (shouldChunk) {
+                  uploadLargeFile(res);
+                } else {
+                  post(res);
+                }
               }
             })
             .catch(err => {
@@ -291,7 +448,14 @@ export const Upload = ({
           if (onBeforeUploadSuccess) {
             onBeforeUploadSuccess(file, file);
           }
-          post(file);
+          // 判断是否需要分片上传
+          const shouldChunk =
+            enableLargeFileUpload && file.size >= chunkThreshold;
+          if (shouldChunk) {
+            uploadLargeFile(file);
+          } else {
+            post(file);
+          }
         } else {
           console.log('beforeUpload校验失败');
           // 如果beforeUpload返回false，不上传文件
@@ -301,7 +465,14 @@ export const Upload = ({
         }
       } else {
         // 如果没有beforeUpload，直接上传文件
-        post(file);
+        // 判断是否需要分片上传
+        const shouldChunk =
+          enableLargeFileUpload && file.size >= chunkThreshold;
+        if (shouldChunk) {
+          uploadLargeFile(file);
+        } else {
+          post(file);
+        }
       }
     });
   };
