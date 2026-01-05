@@ -1,0 +1,83 @@
+/**
+ * Form组件基础样式
+ * 基于CreamDesign设计系统
+ */
+
+@import '../../style/creamdesign';
+@import '../../style/mixin';
+
+
+// ===== 表单基础样式 =====
+.cream-form {
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background-color: $color-card;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba($color-neutral-900, 0.1);
+  @include card-shadow(1);
+
+  // 表单行样式
+  .cream-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+
+    &.cream-row-no-label {
+      margin-left: 30%;
+      padding-left: 14px;
+    }
+
+    // 表单标签样式
+    .cream-form-item-label {
+      flex-basis: 30%;
+      text-align: right;
+      padding-right: 20px;
+
+      >label.cream-form-item-required:before {
+        display: inline-block;
+        margin-right: 4px;
+        color: $color-error;
+        font-size: 14px;
+        font-family: SimSun, sans-serif;
+        line-height: 1;
+        content: "*";
+      }
+    }
+
+    // 表单内容区域
+    .cream-form-item {
+      flex-basis: 70%;
+      position: relative;
+
+
+      // 错误状态
+      .cream-form-item-has-error.cream-form-item-control {
+        .cream-input-inner {
+          border: 1px solid $color-error;
+
+          &:focus {
+            box-shadow: 0 0 0 3px rgba($color-error, 0.2);
+          }
+        }
+      }
+
+      // 错误信息
+      .cream-form-item-explain {
+        position: absolute;
+        bottom: -25px;
+        left: 0;
+        line-height: 25px;
+        color: $color-error;
+        min-width: 100px;
+      }
+    }
+  }
+
+  // 提交区域
+  .cream-form-submit-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

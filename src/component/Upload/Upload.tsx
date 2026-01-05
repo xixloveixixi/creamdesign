@@ -502,7 +502,6 @@ export const Upload = ({
       multiple属性：支持多文件选择，允许用户同时选中多个文件
       accept属性：限制允许上传的文件类型，支持多种格式： 完整MIME类型：image/png
       文件扩展名：.png 通配符：image/*表示所有图片类型
-      withCredentials：控制是否携带cookie，默认false不携带 
       */}
         <input
           type="file"

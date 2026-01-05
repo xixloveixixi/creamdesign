@@ -1,4 +1,4 @@
-import sparkMD5 from 'spark-md5';
+import SparkMD5 from 'spark-md5';
 /**
  * 计算文件的 MD5 哈希值
  * 支持两种实现方式：
@@ -19,7 +19,7 @@ export const calculateFileHash = async (
 ): Promise<string> => {
   console.log('🚀 开始计算文件哈希:', file.name, file.size);
 
-  return calculateFileHashWithSparkMD5(file, chunkSize, onProgress, sparkMD5);
+  return calculateFileHashWithSparkMD5(file, chunkSize, onProgress, SparkMD5);
 };
 
 /**
