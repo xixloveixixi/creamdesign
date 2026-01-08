@@ -88,3 +88,49 @@
 // 因为是受控组件，所以我们是要修改children中的value属性
 // 先创建一个新的propsList对象，将value属性和onChange事件添加到其中
 // 使用cloneElement进行创建新的元素，将新的propsList合并到其中
+// 但是目前还有一个问题，value和onChange事件是手动创建的，需要适应不同的事件和value属性名称
+// 我们多添加三个属性：valuePropsName、trgger、getValueFormEvent
+// valuePropsName：value属性的名称
+// trgger：触发事件
+// getValueFormEvent：获取value的函数
+// export interface FormItemProps {
+//     name?: string;
+//     children?: ReactNode;
+//     label?: string;
+//     required?: boolean;
+//     error?: string;
+//     labelWidth?: string; // 可选：自定义标签宽度
+//     controlWidth?: string; // 可选：自定义控件宽度
+//     className?: string;
+//     // 添加三个属性来适应不同的事件和value属性名称
+//     valuePropsName?: string;
+//     trigger?: string;
+//     getValueFormEvent?: (e: any) => any;
+//   }
+// const onValueUpdate = (e: any) => {
+//     const value = getValueFormEvent!(e);
+//     // console.log('newValue', value);
+//     // console.log('newValue e.target', e.target);
+//     dispatchFields({
+//       type: 'updateField',
+//       name: name || 'form',
+//       value: {
+//         value,
+//       },
+//     });
+//   };
+//   // 1.手动创建一个列表,需要有value和onChange属性
+//   const propsList: Record<string, any> = {};
+//   // Q:需要适应不同的事件和value属性名称
+//   // 需要验证children类型并显示警告
+//   // 目前仅支持单一表单元素作为children
+//   propsList[valuePropsName!] = value;
+//   propsList[trigger!] = onValueUpdate;
+//   // 2.我们要获取children数组的第一个元素
+//   const childList = React.Children.toArray(children);
+//   const child = childList[0] as ReactElement<any, string>;
+//   // 3.使用cloneElement,混合这个child以及手动的属性列表
+//   const clonedChild = React.cloneElement(child, {
+//     ...child.props,
+//     ...propsList,
+//   });

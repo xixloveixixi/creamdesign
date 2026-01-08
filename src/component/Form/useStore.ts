@@ -33,7 +33,7 @@ export interface FieldsAction {
   name: string;
   value: any;
 }
-function filedsReducer(state: FieldsState, action: FieldsAction): FieldsState {
+function fieldsReducer(state: FieldsState, action: FieldsAction): FieldsState {
   switch (action.type) {
     case 'addField':
       return {
@@ -54,7 +54,7 @@ function useStore() {
     isValid: true,
   });
   //   创建Reducer:返回更新的数据和dispatch函数
-  const [fields, dispatchFields] = useReducer(filedsReducer, {});
+  const [fields, dispatchFields] = useReducer(fieldsReducer, {});
   return {
     form,
     setForm,

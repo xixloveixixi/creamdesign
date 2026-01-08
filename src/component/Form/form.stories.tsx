@@ -48,6 +48,20 @@ export const RequiredForm = () => (
     <FormItem name="email" label="邮箱" required>
       <input type="email" />
     </FormItem>
+    {/* 验证不同的事件和value属性名称 */}
+    <FormItem
+      name="checkbox"
+      label="复选框"
+      required
+      valuePropsName="checked"
+      trigger="onChange"
+      getValueFormEvent={(e: any) => e.target.checked}
+    >
+      <input type="checkbox" />
+      <a href="https://www.baidu.com" target="_blank">
+        同意
+      </a>
+    </FormItem>
     <div>
       <Button btnType={ButtonType.Primary}>提交</Button>
     </div>

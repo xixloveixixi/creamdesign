@@ -24,9 +24,9 @@ export const Form: FC<FormProps> = props => {
   const { name, children, className, style } = props;
   // 初始化store
   const { form, setForm, fields, dispatchFields } = useStore();
-  //   filedItem挂载之后需要修改store的状态，使用dispatchFields进行修改
-  //   父传子显然是行不通的
-  //   我们采用context进行状态管理
+  // filedItem挂载之后需要修改store的状态，使用dispatchFields进行修改
+  // 父传子显然是行不通的
+  // 我们采用context进行状态管理
   const contextValue: IFormContext = {
     dispatchFields,
     fields,
