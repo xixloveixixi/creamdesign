@@ -5,11 +5,23 @@
 
 import { useReducer, useState } from 'react';
 import Schema, { RuleItem, ValidateError } from 'async-validator';
+// 创建一个函数的类型，支持返回 Promise 的自定义验证
+// CustomRuleFunc: 接收包含getFieldValue方法的对象，返回 Promise
+// 如果验证失败，返回 Promise.reject({ message: string })
+// 如果验证成功，返回 Promise.resolve()
+// CustomRule: RuleItem与CustomRuleFunc的联合类型
+export type CustomRuleFunc = ({
+  getFieldValue,
+}: {
+  getFieldValue: (name: string) => string;
+}) => RuleItem;
+
+export type CustomRule = RuleItem | CustomRuleFunc;
 // errors: 错误信息数组，存储多条验证错误信息
 export interface FieldDetail {
   name: string;
   value: string;
-  rules: RuleItem[]; // 验证规则数组，类型为RuleItem[]以便灵活扩展
+  rules: CustomRule[]; // 验证规则数组，类型为RuleItem[]以便灵活扩展
   isValid: boolean; // 字段验证状态，布尔类型
   errors: ValidateError[]; // 错误信息数组，存储多条验证错误信息
 }
@@ -61,14 +73,33 @@ function useStore() {
   });
   //   创建Reducer:返回更新的数据和dispatch函数
   const [fields, dispatchFields] = useReducer(fieldsReducer, {});
+  const getFieldValue = (name: string) => {
+    return fields[name]?.value;
+  };
+  // 因为descriptor的类型是{ [x: string]: CustomRule[]; }，所以需要转换为{ [x: string]: RuleItem[]; }
+  const transformedRules = function (rules: CustomRule[]): RuleItem[] {
+    const result: RuleItem[] = []; // 结果数组
+    rules.forEach(rule => {
+      if (typeof rule === 'function') {
+        const customRule = rule({ getFieldValue });
+        result.push(customRule);
+      } else {
+        // 如果规则是 RuleItem，直接添加
+        result.push(rule);
+      }
+    }); // 遍历规则数组，如果规则是函数，则转换为 RuleItem，否则直接添加到结果数组
+    return result;
+  };
+
   const validateField = async (name: string) => {
     const field = fields[name];
     if (!field) return;
-
     const { value, rules } = field;
-    const descriptor = { [name]: rules };
     const valueMap = { [name]: value };
-
+    // 转换规则并包装成 descriptor 对象格式
+    // 注意！！！而 Schema 需要对象格式的 descriptor
+    const transformedRuleItems = transformedRules(rules);
+    const descriptor = { [name]: transformedRuleItems };
     // 创建 Schema 实例并验证
     const validator = new Schema(descriptor);
     let isValid = true;
@@ -96,6 +127,7 @@ function useStore() {
     fields,
     dispatchFields,
     validateField,
+    getFieldValue,
   };
 }
 

@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { FormContext } from './form';
 import React from 'react';
 import { RuleItem } from 'async-validator';
+import { CustomRule } from './useStore';
 export type SomeRequired<T, K extends keyof T> = T & Required<Pick<T, K>>;
 export interface FormItemProps {
   name?: string;
@@ -15,7 +16,7 @@ export interface FormItemProps {
   labelWidth?: string; // 可选：自定义标签宽度
   controlWidth?: string; // 可选：自定义控件宽度
   className?: string;
-  rules?: RuleItem[];
+  rules?: CustomRule[];
   validateTrigger?: string;
   // 添加三个属性来适应不同的事件和value属性名称
   valuePropsName: string;

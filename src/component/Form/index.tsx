@@ -286,3 +286,94 @@
 //   error && <div className="cream-form-item-explain">{error}</div>
 // )}
 // </div> */}
+// 现在的rule是这样的：
+// rules={[
+//     {
+//       required: true,
+//       message: '请输入用户名',
+//     },
+//     {
+//       min: 3,
+//       message: '用户名长度不能小于3位',
+//     },
+//     {
+//       max: 10,
+//       message: '用户名长度不能大于10位',
+//     },
+//   ]}
+// 现在我们发现难以处理跨字段验证，比如密码和确认密码的验证
+// const password = getFieldValue('password');
+// const passwordConfirm = getFieldValue('passwordConfirm');
+// console.log('password', password);
+// console.log('passwordConfirm', passwordConfirm);
+// if (password !== passwordConfirm) {
+//    Promise.reject({ message: '密码和确认密码不一致' });
+// }
+//  Promise.resolve();
+// 我们通过函数参数传递getValue方法，实现跨字段验证
+// CustomRuleFunc: 接收包含getFieldValue方法的对象，返回RuleItem
+// CustomRule: RuleItem与CustomRuleFunc的联合类型
+// 使用混合类型就可以了
+// 但是这里要注意，descriptor的类型是{ [x: string]: CustomRule[]; }，所以需要转换为{ [x: string]: RuleItem[]; }
+// const transformedRules = function (rules: CustomRule[]): RuleItem[] {
+//     const result: RuleItem[] = []; // 结果数组
+//     rules.forEach(rule => {
+//       if (typeof rule === 'function') {
+//         const customRule = rule({ getFieldValue });
+//         result.push(customRule);
+//       } else {
+//         // 如果规则是 RuleItem，直接添加
+//         result.push(rule);
+//       }
+//     }); // 遍历规则数组，如果规则是函数，则转换为 RuleItem，否则直接添加到结果数组
+//     return result;
+//   };
+//     // 转换规则并包装成 descriptor 对象格式
+//     // 注意！！！而 Schema 需要对象格式的 descriptor
+//     const transformedRuleItems = transformedRules(rules);
+//     const descriptor = { [name]: transformedRuleItems };
+// 测试：
+// ({ getFieldValue }) => {
+//     return {
+//       validator: (rule: any, value: any, callback: (error?: Error) => void) => {
+//         const password = getFieldValue('password');
+//         const passwordConfirm = getFieldValue('passwordConfirm');
+//         if (password !== passwordConfirm) {
+//           Promise.reject({ message: '密码和确认密码不一致' });
+//         } else {
+//           Promise.resolve();
+//         }
+//       },
+//     };
+//   },
+// 但是现在又有问题了，我们应该是return一个Promise，但是async-validator的validator不支持直接返回Promise，需要使用回调模式，并在内部处理Promise：
+// const customRule: CustomRule[] = [
+//     { type: 'string', required: true, message: ' 请再次输入密码' },
+//     { min: 3, message: '用户名长度不能小于3位' },
+//     { max: 10, message: '用户名长度不能大于10位' },
+//     ({ getFieldValue }) => {
+//       return {
+//         validator: (rule: any, value: any, callback: (error?: Error) => void) => {
+//           const password = getFieldValue('password');
+//           const passwordConfirm = getFieldValue('passwordConfirm');
+//           // 使用 Promise 进行验证，但通过 callback 返回结果
+//           // 验证逻辑：如果密码不一致，reject；否则 resolve
+//           const validationPromise =
+//             password !== passwordConfirm
+//               ? Promise.reject({ message: '密码和确认密码不一致' })
+//               : Promise.resolve();
+
+//           validationPromise
+//             .then(() => {
+//               // 验证通过
+//               callback();
+//             })
+//             .catch((error: any) => {
+//               // 验证失败
+//               const message = error?.message || '验证失败';
+//               callback(new Error(message));
+//             });
+//         },
+//       };
+//     },
+//   ];
