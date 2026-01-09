@@ -8,7 +8,7 @@ import { useReducer, useState } from 'react';
 // errors: 错误信息数组，存储多条验证错误信息
 export interface FieldDetail {
   name: string;
-  value: string;
+  value: any; // 支持 string、number、boolean 等多种类型
   rules: any[];
   isValid: boolean;
   errors: any[];

@@ -4,7 +4,6 @@ import './Form.scss';
 import classNames from 'classnames';
 import { FormContext } from './form';
 import React from 'react';
-
 export interface FormItemProps {
   name?: string;
   children?: ReactNode;
@@ -15,11 +14,10 @@ export interface FormItemProps {
   controlWidth?: string; // 可选：自定义控件宽度
   className?: string;
   // 添加三个属性来适应不同的事件和value属性名称
-  valuePropsName?: string;
-  trigger?: string;
-  getValueFormEvent?: (e: any) => any;
+  valuePropsName: string;
+  trigger: string;
+  getValueFormEvent: (e: any) => any;
 }
-
 export const FormItem: FC<FormItemProps> = props => {
   const {
     name,
@@ -51,7 +49,7 @@ export const FormItem: FC<FormItemProps> = props => {
     className
   );
   // 从context中获取dispatchFields和fields
-  const { dispatchFields, fields } = useContext(FormContext);
+  const { dispatchFields, fields, initialValues } = useContext(FormContext);
   // 通过name获取fields中的字段-就是value
   const field = fields[name || 'form'];
   // 使用空字符串作为默认值，避免 uncontrolled -> controlled 警告
@@ -89,15 +87,28 @@ export const FormItem: FC<FormItemProps> = props => {
   });
   // 在挂载的时候挂载一次form-item
   useEffect(() => {
-    if (name) {
-      dispatchFields({
-        type: 'addField',
-        name,
-        // 传入字段基本信息：name、label等
-        value: { label, name, value: '' },
-      });
+    if (!name) return;
+
+    // 检查字段是否已存在，避免重复初始化
+    // if (fields[name]) return;
+
+    // 从 initialValues 中获取初始值
+    let value = '';
+    if (initialValues && initialValues[name]) {
+      value = initialValues[name];
     }
-  }, [name, dispatchFields]);
+
+    dispatchFields({
+      type: 'addField',
+      name,
+      // 传入字段基本信息：name、label等
+      value: { label, name, value },
+    });
+    // 只在挂载时执行一次，所以依赖数组为空
+    // 注意：由于闭包，这里读取的 initialValues 和 name 是挂载时的值
+    // 如果 initialValues 在挂载时已经传入，应该能正常工作
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <div className={rowClassName}>
       {label && (

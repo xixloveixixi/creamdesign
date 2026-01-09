@@ -9,19 +9,22 @@ export interface FormProps {
   children?: ReactNode;
   className?: string;
   style?: React.CSSProperties;
+  initialValues?: Record<string, any>;
 }
 // 这是ts的一个高级写法，可以获取useStore的返回值类型
 // 而且只获取dispatchFields这个属性
 export type IFormContext = Pick<
   ReturnType<typeof useStore>,
   'dispatchFields' | 'fields'
->;
+> &
+  Pick<FormProps, 'initialValues'>;
 export const FormContext = createContext<IFormContext>({
   dispatchFields: () => {},
   fields: {},
+  initialValues: {},
 });
 export const Form: FC<FormProps> = props => {
-  const { name, children, className, style } = props;
+  const { name, children, className, style, initialValues } = props;
   // 初始化store
   const { form, setForm, fields, dispatchFields } = useStore();
   // filedItem挂载之后需要修改store的状态，使用dispatchFields进行修改
@@ -30,6 +33,7 @@ export const Form: FC<FormProps> = props => {
   const contextValue: IFormContext = {
     dispatchFields,
     fields,
+    initialValues,
   };
 
   return (

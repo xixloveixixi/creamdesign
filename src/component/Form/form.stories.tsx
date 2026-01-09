@@ -21,16 +21,37 @@ export default meta;
 // 基础表单示例：
 export const BasicForm = () => (
   <Form style={{ width: '400px' }}>
-    <FormItem name="username" label="用户名">
+    <FormItem
+      name="username"
+      label="用户名"
+      valuePropsName="value"
+      trigger="onChange"
+      getValueFormEvent={(e: any) => e.target.value}
+    >
       <input type="text" />
     </FormItem>
-    <FormItem name="password" label="密码">
+    <FormItem
+      name="password"
+      label="密码"
+      valuePropsName="value"
+      trigger="onChange"
+      getValueFormEvent={(e: any) => e.target.value}
+    >
       <input type="password" />
     </FormItem>
-    <FormItem name="email">
+    <FormItem
+      name="email"
+      valuePropsName="value"
+      trigger="onChange"
+      getValueFormEvent={(e: any) => e.target.value}
+    >
       <input type="email" />
     </FormItem>
-    <FormItem>
+    <FormItem
+      valuePropsName="value"
+      trigger="onChange"
+      getValueFormEvent={(e: any) => e.target.value}
+    >
       <Button btnType={ButtonType.Primary}>提交</Button>
     </FormItem>
   </Form>
@@ -38,14 +59,41 @@ export const BasicForm = () => (
 
 // 带必填字段的表单示例：
 export const RequiredForm = () => (
-  <Form style={{ width: '400px' }}>
-    <FormItem name="username" label="用户名" required>
+  <Form
+    style={{ width: '400px' }}
+    initialValues={{
+      username: 'jyx',
+      checkbox: true,
+    }}
+  >
+    <FormItem
+      name="username"
+      label="用户名"
+      valuePropsName="value"
+      trigger="onChange"
+      getValueFormEvent={(e: any) => e.target.value}
+      required
+    >
       <input type="text" />
     </FormItem>
-    <FormItem name="password" label="密码" required>
+    <FormItem
+      name="password"
+      label="密码"
+      valuePropsName="value"
+      trigger="onChange"
+      getValueFormEvent={(e: any) => e.target.value}
+      required
+    >
       <input type="password" />
     </FormItem>
-    <FormItem name="email" label="邮箱" required>
+    <FormItem
+      name="email"
+      label="邮箱"
+      valuePropsName="value"
+      trigger="onChange"
+      getValueFormEvent={(e: any) => e.target.value}
+      required
+    >
       <input type="email" />
     </FormItem>
     {/* 验证不同的事件和value属性名称 */}
@@ -71,13 +119,36 @@ export const RequiredForm = () => (
 // 带验证错误的表单示例：
 export const ErrorForm = () => (
   <Form style={{ width: '400px' }}>
-    <FormItem name="username" label="用户名" required error="用户名不能为空">
+    <FormItem
+      name="username"
+      label="用户名"
+      required
+      error="用户名不能为空"
+      valuePropsName="value"
+      trigger="onChange"
+      getValueFormEvent={(e: any) => e.target.value}
+    >
       <input type="text" />
     </FormItem>
-    <FormItem name="password" label="密码" required error="密码至少需要8位字符">
+    <FormItem
+      name="password"
+      label="密码"
+      required
+      error="密码至少需要8位字符"
+      valuePropsName="value"
+      trigger="onChange"
+      getValueFormEvent={(e: any) => e.target.value}
+    >
       <input type="password" />
     </FormItem>
-    <FormItem name="email" label="邮箱" error="请输入有效的邮箱地址">
+    <FormItem
+      name="email"
+      label="邮箱"
+      error="请输入有效的邮箱地址"
+      valuePropsName="value"
+      trigger="onChange"
+      getValueFormEvent={(e: any) => e.target.value}
+    >
       <input type="email" />
     </FormItem>
     <div>
@@ -95,6 +166,9 @@ export const CustomWidthForm = () => (
       labelWidth="10%"
       controlWidth="90%"
       required
+      valuePropsName="value"
+      trigger="onChange"
+      getValueFormEvent={(e: any) => e.target.value}
     >
       <input type="text" />
     </FormItem>
@@ -104,6 +178,9 @@ export const CustomWidthForm = () => (
       labelWidth="40%"
       controlWidth="60%"
       required
+      valuePropsName="value"
+      trigger="onChange"
+      getValueFormEvent={(e: any) => e.target.value}
     >
       <input type="text" />
     </FormItem>
@@ -113,6 +190,9 @@ export const CustomWidthForm = () => (
       labelWidth="25%"
       controlWidth="75%"
       required
+      valuePropsName="value"
+      trigger="onChange"
+      getValueFormEvent={(e: any) => e.target.value}
     >
       <input type="text" />
     </FormItem>
