@@ -135,3 +135,154 @@
 //     ...propsList,
 //   });
 // 初始值：使用initialValue属性来设置初始值
+// 单个Form Item添加验证
+// 一、验证功能
+// 1. 验证的流程
+// 核心要素：由规则(rules)和值(value)组成，在特定时机（如onBlur）触发验证逻辑
+// 验证场景：
+// 单个Item的验证
+// 整个Form的验证
+// 执行过程：通过规则+值的组合，在特定时机调用验证逻辑处理最终结果
+// 2. 第三方库
+// 1）第三方库介绍
+// 库名称：async-validator（GitHub 7.6k star）
+// 特点：
+// 被多个主流框架采用（如React、Vue等）
+// 提供丰富的预设验证类型
+// 支持异步验证
+// 基本结构：
+// 2）第三方库使用案例
+// 预设类型：
+// string：字符串类型（默认）
+// number：数字类型
+// boolean：布尔类型
+// regexp：正则表达式
+// integer：整数
+// float：浮点数
+// array：数组
+// object：对象
+// enum：枚举值
+
+// 验证器创建：
+// 验证方式：
+// 回调方式：
+// Promise方式：
+// 规则属性：
+// required：是否必填
+// pattern：正则匹配
+// min/max：范围限制
+// len：精确长度
+// validator：自定义验证函数
+
+// 多规则验证：
+// 二、单个Item验证
+// 1. 验证store设计
+// 核心字段:
+// rules: RuleItem[]; // 验证规则数组，类型为RuleItem[]以便灵活扩展
+// isValid: boolean; // 字段验证状态，布尔类型
+// errors: ValidateError[]; // 错误信息数组，存储多条验证错误信息
+// 2. 验证function编写
+// 关键依赖:
+// 从async-validator导入Schema、RuleItem和ValidateError类型
+// 使用React的useReducer管理表单状态
+// 验证流程:
+// 创建descriptor对象，将字段名与对应规则关联
+// 构建valueMap包含待验证的字段值
+// 初始化验证器实例new Schema(descriptor)
+// 使用try-catch处理验证结果，更新isValid和errors状态
+// const validateField = async (name: string) => {
+//     const field = fields[name];
+//     if (!field) return;
+
+//     const { value, rules } = field;
+//     const descriptor = { [name]: rules };
+//     const valueMap = { [name]: value };
+
+//     // 创建 Schema 实例并验证
+//     const validator = new Schema(descriptor);
+//     let isValid = true;
+//     let errors: ValidateError[] = [];
+
+//     try {
+//       await validator.validate(valueMap);
+//       isValid = true;
+//       errors = [];
+//     } catch (e: any) {
+//       isValid = false;
+//       // async-validator 的错误对象有 errors 属性
+//       errors = e.errors || [];
+//     }
+
+//     dispatchFields({
+//       type: 'updateValidateResult',
+//       name,
+//       value: { isValid, errors },
+//     });
+//   };
+// 3. 验证form编写
+// Context设计:
+// 通过FormContext传递dispatch、fields和validateField方法
+// FormItem组件通过context获取验证能力
+// 触发机制:
+// 默认在onBlur事件触发验证
+// 可通过validateTrigger属性自定义触发事件
+// 验证规则rules作为可选属性传递给FormItem
+
+//   // 默认在onBlur事件触发验证
+//   // 可通过validateTrigger属性自定义触发事件
+//   // 验证规则rules作为可选属性传递给FormItem
+//   if (rules && rules.length > 0 && validateTrigger) {
+//     const existingHandler = child.props[validateTrigger];
+//     // 合并事件处理函数，避免覆盖原有的处理函数
+//     propsList[validateTrigger] = async (e: any) => {
+//       // 先执行原有的事件处理函数
+//       if (existingHandler) {
+//         existingHandler(e);
+//       }
+//       // 然后执行验证
+//       await validateField(name!);
+//     };
+//   }
+//   // 默认在onBlur事件触发验证
+//   // 可通过validateTrigger属性自定义触发事件
+//   // 验证规则rules作为可选属性传递给FormItem
+//   if (rules && rules.length > 0) {
+//     const trigger = validateTrigger;
+//     propsList[trigger] = async () => {
+//       await validateField(name!);
+//     };
+//   }
+// // FormItem中的控制属性添加
+// if (rules) {
+//   controlProps[validateTrigger] = async () => {
+//     await validateField(name);
+//   };
+// }
+// "username": {
+//     "label": "用户名",
+//     "name": "username",
+//     "value": "",
+//     "rules": [
+//       {
+//         "required": true,
+//         "message": "请输入用户名"
+//       }
+//     ],
+//     "isValid": false,
+//     "errors": [
+//       {
+//         "message": "请输入用户名",
+//         "fieldValue": "",
+//         "field": "username"
+//       }
+//     ]
+//   },
+// 添加错误提示，根据fields中的errors数组，显示错误提示
+// {/* <div className={controlClassName}>
+// <div className="cream-input-wrapper">{clonedChild}</div>
+// {errors.length > 0 ? (
+//   <div className="cream-form-item-explain">{errors[0].message}</div>
+// ) : (
+//   error && <div className="cream-form-item-explain">{error}</div>
+// )}
+// </div> */}

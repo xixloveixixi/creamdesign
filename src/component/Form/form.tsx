@@ -15,24 +15,26 @@ export interface FormProps {
 // 而且只获取dispatchFields这个属性
 export type IFormContext = Pick<
   ReturnType<typeof useStore>,
-  'dispatchFields' | 'fields'
+  'dispatchFields' | 'fields' | 'validateField'
 > &
   Pick<FormProps, 'initialValues'>;
 export const FormContext = createContext<IFormContext>({
   dispatchFields: () => {},
   fields: {},
+  validateField: async (name: string) => {},
   initialValues: {},
 });
 export const Form: FC<FormProps> = props => {
   const { name, children, className, style, initialValues } = props;
   // 初始化store
-  const { form, setForm, fields, dispatchFields } = useStore();
+  const { form, setForm, fields, dispatchFields, validateField } = useStore();
   // filedItem挂载之后需要修改store的状态，使用dispatchFields进行修改
   // 父传子显然是行不通的
   // 我们采用context进行状态管理
   const contextValue: IFormContext = {
     dispatchFields,
     fields,
+    validateField,
     initialValues,
   };
 
