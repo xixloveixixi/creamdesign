@@ -377,3 +377,125 @@
 //       };
 //     },
 //   ];
+// 整个表单的验证：
+// 最开始的思路应该是遍历所有FormItem上的validate进行一个验证，但是这样做太费性能，也很麻烦
+// 验过程当中，验证值和验证规则是很重要的，那我们就可以拿到所有的验证值和验证规则然后进行整体校验
+// 添加张泰：
+// isValid: 初始值为true，表示表单验证状态
+// isSubmitting: 初始值为false，表示表单提交状态
+// errors: 初始为空对象，记录所有字段的错误信息
+// 函数validateAllFields：验证整体的白哦单
+// 我们需要切换格式：
+// 将字段对象从{username: {value: 'abc', rules: [...]}}格式
+// 转换为{username: 'abc'}和{username: [...]}两种格式
+// 借助工具库：
+// 工具库选择:
+// 使用lodash-es而非原生lodash
+// 原因：lodash-es导出ES模块，打包体积更小
+// 核心方法:
+// mapValues：对对象每个值进行转换
+
+// 进行验证：
+// 使用mapValues生成valueMap
+// 使用mapValues生成rules描述符
+//  // 获取值和规则，我们使用lodash-es的mapValues方法
+//  const valueMap = mapValues(fields, field => field.value);
+//  // 进行转换：将CustomRule[]转换为RuleItem[]
+//  const rulesMap = mapValues(fields, field => transformedRules(field.rules));
+// 创建Schema实例进行验证
+// 错误处理：
+// 定义ValidateErrorType接口
+// export interface FormErrors extends Error {
+//     fields?: Record<string, ValidateError>;
+//     errors?: ValidateError[];
+//   }
+// 使用类型断言处理错误对象
+// catch (e: any) {
+//     isValid = false;
+//     const error = e as FormErrors;
+//     const errors = error.errors || [];
+//     // 开始each进行遍历
+//     each(fields, (value, name: string) => {
+//       // 如果说errors中存在name，则证明验证没有通过，我们就要进行派发修改fields的状态
+//       if (errors[name as any]) {
+//         dispatchFields({
+//           type: 'updateField',
+//           name,
+//           value: {
+//             isValid: false,
+//             errors: errors[name as any],
+//           },
+//         });
+//         // 如果说errors中不存在name以及没有规则，则证明验证通过，我们就要进行派发修改fields的状态
+//       }
+// dispatch进行更新：
+// 字段循环处理：需要循环处理表单中的fields字段，每个字段包含两个关键参数
+// 参数说明：
+// value：对应字段的当前值
+// name：字段的标识名称（字幕中提到的"t"应为name的误读）
+// 这里要注意的是，如果errors里面存在name，则证明验证没有通过，我们就要进行派发修改fields的状态
+// 如果errors里面不存在name以及没有规则，则证明验证通过，我们就要进行派发修改fields的状态
+// try {
+//     await validator.validate(valueMap);
+//   } catch (e: any) {
+//     isValid = false;
+//     const error = e as FormErrors;
+//     const errors = error.errors || [];
+//     // 开始each进行遍历
+//     each(fields, (value, name: string) => {
+//       // 如果说errors中存在name，则证明验证没有通过，我们就要进行派发修改fields的状态
+//       if (errors[name as any]) {
+//         dispatchFields({
+//           type: 'updateField',
+//           name,
+//           value: {
+//             isValid: false,
+//             errors: errors[name as any],
+//           },
+//         });
+//         // 如果说errors中不存在name以及没有规则，则证明验证通过，我们就要进行派发修改fields的状态
+//       } else if (!errors[name as any] && !value.rules) {
+//         dispatchFields({
+//           type: 'updateField',
+//           name,
+//           value: {
+//             isValid: true,
+//           },
+//         });
+//       }
+//     });
+//   } finally {
+//     setForm({ ...form, isSubmitting: false, isValid, errors });
+//   }
+//   最后记得返回一些参数供后面使用
+//   return {
+//     isValid,
+//     errors,
+//     values: valueMap,
+//   };
+// 1、特定时机表单验证
+// 提交时机验证: 在表单提交时(onSubmit事件)进行整体验证，这是最关键的验证时机
+// <form className="cream-form" style={style} onSubmit={onFormSubmit}>
+// 事件处理: 需要阻止默认事件(e.preventDefault())和停止冒泡(e.stopPropagation())
+// 验证流程: 通过validateAllFields方法获取验证结果，包含isValid、errors和values三个关键属性
+// async function onFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     const { isValid, errors, values } = await validateAllFields();
+//     if (isValid) {
+//       onFinish?.(values);
+//     } else {
+//       onFinishFailed?.(values, errors);
+//     }
+//   }
+// 2、添加特定事件
+// 在and里面发现有onFinish和onFinishFailed事件，我们可以在onFormSubmit中调用这两个事件
+// onFinish事件:
+// 触发条件: 表单验证成功后触发
+// 参数: 包含所有表单值的values对象(Record<string, any>)
+// 返回值: void
+// onFinishFailed事件:
+// 触发条件: 表单验证失败后触发
+// 参数: values对象和errors对象(Record<string, ValidateError[]>)
+// 返回值: void
+// 事件调用: 根据validateAllFields返回的isValid值决定触发哪个事件

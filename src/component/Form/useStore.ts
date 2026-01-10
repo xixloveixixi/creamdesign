@@ -5,6 +5,7 @@
 
 import { useReducer, useState } from 'react';
 import Schema, { RuleItem, ValidateError } from 'async-validator';
+import { each, mapValues } from 'lodash-es';
 // 创建一个函数的类型，支持返回 Promise 的自定义验证
 // CustomRuleFunc: 接收包含getFieldValue方法的对象，返回 Promise
 // 如果验证失败，返回 Promise.reject({ message: string })
@@ -36,6 +37,9 @@ export interface FieldsState {
 // isValid: 表单验证状态，布尔类型
 export interface FormState {
   isValid: boolean;
+  // 用于整体表单的验证
+  isSubmitting?: boolean;
+  errors?: Record<string, ValidateError>;
 }
 
 // 为了管理包含多个子值的复杂状态逻辑
@@ -46,6 +50,11 @@ export interface FieldsAction {
   value: any;
 }
 
+// 错误的类型包括fileds和errors，创建一个错误类型的接口
+export interface FormErrors extends Error {
+  fields?: Record<string, ValidateError[]>;
+  errors?: ValidateError[];
+}
 function fieldsReducer(state: FieldsState, action: FieldsAction): FieldsState {
   switch (action.type) {
     case 'addField':
@@ -121,6 +130,76 @@ function useStore() {
       value: { isValid, errors },
     });
   };
+
+  // 整体表单验证函数
+  const validateAllFields = async () => {
+    let fieldErrors: Record<string, ValidateError[]> = {};
+    let isValid = true;
+    // 获取值和规则，我们使用lodash-es的mapValues方法
+    const valueMap = mapValues(fields, field => field.value);
+    // 进行转换：将CustomRule[]转换为RuleItem[]
+    const rulesMap = mapValues(fields, field => transformedRules(field.rules));
+
+    // 创建Schema实例进行验证
+    const validator = new Schema(rulesMap);
+    // 设置表单状态为开始验证
+    setForm({ ...form, isSubmitting: true });
+    try {
+      await validator.validate(valueMap);
+      // 验证通过，清除所有字段的错误
+      each(fields, (field, name) => {
+        if (field.rules && field.rules.length > 0) {
+          dispatchFields({
+            type: 'updateField',
+            name,
+            value: {
+              isValid: true,
+              errors: [],
+            },
+          });
+        }
+      });
+    } catch (e: any) {
+      isValid = false;
+      // async-validator 的错误对象格式：{ errors: ValidateError[], fields: Record<string, ValidateError[]> }
+      const errorFields = e.fields || {};
+      fieldErrors = errorFields;
+
+      // 遍历所有字段，更新错误状态
+      each(fields, (field, name) => {
+        const fieldErrorList = errorFields[name] || [];
+        if (fieldErrorList.length > 0) {
+          // 字段有错误
+          dispatchFields({
+            type: 'updateField',
+            name,
+            value: {
+              isValid: false,
+              errors: fieldErrorList,
+            },
+          });
+        } else if (field.rules && field.rules.length > 0) {
+          // 字段没有错误且有规则，验证通过
+          dispatchFields({
+            type: 'updateField',
+            name,
+            value: {
+              isValid: true,
+              errors: [],
+            },
+          });
+        }
+      });
+    } finally {
+      setForm({ ...form, isSubmitting: false, isValid });
+    }
+    // 返回信息为
+    return {
+      isValid,
+      errors: fieldErrors,
+      values: valueMap,
+    };
+  };
   return {
     form,
     setForm,
@@ -128,6 +207,7 @@ function useStore() {
     dispatchFields,
     validateField,
     getFieldValue,
+    validateAllFields,
   };
 }
 

@@ -48,8 +48,8 @@ const customRule: CustomRule[] = [
   },
 ];
 // 基础表单示例：
-export const BasicForm = () => (
-  <Form style={{ width: '400px' }}>
+export const BasicForm = (args: any) => (
+  <Form style={{ width: '400px' }} {...args}>
     <FormItem
       name="username"
       label="用户名"
@@ -116,7 +116,9 @@ export const BasicForm = () => (
       trigger="onChange"
       getValueFormEvent={(e: any) => e.target.value}
     >
-      <Button btnType={ButtonType.Primary}>提交</Button>
+      <Button btnType={ButtonType.Primary} type="submit">
+        提交
+      </Button>
     </FormItem>
   </Form>
 );
@@ -175,7 +177,9 @@ export const RequiredForm = () => (
       </a>
     </FormItem>
     <div>
-      <Button btnType={ButtonType.Primary}>提交</Button>
+      <Button btnType={ButtonType.Primary} type="submit">
+        提交
+      </Button>
     </div>
   </Form>
 );
@@ -216,7 +220,9 @@ export const ErrorForm = () => (
       <input type="email" />
     </FormItem>
     <div>
-      <Button btnType={ButtonType.Primary}>提交</Button>
+      <Button btnType={ButtonType.Primary} type="submit">
+        提交
+      </Button>
     </div>
   </Form>
 );
@@ -261,7 +267,9 @@ export const CustomWidthForm = () => (
       <input type="text" />
     </FormItem>
     <div>
-      <Button btnType={ButtonType.Primary}>提交</Button>
+      <Button btnType={ButtonType.Primary} type="submit">
+        提交
+      </Button>
     </div>
   </Form>
 );
