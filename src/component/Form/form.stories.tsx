@@ -50,76 +50,82 @@ const customRule: CustomRule[] = [
 // 基础表单示例：
 export const BasicForm = (args: any) => (
   <Form style={{ width: '400px' }} {...args}>
-    <FormItem
-      name="username"
-      label="用户名"
-      rules={[
-        {
-          required: true,
-          message: '请输入用户名',
-        },
-        {
-          min: 3,
-          message: '用户名长度不能小于3位',
-        },
-        {
-          max: 10,
-          message: '用户名长度不能大于10位',
-        },
-      ]}
-      validateTrigger="onBlur"
-      valuePropsName="value"
-      trigger="onChange"
-      getValueFormEvent={(e: any) => e.target.value}
-    >
-      <input type="text" />
-    </FormItem>
-    <FormItem
-      name="password"
-      label="密码"
-      valuePropsName="value"
-      trigger="onChange"
-      getValueFormEvent={(e: any) => e.target.value}
-      rules={[
-        {
-          required: true,
-          message: '请输入密码',
-        },
-        { min: 8, message: '密码长度不能小于8位' },
-        { max: 16, message: '密码长度不能大于16位' },
-      ]}
-      validateTrigger="onBlur"
-    >
-      <input type="password" />
-    </FormItem>
-    <FormItem
-      name="passwordConfirm"
-      label="确认密码"
-      valuePropsName="value"
-      trigger="onChange"
-      getValueFormEvent={(e: any) => e.target.value}
-      rules={customRule}
-      validateTrigger="onBlur"
-    >
-      <input type="password" />
-    </FormItem>
-    <FormItem
-      name="email"
-      valuePropsName="value"
-      trigger="onChange"
-      getValueFormEvent={(e: any) => e.target.value}
-    >
-      <input type="email" />
-    </FormItem>
-    <FormItem
-      valuePropsName="value"
-      trigger="onChange"
-      getValueFormEvent={(e: any) => e.target.value}
-    >
-      <Button btnType={ButtonType.Primary} type="submit">
-        提交
-      </Button>
-    </FormItem>
+    {formState => {
+      return (
+        <>
+          <FormItem
+            name="username"
+            label="用户名"
+            rules={[
+              {
+                required: true,
+                message: '请输入用户名',
+              },
+              {
+                min: 3,
+                message: '用户名长度不能小于3位',
+              },
+              {
+                max: 10,
+                message: '用户名长度不能大于10位',
+              },
+            ]}
+            validateTrigger="onBlur"
+            valuePropsName="value"
+            trigger="onChange"
+            getValueFormEvent={(e: any) => e.target.value}
+          >
+            <input type="text" />
+          </FormItem>
+          <FormItem
+            name="password"
+            label="密码"
+            valuePropsName="value"
+            trigger="onChange"
+            getValueFormEvent={(e: any) => e.target.value}
+            rules={[
+              {
+                required: true,
+                message: '请输入密码',
+              },
+              { min: 8, message: '密码长度不能小于8位' },
+              { max: 16, message: '密码长度不能大于16位' },
+            ]}
+            validateTrigger="onBlur"
+          >
+            <input type="password" />
+          </FormItem>
+          <FormItem
+            name="passwordConfirm"
+            label="确认密码"
+            valuePropsName="value"
+            trigger="onChange"
+            getValueFormEvent={(e: any) => e.target.value}
+            rules={customRule}
+            validateTrigger="onBlur"
+          >
+            <input type="password" />
+          </FormItem>
+          <FormItem
+            name="email"
+            valuePropsName="value"
+            trigger="onChange"
+            getValueFormEvent={(e: any) => e.target.value}
+          >
+            <input type="email" />
+          </FormItem>
+          <FormItem
+            valuePropsName="value"
+            trigger="onChange"
+            getValueFormEvent={(e: any) => e.target.value}
+          >
+            <Button btnType={ButtonType.Primary} type="submit">
+              {formState.isValid ? '提交' : '提交失败'}
+            </Button>
+          </FormItem>
+        </>
+      );
+    }}
   </Form>
 );
 

@@ -2,13 +2,13 @@
 
 import { createContext, Dispatch, FC, ReactNode } from 'react';
 import './Form.scss';
-import useStore from './useStore';
+import useStore, { FormState } from './useStore';
 import React from 'react';
 import validateAllFields from './useStore';
 import { ValidateError } from 'async-validator';
 export interface FormProps {
   name?: string;
-  children?: ReactNode;
+  children?: ReactNode | ReactProps;
   className?: string;
   style?: React.CSSProperties;
   initialValues?: Record<string, any>;
@@ -18,6 +18,7 @@ export interface FormProps {
     errors: Record<string, ValidateError[]>
   ) => void;
 }
+export type ReactProps = (formProps: FormState) => ReactNode;
 // 这是ts的一个高级写法，可以获取useStore的返回值类型
 // 而且只获取dispatchFields这个属性
 export type IFormContext = Pick<
@@ -31,6 +32,7 @@ export const FormContext = createContext<IFormContext>({
   validateField: async (name: string) => {},
   initialValues: {},
 });
+
 export const Form: FC<FormProps> = props => {
   const {
     name,
@@ -72,11 +74,17 @@ export const Form: FC<FormProps> = props => {
       onFinishFailed(values, errors);
     }
   }
+  let childrenNode = null;
+  if (typeof children === 'function') {
+    childrenNode = children(form);
+  } else {
+    childrenNode = children;
+  }
   return (
     <div>
       <form className="cream-form" style={style} onSubmit={onFormSubmit}>
         <FormContext.Provider value={contextValue}>
-          {children}
+          {childrenNode}
         </FormContext.Provider>
       </form>
       <div>

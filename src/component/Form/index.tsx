@@ -499,3 +499,43 @@
 // 参数: values对象和errors对象(Record<string, ValidateError[]>)
 // 返回值: void
 // 事件调用: 根据validateAllFields返回的isValid值决定触发哪个事件
+
+// 基于前面的表单验证体系，我们已经实现了：
+
+// ✅ 完整的验证规则机制（基础规则 + 自定义函数规则）
+// ✅ 灵活的状态管理（单独验证 + 整体验证）
+// ✅ 智能的错误处理（onFinish/onFinishFailed回调）
+// 但存在一个关键限制：UI 展示被硬编码在组件内部。
+// // 当前实现：UI 与逻辑耦合
+// <FormItem name="username">
+//   <Input /> {/* 只能渲染 Input 组件 */}
+// </FormItem>
+// ReactProps: 我们可以通过ReactProps来实现UI展示，
+// 比如可以实现多平台适配：
+// // Web 使用 Input
+// <FormItem name="username" render={() => <input />} />
+
+// // 移动端使用 TextInput
+// <FormItem name="username" render={() => <TextInput />} />
+
+// // 自定义设计系统
+// <FormItem name="username" render={() => <MyCustomInput />} />
+// 比如可以实现条件渲染：
+// <FormItem
+//   name="email"
+//   render={(fieldProps) => (
+//     fieldProps.value.includes('@gmail.com')
+//       ? <GmailInput {...fieldProps} />
+//       : <NormalInput {...fieldProps} />
+//   )}
+// />
+
+// 如何实现呢？就是对children进行处理，如果children是函数，则调用函数，如果children是组件，则渲染组件
+
+// export type ReactProps = (formProps: FormState) => ReactNode;
+// let childrenNode = null;
+// if (typeof children === 'function') {
+//   childrenNode = children(form);
+// } else {
+//   childrenNode = children;
+// }
