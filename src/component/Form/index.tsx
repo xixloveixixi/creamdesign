@@ -539,3 +539,155 @@
 // } else {
 //   childrenNode = children;
 // }
+// 提供实例给外界提供更多的自定义方法
+// 设置值
+// 重置值
+// 1、获取所有值
+// 通过之前的mapValues进行设置
+// 2、设置值
+// 判断是否存在后进行dispatch，type为update value，值为name和value <end>
+// 3、重置字段值
+// reset fields功能：将字段恢复到初始值
+// initialValues参数：
+// 类型：key为string，值为any
+// 是否必须：否
+// 实现恢复功能的方法：传入initialvalues参数，循环对应值进行恢复，判断是否存在并更新值
+// // 获取所有值
+// const getAllFields = () => {
+//     return mapValues(fields, field => field.value);
+//   };
+//   // 设置值
+//   const setFieldValue = (name: string, value: any) => {
+//     if (fields[name]) {
+//       dispatchFields({
+//         type: 'updateField',
+//         name,
+//         value,
+//       });
+//     }
+//   };
+//   // 重置字段值
+//   const resetFields = () => {
+//     if (initialValues) {
+//       each(initialValues, (value, name) => {
+//         if (fields[name]) {
+//           dispatchFields({
+//             type: 'updateField',
+//             name,
+//             value,
+//           });
+//         }
+//       });
+//     }
+//     暴露组件实例
+//     1. ref属性
+//     基本用法: 使用useRef()创建ref对象，通过ref属性绑定到DOM元素后，可通过访问DOM节点
+//     2. forwardRef
+//     作用: 将ref自动传递通过组件到其子元素的技术
+//     实现方式: 使用包裹组件，接收props和ref两个参数
+//     // 注意这里的类型要使用泛型来定义，因为ref是React.RefObject<HTMLFormElement>类型
+// export const Form: FC<FormProps> = forwardRef<HTMLFormElement, FormProps>(
+//     <div>
+//     <form
+//       className="cream-form"
+//       style={style}
+//       onSubmit={onFormSubmit}
+//       ref={ref}
+//     >
+//     使用：
+//     const ref = useRef<HTMLFormElement>(null);
+//   return (
+//     <Form style={{ width: '400px' }} {...args} ref={ref}>
+//       {formState => {
+//         return (
+//             <Button
+//             btnType={ButtonType.Primary}
+//             onClick={() => {
+//               console.log(ref.current);
+//             }}
+//           >
+//             获取表单实例
+//           </Button>
+//         </Form>
+//       );
+// <form class="cream-form" style="width: 400px;"><div class="cream-row"><div class="cream-form-item-label cream-form-item-required"><label>用户名</label></div><div class="cream-form-item"><div class="cream-input-wrapper"><input type="text" value=""></div><div class="cream-form-item-explain">请输入用户名</div></div></div><div class="cream-row"><div class="cream-form-item-label cream-form-item-required"><label>密码</label></div><div class="cream-form-item"><div class="cream-input-wrapper"><input type="password" value=""></div><div class="cream-form-item-explain">请输入密码</div></div></div><div class="cream-row"><div class="cream-form-item-label cream-form-item-required"><label>确认密码</label></div><div class="cream-form-item"><div class="cream-input-wrapper"><input type="password" value=""></div><div class="cream-form-item-explain"> 请再次输入密码</div></div></div><div class="cream-row cream-row-no-label"><div class="cream-form-item"><div class="cream-input-wrapper"><input type="email" value=""></div></div></div><div class="cream-row cream-row-no-label"><div class="cream-form-item"><div class="cream-input-wrapper"><button class="btn btn-primary btn-normal" aria-disabled="false" aria-busy="false" type="submit" value="">提交失败</button></div></div></div><button class="btn btn-primary btn-normal" aria-disabled="false" aria-busy="false">获取表单实例</button></form>
+// 3. useImperativeHandle
+// 我们不希望Ref返回的是节点，而是上面的方法(实例)
+// 功能: 自定义通过ref暴露给父组件的实例值
+// 参数结构:
+// 工作原理: 返回的对象会成为ref.current的值
+// Form实例方法暴露
+// 实现步骤:
+// 定义IFormRef类型，使用Omit排除不需要暴露的字段，剩下的就是我们想要的。
+// 修改forwardRef泛型为
+// 使用useImperativeHandle暴露指定方法
+// ...restProps拿出剩下的函数，后面传入对象的时候不必把所有的方法拿出来，只需要传入这个就可以了
+// useImperativeHandle进行自定义，传入ref和对应的方法
+//   // 使用 useImperativeHandle 暴露表单方法给外部 ref
+//   useImperativeHandle(ref, () => ({
+//     ...restProps,
+//     setForm, // 添加 setForm，因为 FormRefType 需要它
+//   }));
+//   const { form, setForm, fields, dispatchFields, ...restProps } =
+//   useStore(initialValues);
+//   export type FormRefType = Omit<
+//   ReturnType<typeof useStore>,
+//   'form' | 'dispatchFields' | 'fields'
+// >;
+// 使用的时候要注意，不要把按钮放在FormItem里面，因为FormItem会自动添加一个div包裹，这样会导致按钮无法正常显示
+// <div>
+// <Button
+//   btnType={ButtonType.Primary}
+//   type="button"
+//   onClick={e => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     ref.current?.resetFields();
+//   }}
+// >
+//   重置
+// </Button>
+// </div>
+// 总结：
+// 一、Form表单开发流程总结
+// 1. 分析需求，明确组件结构
+// 需求分析：根据业务需求确定组件应具备的功能和结构，明确JSX的编写方式
+// 结构设计：规划表单组件的基础布局和父子组件关系
+// 2. 完成组件基本的静态展示
+// 静态阶段：仅实现UI展示，不包含任何数据交互和功能逻辑
+// 开发重点：专注于视觉呈现和基础DOM结构搭建
+// 3. 提取store作为中枢及桥梁
+
+// 核心思想：使用提取公共store作为数据中枢
+// 架构优势：store同时承担父子组件通信桥梁的角色
+// 实现方式：通过useStore自定义hook管理全局状态
+// 4. 注册Item到store
+// 注册时机：组件mount后通过dispatch执行addField操作
+// 注册内容：将label、name、value、rules等表单元信息存入store
+// 数据关联：通过useContext获取store中的dispatch和fields
+// 5. Item表单更新，更新store中的数据
+
+// 黑魔法技术：使用混入control props
+// 更新流程：表单变化→触发onValueUpdate→dispatchupdateValue
+// props注入：动态添加value和onChange等控制属性
+// 6. 自定义Item的字段及完善默认值
+// 扩展机制：在controlProps中添加个性化字段如valuePropName
+// 默认值处理：通过initialValues初始化表单字段值
+// 子组件校验：确保children是有效的ReactElement且数量唯一
+// 7. 添加单个Item的验证
+// 验证核心：使用库处理校验逻辑
+// 方法封装：validateField函数负责单个字段校验
+// 规则转换：通过transfromRules处理自定义校验规则
+// 8. 添加表单整体的验证
+// 批量验证：validateAllFields收集所有字段值统一校验
+// 状态管理：验证时设置isSubmitting为true
+// 错误处理：捕获ValidateErrorType并更新错误状态
+// 9. 添加组件实例方法
+// 方法集合：包括getFieldsValue、setFieldValue、resetFields等
+// 暴露技术：组合使用forwardRef和useImperativeHandle
+// 类型定义：通过IFormRef类型约束暴露的方法签名
+// 10. 内容总结
+// 设计原则：先设计后编码，确立核心架构（树根和树干）
+// 扩展建议：参考antd API继续完善组件功能
+// 后续任务：补充单元测试和不同场景的stories案例
+// 开发心得：复杂组件需要良好的前期设计和状态管理方案

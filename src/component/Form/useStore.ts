@@ -76,7 +76,7 @@ function fieldsReducer(state: FieldsState, action: FieldsAction): FieldsState {
       return state;
   }
 }
-function useStore() {
+function useStore(initialValues?: Record<string, any>) {
   const [form, setForm] = useState<FormState>({
     isValid: true,
   });
@@ -86,7 +86,13 @@ function useStore() {
     return fields[name]?.value;
   };
   // 因为descriptor的类型是{ [x: string]: CustomRule[]; }，所以需要转换为{ [x: string]: RuleItem[]; }
-  const transformedRules = function (rules: CustomRule[]): RuleItem[] {
+  const transformedRules = function (
+    rules: CustomRule[] | undefined
+  ): RuleItem[] {
+    // 如果 rules 为空或 undefined，返回空数组
+    if (!rules || rules.length === 0) {
+      return [];
+    }
     const result: RuleItem[] = []; // 结果数组
     rules.forEach(rule => {
       if (typeof rule === 'function') {
@@ -138,7 +144,25 @@ function useStore() {
     // 获取值和规则，我们使用lodash-es的mapValues方法
     const valueMap = mapValues(fields, field => field.value);
     // 进行转换：将CustomRule[]转换为RuleItem[]
-    const rulesMap = mapValues(fields, field => transformedRules(field.rules));
+    // 只处理有规则的字段
+    const rulesMap: Record<string, RuleItem[]> = {};
+    each(fields, (field, name) => {
+      if (field.rules && field.rules.length > 0) {
+        const transformedRuleItems = transformedRules(field.rules);
+        if (transformedRuleItems.length > 0) {
+          rulesMap[name] = transformedRuleItems;
+        }
+      }
+    });
+
+    // 如果没有需要验证的字段，直接返回
+    if (Object.keys(rulesMap).length === 0) {
+      return {
+        isValid: true,
+        errors: {},
+        values: valueMap,
+      };
+    }
 
     // 创建Schema实例进行验证
     const validator = new Schema(rulesMap);
@@ -200,6 +224,43 @@ function useStore() {
       values: valueMap,
     };
   };
+  // 获取所有值
+  const getAllFields = () => {
+    return mapValues(fields, field => field.value);
+  };
+  // 设置值
+  const setFieldValue = (name: string, value: any) => {
+    if (fields[name]) {
+      dispatchFields({
+        type: 'updateField',
+        name,
+        value,
+      });
+    }
+  };
+  // 重置字段值
+  const resetFields = () => {
+    // 重置所有字段的值和错误状态
+    each(fields, (field, name) => {
+      // 如果有 initialValues，使用 initialValues 中的值，否则使用空值
+      const resetValue =
+        initialValues && initialValues[name] !== undefined
+          ? initialValues[name]
+          : '';
+
+      dispatchFields({
+        type: 'updateField',
+        name,
+        value: {
+          value: resetValue,
+          isValid: true,
+          errors: [],
+        },
+      });
+    });
+    // 重置表单状态
+    setForm({ isValid: true, isSubmitting: false });
+  };
   return {
     form,
     setForm,
@@ -208,6 +269,9 @@ function useStore() {
     validateField,
     getFieldValue,
     validateAllFields,
+    resetFields,
+    getAllFields,
+    setFieldValue,
   };
 }
 

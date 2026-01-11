@@ -1,11 +1,19 @@
 // 主要渲染html原生的表单
 
-import { createContext, Dispatch, FC, ReactNode } from 'react';
+import {
+  createContext,
+  Dispatch,
+  FC,
+  ReactNode,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 import './Form.scss';
 import useStore, { FormState } from './useStore';
 import React from 'react';
 import validateAllFields from './useStore';
 import { ValidateError } from 'async-validator';
+import { forwardRef } from 'react';
 export interface FormProps {
   name?: string;
   children?: ReactNode | ReactProps;
@@ -18,6 +26,10 @@ export interface FormProps {
     errors: Record<string, ValidateError[]>
   ) => void;
 }
+export type FormRefType = Omit<
+  ReturnType<typeof useStore>,
+  'form' | 'dispatchFields' | 'fields'
+>;
 export type ReactProps = (formProps: FormState) => ReactNode;
 // 这是ts的一个高级写法，可以获取useStore的返回值类型
 // 而且只获取dispatchFields这个属性
@@ -32,8 +44,8 @@ export const FormContext = createContext<IFormContext>({
   validateField: async (name: string) => {},
   initialValues: {},
 });
-
-export const Form: FC<FormProps> = props => {
+// 注意这里的类型要使用泛型来定义，因为ref是React.RefObject<HTMLFormElement>类型
+export const Form = forwardRef<FormRefType, FormProps>((props, ref) => {
   const {
     name,
     children,
@@ -44,14 +56,18 @@ export const Form: FC<FormProps> = props => {
     onFinishFailed,
   } = props;
   // 初始化store
-  const {
-    form,
-    setForm,
-    fields,
-    dispatchFields,
-    validateField,
-    validateAllFields,
-  } = useStore();
+  const { form, setForm, fields, dispatchFields, ...restProps } =
+    useStore(initialValues);
+  const { validateField, validateAllFields } = restProps;
+
+  // 创建内部 ref 用于 DOM 元素
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // 使用 useImperativeHandle 暴露表单方法给外部 ref
+  useImperativeHandle(ref, () => ({
+    ...restProps,
+    setForm, // 添加 setForm，因为 FormRefType 需要它
+  }));
   // filedItem挂载之后需要修改store的状态，使用dispatchFields进行修改
   // 父传子显然是行不通的
   // 我们采用context进行状态管理
@@ -82,7 +98,12 @@ export const Form: FC<FormProps> = props => {
   }
   return (
     <div>
-      <form className="cream-form" style={style} onSubmit={onFormSubmit}>
+      <form
+        className="cream-form"
+        style={style}
+        onSubmit={onFormSubmit}
+        ref={formRef}
+      >
         <FormContext.Provider value={contextValue}>
           {childrenNode}
         </FormContext.Provider>
@@ -93,7 +114,7 @@ export const Form: FC<FormProps> = props => {
       </div>
     </div>
   );
-};
+});
 
 Form.defaultProps = {
   name: 'form',
