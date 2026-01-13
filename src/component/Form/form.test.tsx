@@ -230,22 +230,6 @@ describe('testing Form component', () => {
   });
 
   it('submit form with invalid values should show the error message', async () => {
-    // 重置 mock 函数，确保每次测试都是干净的
-    if (
-      testProps.onFinishFailed &&
-      typeof testProps.onFinishFailed === 'function' &&
-      'mockClear' in testProps.onFinishFailed
-    ) {
-      (testProps.onFinishFailed as jest.Mock).mockClear();
-    }
-    if (
-      testProps.onFinish &&
-      typeof testProps.onFinish === 'function' &&
-      'mockClear' in testProps.onFinish
-    ) {
-      (testProps.onFinish as jest.Mock).mockClear();
-    }
-
     const { getByText } = screen;
 
     // 1. 清空输入并触发 blur（验证触发事件）
@@ -264,19 +248,12 @@ describe('testing Form component', () => {
       { timeout: 2000 }
     );
 
-    // 3. 额外等待确保状态更新完成
-    await new Promise(resolve => setTimeout(resolve, 200));
-
-    // 4. 提交表单 - 使用 fireEvent.submit 而不是 fireEvent.click
+    // 3. 提交表单 - 使用 fireEvent.submit 而不是 fireEvent.click
     const formElement = container.querySelector('form');
     expect(formElement).toBeInTheDocument();
 
     // 提交表单
     fireEvent.submit(formElement!);
-
-    // 5. 等待表单处理 - 检查 onFinishFailed 是否被调用
-    // 先等待一小段时间，确保异步操作完成
-    await new Promise(resolve => setTimeout(resolve, 100));
 
     await waitFor(
       () => {
