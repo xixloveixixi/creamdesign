@@ -95,9 +95,16 @@ function useStore(initialValues?: Record<string, any>) {
     }
     const result: RuleItem[] = []; // 结果数组
     rules.forEach(rule => {
+      // 过滤掉 null 或 undefined 的规则
+      if (rule == null) {
+        return;
+      }
       if (typeof rule === 'function') {
         const customRule = rule({ getFieldValue });
-        result.push(customRule);
+        // 如果转换后的规则是 null 或 undefined，跳过
+        if (customRule != null) {
+          result.push(customRule);
+        }
       } else {
         // 如果规则是 RuleItem，直接添加
         result.push(rule);
@@ -141,7 +148,10 @@ function useStore(initialValues?: Record<string, any>) {
   const validateAllFields = async () => {
     let fieldErrors: Record<string, ValidateError[]> = {};
     // 获取值和规则，我们使用lodash-es的mapValues方法
+    // 注意：这里直接使用 fields，因为 useReducer 返回的 fields 总是最新的
+    console.log('validateAllFields - fields:', fields);
     const valueMap = mapValues(fields, field => field.value);
+    console.log('validateAllFields - valueMap:', valueMap);
     // 进行转换：将CustomRule[]转换为RuleItem[]
     // 只处理有规则的字段
     const rulesMap: Record<string, RuleItem[]> = {};

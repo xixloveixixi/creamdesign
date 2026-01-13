@@ -20,6 +20,8 @@ beforeAll(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   // 修复 JSDOM 中 form.submit() 的问题
   HTMLFormElement.prototype.submit = jest.fn();
+  // 允许 console.log 输出，方便调试
+  // jest.spyOn(console, 'log').mockImplementation(() => {});
 });
 
 // 测试后恢复
@@ -28,50 +30,91 @@ afterAll(() => {
   jest.restoreAllMocks();
 });
 // Mock lodash-es 以解决 Jest 无法解析 ES6 模块的问题
-jest.mock('lodash-es', () => ({
-  each: jest.fn((obj: any, iteratee: any) => {
-    if (Array.isArray(obj)) {
-      obj.forEach(iteratee);
-    } else if (typeof obj === 'object' && obj !== null) {
-      Object.keys(obj).forEach(key => iteratee(obj[key], key));
-    }
-  }),
-  mapValues: jest.fn((obj: any, iteratee: any) => {
-    // 如果 obj 是 null 或 undefined，返回空对象
-    if (obj == null) {
-      return {};
-    }
-    // 如果 obj 不是对象类型，返回空对象
-    if (typeof obj !== 'object') {
-      return {};
-    }
-    // 处理对象，映射每个字段的值
-    const result: any = {};
-    // 确保 iteratee 是一个函数
-    if (typeof iteratee !== 'function') {
-      return result;
-    }
-    Object.keys(obj).forEach(key => {
-      const field = obj[key];
-      // 如果字段存在，使用 iteratee 处理
-      if (field != null) {
-        result[key] = iteratee(field, key);
-      }
-    });
+const mapValuesImpl = (obj: any, iteratee: any) => {
+  // 如果 obj 是 null 或 undefined，返回空对象
+  if (obj == null) {
+    return {};
+  }
+  // 如果 obj 不是对象类型，返回空对象
+  if (typeof obj !== 'object') {
+    return {};
+  }
+  // 处理对象，映射每个字段的值
+  const result: any = {};
+  // 确保 iteratee 是一个函数
+  if (typeof iteratee !== 'function') {
     return result;
-  }),
+  }
+  Object.keys(obj).forEach(key => {
+    const field = obj[key];
+    // 如果字段存在，使用 iteratee 处理
+    if (field != null) {
+      result[key] = iteratee(field, key);
+    }
+  });
+  return result;
+};
+
+const eachImpl = (obj: any, iteratee: any) => {
+  if (Array.isArray(obj)) {
+    obj.forEach(iteratee);
+  } else if (typeof obj === 'object' && obj !== null) {
+    Object.keys(obj).forEach(key => iteratee(obj[key], key));
+  }
+};
+
+jest.mock('lodash-es', () => ({
+  each: eachImpl,
+  mapValues: mapValuesImpl,
 }));
+
+// 使用与 BasicForm 相同的自定义验证规则
+const customRule: CustomRule[] = [
+  { type: 'string', required: true, message: ' 请再次输入密码' },
+  { min: 3, message: '用户名长度不能小于3位' },
+  { max: 10, message: '用户名长度不能大于10位' },
+  (({ getFieldValue }) => {
+    return {
+      validator: (rule: any, value: any, callback: (error?: Error) => void) => {
+        const password = getFieldValue('password');
+        const passwordConfirm = getFieldValue('passwordConfirm');
+        // 使用 Promise 进行验证，但通过 callback 返回结果
+        // 验证逻辑：如果密码不一致，reject；否则 resolve
+        const validationPromise =
+          password !== passwordConfirm
+            ? Promise.reject({ message: '密码和确认密码不一致' })
+            : Promise.resolve();
+
+        validationPromise
+          .then(() => {
+            // 验证通过
+            callback();
+          })
+          .catch((error: any) => {
+            // 验证失败
+            const message = error?.message || '验证失败';
+            callback(new Error(message));
+          });
+      },
+    };
+  }) as CustomRuleFunc,
+];
 
 const testProps: FormProps = {
   name: 'test-form',
-  initialValues: { name: 'cream', password: '12345', confirmPwd: '23456' },
+  initialValues: {
+    username: '',
+    password: '',
+    passwordConfirm: '',
+    email: '',
+  },
   onFinish: jest.fn(),
   onFinishFailed: jest.fn(),
 };
 
-let nameInput: HTMLInputElement;
-let pwdInput: HTMLInputElement;
-let conPwdInput: HTMLInputElement;
+let usernameInput: HTMLInputElement;
+let passwordInput: HTMLInputElement;
+let passwordConfirmInput: HTMLInputElement;
 let submitButton: HTMLButtonElement;
 
 describe('testing Form component', () => {
@@ -79,180 +122,239 @@ describe('testing Form component', () => {
   beforeEach(async () => {
     const result = render(
       <Form {...testProps}>
-        <FormItem
-          label="Name"
-          name="name"
-          rules={[
-            { type: 'string', required: true, message: 'name error' },
-            { type: 'string', min: 3, message: 'less than 3' },
-          ]}
-          valuePropsName="value"
-          trigger="onChange"
-          getValueFormEvent={(e: any) => e.target.value}
-        >
-          <Input />
-        </FormItem>
-        <FormItem
-          label="Password"
-          name="password"
-          rules={[
-            { type: 'string', required: true, message: 'password error' },
-            { type: 'string', min: 4, message: 'less then 4' },
-          ]}
-        >
-          <Input type="password" />
-        </FormItem>
-        <FormItem
-          label="Confirm"
-          name="confirmPwd"
-          rules={[
-            {
-              type: 'string',
-              required: true,
-              message: 'confirm password error',
-            },
-            { type: 'string', min: 4, message: 'less then 4' },
-            (({ getFieldValue }) => ({
-              validator: (
-                rule: any,
-                value: any,
-                callback: (error?: Error) => void
-              ) => {
-                const password = getFieldValue('password');
-                if (value !== password) {
-                  callback(new Error('Do not match!'));
-                } else {
-                  callback();
-                }
-              },
-            })) as CustomRuleFunc,
-          ]}
-        >
-          <Input type="password" />
-        </FormItem>
-        <Button type="submit" btnType={ButtonType.Primary}>
-          Log in
-        </Button>
+        {formState => {
+          return (
+            <>
+              <FormItem
+                name="username"
+                label="用户名"
+                rules={[
+                  {
+                    required: true,
+                    message: '请输入用户名',
+                  },
+                  {
+                    min: 3,
+                    message: '用户名长度不能小于3位',
+                  },
+                  {
+                    max: 10,
+                    message: '用户名长度不能大于10位',
+                  },
+                ]}
+                validateTrigger="onBlur"
+                valuePropsName="value"
+                trigger="onChange"
+                // getValueFormEvent={(e: any) => e.target.value}
+              >
+                <input type="text" />
+              </FormItem>
+              <FormItem
+                name="password"
+                label="密码"
+                valuePropsName="value"
+                trigger="onChange"
+                getValueFormEvent={(e: any) => e.target.value}
+                rules={[
+                  {
+                    required: true,
+                    message: '请输入密码',
+                  },
+                  { min: 8, message: '密码长度不能小于8位' },
+                  { max: 16, message: '密码长度不能大于16位' },
+                ]}
+                validateTrigger="onBlur"
+              >
+                <input type="password" />
+              </FormItem>
+              <FormItem
+                name="passwordConfirm"
+                label="确认密码"
+                valuePropsName="value"
+                trigger="onChange"
+                getValueFormEvent={(e: any) => e.target.value}
+                rules={customRule}
+                validateTrigger="onBlur"
+              >
+                <input type="password" />
+              </FormItem>
+              <FormItem
+                name="email"
+                valuePropsName="value"
+                trigger="onChange"
+                getValueFormEvent={(e: any) => e.target.value}
+              >
+                <input type="email" />
+              </FormItem>
+              <Button btnType={ButtonType.Primary} type="submit">
+                {formState.isValid ? '提交' : '提交失败'}
+              </Button>
+            </>
+          );
+        }}
       </Form>
     );
 
     container = result.container;
 
     // 等待字段注册完成
-    // 注意：password 类型的 input 无法使用 getByDisplayValue，因为浏览器不会显示其值
-    const { getByDisplayValue, getByText } = screen;
+    const { getByLabelText, getByText } = screen;
 
-    // 等待 name input 渲染完成
-    nameInput = getByDisplayValue('cream') as HTMLInputElement;
-
-    // 等待 password input 渲染完成
-    // 使用 container.querySelectorAll 查找所有 password 类型的 input
-    // 由于 Input 组件被包裹在多层 div 中，且 label 和 input 不在同一父元素中
-    // 直接查找所有 password input 更可靠
+    // 等待输入框渲染完成
     await waitFor(() => {
-      const passwordInputs = container.querySelectorAll(
-        'input[type="password"]'
-      );
-      expect(passwordInputs.length).toBeGreaterThanOrEqual(2);
+      expect(getByLabelText('用户名')).toBeInTheDocument();
+      expect(getByLabelText('密码')).toBeInTheDocument();
+      expect(getByLabelText('确认密码')).toBeInTheDocument();
     });
 
-    const passwordInputs = container.querySelectorAll('input[type="password"]');
-    pwdInput = passwordInputs[0] as HTMLInputElement; // 第一个 password input (Password)
-    conPwdInput = passwordInputs[1] as HTMLInputElement; // 第二个 password input (Confirm)
+    // 使用 getByLabelText 获取输入框（更可靠）
+    usernameInput = getByLabelText('用户名') as HTMLInputElement;
+    passwordInput = getByLabelText('密码') as HTMLInputElement;
+    passwordConfirmInput = getByLabelText('确认密码') as HTMLInputElement;
 
-    submitButton = getByText('Log in') as HTMLButtonElement;
+    submitButton = getByText('提交') as HTMLButtonElement;
   });
 
   it('should render the correct Form component', () => {
-    // 在这里就检查出来了一个错误，label如果没有和input嵌套就要添加for和id属性，不然会报错
-    // 但是input是我门使用cloneElement进行混合的，添加id属性即可
-    const { getByText } = screen;
-    // should contains two labels
-    expect(getByText('Name')).toBeInTheDocument();
-    expect(getByText('Password')).toBeInTheDocument();
-    expect(getByText('Confirm')).toBeInTheDocument();
-    // should fill in three inputs
-    expect(nameInput).toBeInTheDocument();
-    expect(pwdInput).toBeInTheDocument();
-    expect(conPwdInput).toBeInTheDocument();
+    const { getByText, getByLabelText } = screen;
+    // should contains labels
+    expect(getByText('用户名')).toBeInTheDocument();
+    expect(getByText('密码')).toBeInTheDocument();
+    expect(getByText('确认密码')).toBeInTheDocument();
+    // should fill in inputs
+    expect(usernameInput).toBeInTheDocument();
+    expect(passwordInput).toBeInTheDocument();
+    expect(passwordConfirmInput).toBeInTheDocument();
     // should render the submit button
     expect(submitButton).toBeInTheDocument();
   });
 
-  //   it('submit form with invalid values should show the error message', async () => {
-  //     const { getByText } = screen;
+  it('submit form with invalid values should show the error message', async () => {
+    // 重置 mock 函数，确保每次测试都是干净的
+    if (
+      testProps.onFinishFailed &&
+      typeof testProps.onFinishFailed === 'function' &&
+      'mockClear' in testProps.onFinishFailed
+    ) {
+      (testProps.onFinishFailed as jest.Mock).mockClear();
+    }
+    if (
+      testProps.onFinish &&
+      typeof testProps.onFinish === 'function' &&
+      'mockClear' in testProps.onFinish
+    ) {
+      (testProps.onFinish as jest.Mock).mockClear();
+    }
 
-  //     // 1. 清空输入并触发 blur（验证触发事件）
-  //     fireEvent.change(nameInput, { target: { value: '' } });
-  //     fireEvent.blur(nameInput);
+    const { getByText } = screen;
 
-  //     fireEvent.change(pwdInput, { target: { value: '' } });
-  //     fireEvent.blur(pwdInput);
+    // 1. 清空输入并触发 blur（验证触发事件）
+    fireEvent.change(usernameInput, { target: { value: '' } });
+    fireEvent.blur(usernameInput);
 
-  //     // 2. 等待验证完成和错误信息显示
-  //     await waitFor(
-  //       () => {
-  //         expect(getByText('name error')).toBeInTheDocument();
-  //         expect(getByText('password error')).toBeInTheDocument();
-  //       },
-  //       { timeout: 2000 }
-  //     );
+    fireEvent.change(passwordInput, { target: { value: '' } });
+    fireEvent.blur(passwordInput);
 
-  //     // 3. 额外等待确保状态更新完成
-  //     await new Promise(resolve => setTimeout(resolve, 100));
+    // 2. 等待验证完成和错误信息显示
+    await waitFor(
+      () => {
+        expect(getByText('请输入用户名')).toBeInTheDocument();
+        expect(getByText('请输入密码')).toBeInTheDocument();
+      },
+      { timeout: 2000 }
+    );
 
-  //     // 4. 提交表单 - 使用 fireEvent.submit 而不是 fireEvent.click
-  //     const formElement = container.querySelector('form');
-  //     expect(formElement).toBeInTheDocument();
-  //     fireEvent.submit(formElement!);
+    // 3. 额外等待确保状态更新完成
+    await new Promise(resolve => setTimeout(resolve, 200));
 
-  //     // 5. 等待表单处理
-  //     await waitFor(
-  //       () => {
-  //         // 检查 onFinishFailed 是否被调用
-  //         expect(testProps.onFinishFailed).toHaveBeenCalled();
-  //       },
-  //       { timeout: 3000 }
-  //     );
-  //   });
+    // 4. 提交表单 - 使用 fireEvent.submit 而不是 fireEvent.click
+    const formElement = container.querySelector('form');
+    expect(formElement).toBeInTheDocument();
+
+    // 提交表单
+    fireEvent.submit(formElement!);
+
+    // 5. 等待表单处理 - 检查 onFinishFailed 是否被调用
+    // 先等待一小段时间，确保异步操作完成
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    await waitFor(
+      () => {
+        // 检查 onFinishFailed 是否被调用
+        expect(testProps.onFinishFailed).toHaveBeenCalled();
+      },
+      { timeout: 5000 }
+    );
+
+    // 验证调用参数（在 waitFor 之后，确保函数已被调用）
+    expect(testProps.onFinishFailed).toHaveBeenCalledWith(
+      expect.objectContaining({
+        username: '',
+        password: '',
+        passwordConfirm: '',
+        email: '',
+      }),
+      expect.objectContaining({
+        username: expect.any(Array),
+        password: expect.any(Array),
+        passwordConfirm: expect.any(Array),
+      })
+    );
+
+    // 确保 onFinish 没有被调用
+    expect(testProps.onFinish).not.toHaveBeenCalled();
+  });
 
   it('change single input to invalid values should trigger the validate', async () => {
     const { getByText } = screen;
-    // name input, type: string
-    fireEvent.change(nameInput, { target: { value: '' } });
-    fireEvent.blur(nameInput);
+    // username input, type: string
+    fireEvent.change(usernameInput, { target: { value: '' } });
+    fireEvent.blur(usernameInput);
 
     await waitFor(() => {
-      expect(getByText('name error')).toBeInTheDocument();
+      expect(getByText('请输入用户名')).toBeInTheDocument();
     });
 
-    fireEvent.change(nameInput, { target: { value: '12' } });
-    fireEvent.blur(nameInput);
+    fireEvent.change(usernameInput, { target: { value: '12' } });
+    fireEvent.blur(usernameInput);
 
     await waitFor(() => {
-      expect(getByText('less than 3')).toBeInTheDocument();
+      expect(getByText('用户名长度不能小于3位')).toBeInTheDocument();
     });
   });
 
   it('custom rules should work', async () => {
     const { getByText, queryByText } = screen;
-    // change and blur confirmPwd
-    fireEvent.change(conPwdInput, { target: { value: '23456' } });
-    fireEvent.blur(conPwdInput);
+
+    // 先设置密码
+    fireEvent.change(passwordInput, { target: { value: '12345678' } });
+    fireEvent.blur(passwordInput);
+
+    // change and blur passwordConfirm
+    fireEvent.change(passwordConfirmInput, { target: { value: '87654321' } });
+    fireEvent.blur(passwordConfirmInput);
 
     await waitFor(() => {
-      expect(getByText('Do not match!')).toBeInTheDocument();
+      expect(getByText('密码和确认密码不一致')).toBeInTheDocument();
     });
 
     // change to the same
-    fireEvent.change(conPwdInput, { target: { value: '12345' } });
-    fireEvent.blur(conPwdInput);
+    fireEvent.change(passwordConfirmInput, { target: { value: '12345678' } });
+    fireEvent.blur(passwordConfirmInput);
 
     await waitFor(() => {
-      expect(queryByText('Do not match!')).not.toBeInTheDocument();
+      expect(queryByText('密码和确认密码不一致')).not.toBeInTheDocument();
     });
 
-    fireEvent.click(submitButton);
+    // 设置用户名以满足验证要求
+    fireEvent.change(usernameInput, { target: { value: 'testuser' } });
+    fireEvent.blur(usernameInput);
+
+    // 提交表单
+    const formElement = container.querySelector('form');
+    expect(formElement).toBeInTheDocument();
+    fireEvent.submit(formElement!);
+
     // submit the form with the right data
     await waitFor(() => {
       expect(testProps.onFinish).toHaveBeenCalled();

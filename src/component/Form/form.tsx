@@ -83,6 +83,10 @@ export const Form = forwardRef<FormRefType, FormProps>((props, ref) => {
     e.stopPropagation();
     // 执行表单验证
     const { isValid, errors, values } = await validateAllFields();
+    // 添加调试信息
+    console.log('onFormSubmit - isValid:', isValid);
+    console.log('onFormSubmit - errors:', errors);
+    console.log('onFormSubmit - values:', values);
     // 根据验证结果调用相应的回调
     if (isValid) {
       if (onFinish) {
