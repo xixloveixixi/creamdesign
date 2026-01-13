@@ -19,9 +19,10 @@ export interface FormItemProps {
   rules?: CustomRule[];
   validateTrigger?: string;
   // 添加三个属性来适应不同的事件和value属性名称
-  valuePropsName: string;
-  trigger: string;
-  getValueFormEvent: (e: any) => any;
+  // 这些属性有默认值，所以设为可选，但组件内部通过 SomeRequired 确保存在
+  valuePropsName?: string;
+  trigger?: string;
+  getValueFormEvent?: (e: any) => any;
 }
 export const FormItem: FC<FormItemProps> = props => {
   const {
@@ -32,10 +33,17 @@ export const FormItem: FC<FormItemProps> = props => {
     error,
     className,
     valuePropsName,
-    trigger,
-    validateTrigger, // 验证触发事件
-    getValueFormEvent,
-  } = props as SomeRequired<FormItemProps, 'validateTrigger' | 'rules'>;
+    trigger = 'onChange',
+    validateTrigger = 'onBlur', // 验证触发事件
+    getValueFormEvent = (e: any) => e.target.value,
+  } = props as SomeRequired<
+    FormItemProps,
+    | 'validateTrigger'
+    | 'rules'
+    | 'valuePropsName'
+    | 'trigger'
+    | 'getValueFormEvent'
+  >;
   const rowClassName = classNames(
     'cream-row',
     label ? '' : 'cream-row-no-label',
@@ -79,17 +87,11 @@ export const FormItem: FC<FormItemProps> = props => {
   // Q:需要适应不同的事件和value属性名称
   // 需要验证children类型并显示警告
   // 目前仅支持单一表单元素作为children
-  propsList[valuePropsName!] = value;
-  propsList[trigger!] = onValueUpdate;
-  // 默认在onBlur事件触发验证
-  // 可通过validateTrigger属性自定义触发事件
-  // 验证规则rules作为可选属性传递给FormItem
-  if (rules && rules.length > 0) {
-    const trigger = validateTrigger;
-    propsList[trigger] = async () => {
-      await validateField(name!);
-    };
-  }
+  // 使用默认值确保这些属性不为 undefined
+  const finalValuePropsName = valuePropsName || 'value';
+  const finalTrigger = trigger || 'onChange';
+  propsList[finalValuePropsName] = value;
+  propsList[finalTrigger] = onValueUpdate;
   // 2.我们要获取children数组的第一个元素
   const childList = React.Children.toArray(children);
   // 对childList进行判断，只有一个元素才行
@@ -101,10 +103,12 @@ export const FormItem: FC<FormItemProps> = props => {
   // 默认在onBlur事件触发验证
   // 可通过validateTrigger属性自定义触发事件
   // 验证规则rules作为可选属性传递给FormItem
-  if (rules && rules.length > 0 && validateTrigger) {
-    const existingHandler = child.props[validateTrigger];
+  // 使用默认值确保 validateTrigger 不为 undefined
+  const finalValidateTrigger = validateTrigger || 'onBlur';
+  if (rules && rules.length > 0) {
+    const existingHandler = child.props[finalValidateTrigger];
     // 合并事件处理函数，避免覆盖原有的处理函数
-    propsList[validateTrigger] = async (e: any) => {
+    propsList[finalValidateTrigger] = async (e: any) => {
       // 先执行原有的事件处理函数
       if (existingHandler) {
         existingHandler(e);
@@ -115,9 +119,14 @@ export const FormItem: FC<FormItemProps> = props => {
   }
 
   // 3.使用cloneElement,混合这个child以及手动的属性列表
+  // 过滤掉 undefined 值，避免 React 警告
+  const filteredPropsList = Object.fromEntries(
+    Object.entries(propsList).filter(([_, value]) => value !== undefined)
+  );
   const clonedChild = React.cloneElement(child, {
     ...child.props,
-    ...propsList,
+    ...filteredPropsList,
+    id: name,
   });
   // 在挂载的时候挂载一次form-item
   useEffect(() => {
@@ -154,7 +163,7 @@ export const FormItem: FC<FormItemProps> = props => {
     <div className={rowClassName}>
       {label && (
         <div className={labelClassName}>
-          <label>{label}</label>
+          <label htmlFor={name}>{label}</label>
         </div>
       )}
       <div className={controlClassName}>

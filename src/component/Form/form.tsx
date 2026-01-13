@@ -84,10 +84,14 @@ export const Form = forwardRef<FormRefType, FormProps>((props, ref) => {
     // 执行表单验证
     const { isValid, errors, values } = await validateAllFields();
     // 根据验证结果调用相应的回调
-    if (isValid && onFinish) {
-      onFinish(values);
-    } else if (onFinishFailed) {
-      onFinishFailed(values, errors);
+    if (isValid) {
+      if (onFinish) {
+        onFinish(values);
+      }
+    } else {
+      if (onFinishFailed) {
+        onFinishFailed(values, errors);
+      }
     }
   }
   let childrenNode = null;

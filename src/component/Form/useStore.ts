@@ -140,7 +140,6 @@ function useStore(initialValues?: Record<string, any>) {
   // 整体表单验证函数
   const validateAllFields = async () => {
     let fieldErrors: Record<string, ValidateError[]> = {};
-    let isValid = true;
     // 获取值和规则，我们使用lodash-es的mapValues方法
     const valueMap = mapValues(fields, field => field.value);
     // 进行转换：将CustomRule[]转换为RuleItem[]
@@ -167,7 +166,8 @@ function useStore(initialValues?: Record<string, any>) {
     // 创建Schema实例进行验证
     const validator = new Schema(rulesMap);
     // 设置表单状态为开始验证
-    setForm({ ...form, isSubmitting: true });
+    // 使用函数式更新，避免闭包问题
+    setForm(prevForm => ({ ...prevForm, isSubmitting: true }));
     try {
       await validator.validate(valueMap);
       // 验证通过，清除所有字段的错误
@@ -183,9 +183,10 @@ function useStore(initialValues?: Record<string, any>) {
           });
         }
       });
+      // 没有错误
+      fieldErrors = {};
     } catch (e: any) {
-      isValid = false;
-      // async-validator 的错误对象格式：{ errors: ValidateError[], fields: Record<string, ValidateError[]> }
+      // async-validator 的错误对象格式
       const errorFields = e.fields || {};
       fieldErrors = errorFields;
 
@@ -193,7 +194,6 @@ function useStore(initialValues?: Record<string, any>) {
       each(fields, (field, name) => {
         const fieldErrorList = errorFields[name] || [];
         if (fieldErrorList.length > 0) {
-          // 字段有错误
           dispatchFields({
             type: 'updateField',
             name,
@@ -203,7 +203,6 @@ function useStore(initialValues?: Record<string, any>) {
             },
           });
         } else if (field.rules && field.rules.length > 0) {
-          // 字段没有错误且有规则，验证通过
           dispatchFields({
             type: 'updateField',
             name,
@@ -215,11 +214,22 @@ function useStore(initialValues?: Record<string, any>) {
         }
       });
     } finally {
-      setForm({ ...form, isSubmitting: false, isValid });
+      // 基于 fieldErrors 计算最终是否有效
+      const finalIsValid = Object.keys(fieldErrors).length === 0;
+      console.log('fieldErrors 数量:', Object.keys(fieldErrors).length);
+      console.log('finalIsValid:', finalIsValid);
+
+      // 确保使用函数式更新，避免状态合并问题
+      setForm(prevForm => ({
+        ...prevForm,
+        isSubmitting: false,
+        isValid: finalIsValid,
+      }));
     }
-    // 返回信息为
+
+    // 返回信息
     return {
-      isValid,
+      isValid: Object.keys(fieldErrors).length === 0, // 基于错误计算
       errors: fieldErrors,
       values: valueMap,
     };
