@@ -1,7 +1,8 @@
 import { Meta } from '@storybook/react';
 import { FormItem } from './formItem';
 import { Form, FormRefType } from './form';
-import Button, { ButtonType } from '../Button';
+import Button from '../Button';
+import { ButtonType } from '../Button/buttion';
 import { CustomRule } from './useStore';
 import { useRef } from 'react';
 const meta: Meta<typeof Form> = {
