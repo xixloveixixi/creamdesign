@@ -8,6 +8,15 @@
 @import '../../style/_mixin.scss'; // Mixins
 
 // ===== 表格容器样式 =====
+.cream-table-container {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  @include card-shadow(1);
+}
+
 .cream-table {
   width: 100%;
   border-collapse: collapse;
@@ -18,9 +27,7 @@
   font-weight: $font-weight-base;
   line-height: $line-height-base;
   color: $color-text-primary;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  @include card-shadow(1);
+  // 移除 overflow: hidden，让外层容器控制滚动
 
   // 表格头部样式 - 使用柔和的紫色背景
   thead {

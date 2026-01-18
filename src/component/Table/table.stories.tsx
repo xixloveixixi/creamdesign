@@ -170,7 +170,11 @@ export const BasicTable = () => {
     },
   ];
 
-  return <Table<DataType> columns={columns} dataSource={data} />;
+  return (
+    <div style={{ width: '500px', height: '500px' }}>
+      <Table<DataType> columns={columns} dataSource={data} />
+    </div>
+  );
 };
 
 // 带对齐的表格

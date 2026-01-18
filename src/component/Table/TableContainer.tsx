@@ -87,11 +87,13 @@ const TableContainer = <T extends Record<string, any> = any>(
 
   return (
     <TableContext.Provider value={contextValue}>
-      <table className="cream-table">
-        <TableHeader />
-        <TableBody />
-        <TableFoot />
-      </table>
+      <div className="cream-table-container">
+        <table className="cream-table">
+          <TableHeader />
+          <TableBody />
+          <TableFoot />
+        </table>
+      </div>
     </TableContext.Provider>
   );
 };
