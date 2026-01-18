@@ -1,0 +1,674 @@
+/**
+ * Table组件样式
+ * 基于CreamDesign设计系统
+ * 充分利用色彩系统
+ */
+
+@import '../../style/_creamdesign.scss'; // 颜色和变量
+@import '../../style/_mixin.scss'; // Mixins
+
+// ===== 表格容器样式 =====
+.cream-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  background-color: $color-background;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  font-weight: $font-weight-base;
+  line-height: $line-height-base;
+  color: $color-text-primary;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  @include card-shadow(1);
+
+  // 表格头部样式 - 使用柔和的紫色背景
+  thead {
+    background-color: $color-primary-100;
+    border-bottom: 2px solid $color-primary-300;
+
+    th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: $font-weight-bold;
+      font-size: $font-size-sm;
+      color: $color-primary-100 !important; // 确保表头文字清晰可见
+      border-bottom: 2px solid $color-primary-300;
+      position: relative;
+      transition: background-color 0.2s ease;
+
+      // 对齐方式
+      &.text-left {
+        text-align: left;
+      }
+      &.text-center {
+        text-align: center;
+      }
+      &.text-right {
+        text-align: right;
+      }
+    }
+  }
+
+  // 表格主体样式
+  tbody {
+    tr {
+      border-bottom: 1px solid rgba($color-primary-200, 0.5);
+      background-color: $color-background;
+      transition: all 0.2s ease;
+
+      // 斑马纹效果 - 使用柔和的紫色交替
+      &:nth-child(even) {
+        background-color: $color-background;
+      }
+
+      &:nth-child(odd) {
+        background-color: $color-primary-100;
+      }
+
+      // 行悬停效果 - 使用浅紫色
+      &:hover {
+        background-color: $color-primary-200 !important;
+        box-shadow: inset 0 0 0 1px $color-primary-300;
+      }
+
+      // 选中行样式 - 使用主紫色
+      &.selected {
+        background-color: $color-primary-200;
+        box-shadow: inset 0 0 0 2px $color-primary-500;
+
+        &:hover {
+          background-color: $color-primary-300;
+        }
+      }
+
+      // 激活行（点击）
+      &.active {
+        background-color: $color-primary-200;
+      }
+    }
+
+    td {
+      padding: 0.875rem 1rem;
+      text-align: left;
+      font-family: $font-family-base;
+      font-size: $font-size-base;
+      font-weight: $font-weight-base;
+      line-height: $line-height-base;
+      color: $color-text-primary !important; // 确保文字颜色始终可见
+      border-bottom: 1px solid rgba($color-primary-200, 0.5);
+
+      // 对齐方式
+      &.text-left {
+        text-align: left;
+      }
+      &.text-center {
+        text-align: center;
+      }
+      &.text-right {
+        text-align: right;
+      }
+
+      // 状态颜色
+      &.status-success {
+        color: $color-success;
+        font-weight: $font-weight-bold;
+      }
+
+      &.status-warning {
+        color: $color-warning;
+        font-weight: $font-weight-bold;
+      }
+
+      &.status-error {
+        color: $color-error;
+        font-weight: $font-weight-bold;
+      }
+
+      &.status-info {
+        color: $color-info;
+        font-weight: $font-weight-bold;
+      }
+
+      // 固定列样式
+      &.fixed-left {
+        position: sticky;
+        left: 0;
+        background-color: inherit;
+        z-index: 5;
+        box-shadow: 2px 0 8px rgba($color-primary-900, 0.1);
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: -8px;
+          width: 8px;
+          height: 100%;
+          background: linear-gradient(
+            to right,
+            rgba($color-primary-100, 1),
+            rgba($color-primary-100, 0)
+          );
+        }
+      }
+
+      &.fixed-right {
+        position: sticky;
+        right: 0;
+        background-color: inherit;
+        z-index: 5;
+        box-shadow: -2px 0 8px rgba($color-primary-900, 0.1);
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -8px;
+          width: 8px;
+          height: 100%;
+          background: linear-gradient(
+            to left,
+            rgba($color-primary-100, 1),
+            rgba($color-primary-100, 0)
+          );
+        }
+      }
+    }
+  }
+
+  // 表格尾部样式
+  tfoot {
+    background-color: $color-primary-100;
+    border-top: 2px solid $color-primary-300;
+
+    td {
+      padding: 1rem;
+      text-align: left;
+      font-family: $font-family-base;
+      font-size: $font-size-base;
+      font-weight: $font-weight-bold;
+      line-height: $line-height-base;
+      color: $color-text-primary;
+      border-top: 2px solid $color-primary-300;
+    }
+  }
+}
+
+// ===== 表格变体样式 =====
+
+// 紧凑型表格
+.cream-table-compact {
+  thead th,
+  tbody td,
+  tfoot td {
+    padding: 0.5rem 0.75rem;
+    font-size: $font-size-sm;
+  }
+
+  thead {
+    th {
+      background-color: $color-primary-100;
+    }
+  }
+}
+
+// 宽松型表格
+.cream-table-relaxed {
+  thead th,
+  tbody td,
+  tfoot td {
+    padding: 1.25rem 1.5rem;
+  }
+
+  tbody {
+    tr:hover {
+      background-color: $color-primary-100;
+    }
+  }
+}
+
+// 无边框表格
+.cream-table-borderless {
+  border: none;
+  box-shadow: none;
+
+  thead {
+    background-color: transparent;
+    border-bottom: 1px solid $color-primary-200;
+
+    th {
+      background-color: transparent;
+      border-bottom: 1px solid $color-primary-200;
+      color: $color-primary-700;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: none;
+
+      &:hover {
+        background-color: $color-primary-100;
+      }
+    }
+
+    td {
+      border-bottom: none;
+    }
+  }
+}
+
+// 带边框表格
+.cream-table-bordered {
+  border: 2px solid $color-primary-200;
+
+  thead th,
+  tbody td,
+  tfoot td {
+    border: 1px solid $color-primary-100;
+  }
+
+  thead {
+    background-color: $color-primary-100;
+    th {
+      border-bottom: 2px solid $color-primary-300;
+    }
+  }
+}
+
+// 条纹表格
+.cream-table-striped {
+  tbody {
+    tr {
+      &:nth-child(even) {
+        background-color: $color-primary-100;
+
+        &:hover {
+          background-color: $color-primary-200;
+          box-shadow: inset 0 0 0 1px $color-primary-300;
+        }
+
+        &.selected {
+          background-color: $color-primary-200;
+          box-shadow: inset 0 0 0 2px $color-primary-500;
+        }
+      }
+
+      &:nth-child(odd) {
+        background-color: $color-background;
+
+        &:hover {
+          background-color: $color-primary-100;
+          box-shadow: inset 0 0 0 1px $color-primary-200;
+        }
+
+        &.selected {
+          background-color: $color-primary-200;
+          box-shadow: inset 0 0 0 2px $color-primary-500;
+        }
+      }
+    }
+  }
+}
+
+// 彩色表头变体
+.cream-table-primary-header {
+  thead {
+    background: linear-gradient(135deg, $color-primary-500, $color-primary-700);
+
+    th {
+      color: white;
+      border-bottom: none;
+      font-weight: $font-weight-bold;
+      text-shadow: 0 1px 1px rgba($color-neutral-900, 0.2);
+    }
+  }
+}
+
+// 卡片式表格
+.cream-table-card {
+  background-color: $color-card;
+  border: 1px solid $color-primary-200;
+  border-radius: 0.5rem;
+
+  thead {
+    background-color: $color-primary-100;
+    border-radius: 0.5rem 0.5rem 0 0;
+    border-bottom: 1px solid $color-primary-200;
+  }
+
+  tbody {
+    tr:last-child {
+      td:first-child {
+        border-bottom-left-radius: 0.5rem;
+      }
+      td:last-child {
+        border-bottom-right-radius: 0.5rem;
+      }
+    }
+  }
+}
+
+// ===== 单元格特殊样式 =====
+// 可编辑单元格
+.editable-cell {
+  &:hover {
+    background-color: $color-primary-100;
+    cursor: pointer;
+
+    &::after {
+      content: '✎';
+      margin-left: 0.5rem;
+      color: $color-primary-500;
+      opacity: 0.5;
+    }
+  }
+
+  &.editing {
+    background-color: $color-secondary-blue-100;
+    outline: 2px solid $color-info;
+  }
+}
+
+// 链接单元格
+.cell-link {
+  color: $color-primary-600;
+  text-decoration: none;
+  font-weight: $font-weight-bold;
+
+  &:hover {
+    color: $color-primary-700;
+    text-decoration: underline;
+  }
+}
+
+// 标签单元格
+.cell-tags {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+
+  .tag {
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: $font-weight-bold;
+
+    &.tag-primary {
+      background-color: $color-primary-300;
+      color: $color-primary-900;
+    }
+
+    &.tag-blue {
+      background-color: $color-secondary-blue-300;
+      color: $color-neutral-900;
+    }
+
+    &.tag-pink {
+      background-color: $color-secondary-pink-300;
+      color: $color-neutral-900;
+    }
+
+    &.tag-green {
+      background-color: $color-secondary-green-300;
+      color: $color-neutral-900;
+    }
+  }
+}
+
+// 操作单元格
+.cell-actions {
+  display: flex;
+  gap: 0.5rem;
+
+  .btn-action {
+    padding: 0.25rem 0.5rem;
+    border: none;
+    background: transparent;
+    color: $color-primary-600;
+    cursor: pointer;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: $color-primary-100;
+      color: $color-primary-700;
+    }
+
+    &.btn-danger:hover {
+      background-color: rgba($color-error, 0.1);
+      color: $color-error;
+    }
+
+    &.btn-success:hover {
+      background-color: rgba($color-success, 0.1);
+      color: $color-success;
+    }
+  }
+}
+
+// ===== 响应式设计 =====
+@media (max-width: 768px) {
+  .cream-table {
+    font-size: $font-size-sm;
+
+    thead th,
+    tbody td,
+    tfoot td {
+      padding: 0.625rem 0.75rem;
+    }
+  }
+
+  // 移动端隐藏表头，使用卡片布局
+  .cream-table-responsive {
+    thead {
+      display: none;
+    }
+
+    tbody {
+      tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 1px solid $color-primary-200;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        background-color: $color-background;
+        @include card-shadow(1);
+
+        &:hover {
+          background-color: $color-primary-100;
+          box-shadow: 0 4px 12px rgba($color-primary-900, 0.1);
+        }
+
+        td {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.75rem 0;
+          border-bottom: 1px solid $color-divider;
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          // 添加标签
+          &::before {
+            content: attr(data-label);
+            font-weight: $font-weight-bold;
+            color: $color-primary-700;
+            min-width: 100px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// ===== 深色模式支持 =====
+@media (prefers-color-scheme: dark) {
+  .cream-table {
+    background-color: $color-neutral-800;
+    color: $color-neutral-100;
+
+    thead {
+      background-color: $color-primary-900;
+      border-bottom-color: $color-primary-700;
+
+      th {
+        color: $color-neutral-100;
+        border-bottom-color: $color-primary-700;
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom-color: $color-neutral-700;
+
+        &:hover {
+          background-color: $color-primary-900;
+          box-shadow: inset 0 0 0 1px $color-primary-700;
+        }
+
+        &.stripe-even {
+          background-color: rgba($color-primary-900, 0.3);
+
+          &:hover {
+            background-color: $color-primary-900;
+          }
+        }
+
+        &.stripe-odd {
+          background-color: $color-neutral-800;
+
+          &:hover {
+            background-color: $color-primary-900;
+          }
+        }
+
+        &.selected {
+          background-color: $color-primary-800;
+          box-shadow: inset 0 0 0 2px $color-primary-500;
+
+          &:hover {
+            background-color: $color-primary-900;
+          }
+        }
+      }
+
+      td {
+        color: $color-neutral-100;
+        border-bottom-color: $color-neutral-700;
+
+        // 固定列在深色模式下的调整
+        &.fixed-left,
+        &.fixed-right {
+          background-color: $color-neutral-800;
+          box-shadow: 0 0 8px rgba(black, 0.3);
+
+          &::after {
+            display: none;
+          }
+        }
+      }
+    }
+
+    tfoot {
+      background-color: $color-primary-900;
+      border-top-color: $color-primary-700;
+
+      td {
+        color: $color-neutral-100;
+        border-top-color: $color-primary-700;
+      }
+    }
+  }
+
+  // 深色模式下的变体调整
+  .cream-table-striped {
+    tbody {
+      tr {
+        &:nth-child(even) {
+          background-color: rgba($color-primary-900, 0.3);
+
+          &:hover {
+            background-color: $color-primary-900;
+          }
+        }
+
+        &:nth-child(odd) {
+          background-color: $color-neutral-800;
+
+          &:hover {
+            background-color: $color-primary-900;
+          }
+        }
+      }
+    }
+  }
+
+  .cream-table-card {
+    background-color: $color-neutral-700;
+    border-color: $color-primary-800;
+  }
+
+  // 深色模式下的单元格样式
+  .cell-link {
+    color: $color-primary-400;
+
+    &:hover {
+      color: $color-primary-300;
+    }
+  }
+
+  .editable-cell.editing {
+    background-color: rgba($color-info, 0.2);
+    outline-color: $color-info;
+  }
+}
+
+// ===== 加载状态 =====
+.cream-table-loading {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba($color-background, 0.8);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $color-primary-600;
+    font-weight: $font-weight-bold;
+    z-index: 10;
+  }
+}
+
+// ===== 空状态 =====
+.cream-table-empty {
+  tbody {
+    tr:only-child td {
+      text-align: center;
+      padding: 3rem;
+      color: $color-text-tertiary;
+      font-size: $font-size-lg;
+      border: none;
+
+      .empty-icon {
+        font-size: 3rem;
+        color: $color-primary-300;
+        margin-bottom: 1rem;
+        display: block;
+      }
+
+      .empty-text {
+        font-weight: $font-weight-base;
+        color: $color-text-secondary;
+      }
+    }
+  }
+}
