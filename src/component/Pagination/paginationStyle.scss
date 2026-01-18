@@ -1,0 +1,253 @@
+/**
+ * Pagination组件样式
+ * 基于CreamDesign设计系统
+ */
+
+@import '../../style/_creamdesign.scss'; // 颜色和变量
+@import '../../style/_mixin.scss'; // Mixins
+
+// ===== 分页器容器 =====
+.cream-pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  color: $color-text-primary;
+
+  // 总数显示
+  .cream-pagination-total {
+    margin-right: 0.5rem;
+    color: $color-text-secondary;
+    font-size: $font-size-sm;
+
+    strong {
+      color: $color-text-primary;
+      font-weight: $font-weight-bold;
+    }
+  }
+
+  // 页码容器
+  .cream-pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  // 页码项
+  .cream-pagination-item {
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid $color-primary-200;
+    border-radius: 0.375rem;
+    background-color: $color-background;
+    color: $color-text-primary;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-base;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+
+    &:hover:not(:disabled) {
+      background-color: $color-primary-100;
+      border-color: $color-primary-300;
+      color: $color-primary-700;
+    }
+
+    &:active:not(:disabled) {
+      background-color: $color-primary-200;
+      transform: scale(0.95);
+    }
+
+    // 激活状态
+    &.cream-pagination-item-active {
+      background-color: $color-primary-500;
+      border-color: $color-primary-500;
+      color: white;
+      font-weight: $font-weight-bold;
+
+      &:hover {
+        background-color: $color-primary-600;
+        border-color: $color-primary-600;
+        color: white;
+      }
+    }
+
+    // 禁用状态
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background-color: $color-surface;
+      border-color: $color-border;
+      color: $color-text-tertiary;
+    }
+
+    // 上一页/下一页按钮
+    &.cream-pagination-prev,
+    &.cream-pagination-next {
+      font-size: $font-size-base;
+    }
+  }
+
+  // 省略号
+  .cream-pagination-ellipsis {
+    min-width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: $color-text-tertiary;
+    font-size: $font-size-sm;
+    user-select: none;
+  }
+
+  // 每页条数选择器
+  .cream-pagination-options {
+    margin-left: 0.5rem;
+  }
+
+  .cream-pagination-size-selector {
+    padding: 0.375rem 0.75rem;
+    border: 1px solid $color-primary-200;
+    border-radius: 0.375rem;
+    background-color: $color-background;
+    color: $color-text-primary;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      border-color: $color-primary-300;
+      background-color: $color-primary-100;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary-500;
+      box-shadow: 0 0 0 3px rgba($color-primary-500, 0.2);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background-color: $color-surface;
+      border-color: $color-border;
+    }
+  }
+
+  // 禁用状态
+  &.cream-pagination-disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+// ===== 响应式设计 =====
+@media (max-width: 768px) {
+  .cream-pagination {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    .cream-pagination-total {
+      width: 100%;
+      margin-right: 0;
+      margin-bottom: 0.5rem;
+    }
+
+    .cream-pagination-pages {
+      flex-wrap: wrap;
+    }
+
+    .cream-pagination-item {
+      min-width: 1.75rem;
+      height: 1.75rem;
+      font-size: $font-size-sm;
+    }
+
+    .cream-pagination-options,
+    .cream-pagination-jumper {
+      margin-left: 0;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+// ===== 深色模式支持 =====
+@media (prefers-color-scheme: dark) {
+  .cream-pagination {
+    color: $color-neutral-100;
+
+    .cream-pagination-item {
+      background-color: $color-neutral-800;
+      border-color: $color-neutral-700;
+      color: $color-neutral-100;
+
+      &:hover:not(:disabled) {
+        background-color: $color-neutral-700;
+        border-color: $color-primary-400;
+        color: $color-primary-300;
+      }
+
+      &.cream-pagination-item-active {
+        background-color: $color-primary-600;
+        border-color: $color-primary-600;
+        color: white;
+
+        &:hover {
+          background-color: $color-primary-700;
+          border-color: $color-primary-700;
+        }
+      }
+
+      &:disabled {
+        background-color: $color-neutral-900;
+        border-color: $color-neutral-800;
+        color: $color-neutral-600;
+      }
+    }
+
+    .cream-pagination-ellipsis {
+      color: $color-neutral-500;
+    }
+
+    .cream-pagination-size-selector {
+      background-color: $color-neutral-800;
+      border-color: $color-neutral-700;
+      color: $color-neutral-100;
+
+      &:hover:not(:disabled) {
+        border-color: $color-primary-400;
+        background-color: $color-neutral-700;
+      }
+
+      &:disabled {
+        background-color: $color-neutral-900;
+        border-color: $color-neutral-800;
+      }
+    }
+
+    .cream-pagination-jumper {
+      color: $color-neutral-400;
+
+      .cream-pagination-jumper-input {
+        background-color: $color-neutral-800;
+        border-color: $color-neutral-700;
+        color: $color-neutral-100;
+
+        &:focus {
+          border-color: $color-primary-500;
+        }
+
+        &:disabled {
+          background-color: $color-neutral-900;
+          border-color: $color-neutral-800;
+        }
+      }
+    }
+  }
+}

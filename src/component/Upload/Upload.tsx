@@ -18,7 +18,8 @@
 // 1、添加拖拽区域，用户可以将文件拖拽到区域内
 // 2、onPreview: 点击文件预览时触发
 import { useRef, useState, useMemo } from 'react';
-import Button, { ButtonType } from '../Button';
+import Button from '../Button';
+import { ButtonType } from '../Button/buttion';
 import axios from 'axios';
 import { FileList } from './component/fileList';
 import { Dragger } from './component/dragger';

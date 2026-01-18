@@ -1,6 +1,7 @@
-import { Button, ButtonSize, ButtonType } from './index';
-import React from 'react';
+import Button from './index';
+import { ButtonSize, ButtonType } from './buttion';
 import type { Meta, StoryObj } from '@storybook/react';
+import { ButtonProps } from './buttion';
 
 const buttonMeta: Meta<typeof Button> = {
   title: 'Button',
@@ -32,14 +33,14 @@ export const Default: StoryObj<typeof Button> = {
   args: {
     children: 'Default Button',
   },
-  render: args => <Button {...args} />,
+  render: (args: ButtonProps) => <Button {...args} />,
 };
 
 export const Large: StoryObj<typeof Button> = {
   args: {
     children: 'Large Button',
   },
-  render: args => <Button size={ButtonSize.Large} {...args} />,
+  render: (args: ButtonProps) => <Button size={ButtonSize.Large} {...args} />,
 };
 Large.storyName = 'Large';
 
@@ -47,7 +48,7 @@ export const Small: StoryObj<typeof Button> = {
   args: {
     children: 'Small Button',
   },
-  render: args => <Button size={ButtonSize.Small} {...args} />,
+  render: (args: ButtonProps) => <Button size={ButtonSize.Small} {...args} />,
 };
 Small.storyName = 'Small';
 
@@ -55,7 +56,9 @@ export const Primary: StoryObj<typeof Button> = {
   args: {
     children: 'Primary Button',
   },
-  render: args => <Button btnType={ButtonType.Primary} {...args} />,
+  render: (args: ButtonProps) => (
+    <Button btnType={ButtonType.Primary} {...args} />
+  ),
 };
 Primary.storyName = 'Primary';
 
@@ -63,7 +66,9 @@ export const Outline: StoryObj<typeof Button> = {
   args: {
     children: 'Outline Button',
   },
-  render: args => <Button btnType={ButtonType.Outline} {...args} />,
+  render: (args: ButtonProps) => (
+    <Button btnType={ButtonType.Outline} {...args} />
+  ),
 };
 Outline.storyName = 'Outline';
 
@@ -71,7 +76,9 @@ export const Danger: StoryObj<typeof Button> = {
   args: {
     children: 'Danger Button',
   },
-  render: args => <Button btnType={ButtonType.Danger} {...args} />,
+  render: (args: ButtonProps) => (
+    <Button btnType={ButtonType.Danger} {...args} />
+  ),
 };
 Danger.storyName = 'Danger';
 
@@ -79,7 +86,7 @@ export const Info: StoryObj<typeof Button> = {
   args: {
     children: 'Info Button',
   },
-  render: args => <Button btnType={ButtonType.Info} {...args} />,
+  render: (args: ButtonProps) => <Button btnType={ButtonType.Info} {...args} />,
 };
 Info.storyName = 'Info';
 
@@ -87,6 +94,8 @@ export const Success: StoryObj<typeof Button> = {
   args: {
     children: 'Success Button',
   },
-  render: args => <Button btnType={ButtonType.Success} {...args} />,
+  render: (args: ButtonProps) => (
+    <Button btnType={ButtonType.Success} {...args} />
+  ),
 };
 Success.storyName = 'Success';
