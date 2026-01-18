@@ -1,4 +1,4 @@
-import { useContext, useState, useMemo, useEffect } from 'react';
+import { useContext, useState, useMemo, useEffect, useRef } from 'react';
 import { TableContext, PaginationConfig } from './TableContainer';
 import Pagination from '../Pagination';
 
@@ -72,12 +72,33 @@ const TableFoot = () => {
   ]);
 
   // 更新 Context 中的 paginatedData，供 TableBody 使用
-  const setPaginatedData = context?.setPaginatedData;
+  // 使用 useRef 来避免 setPaginatedData 变化导致的无限循环
+  const setPaginatedDataRef = useRef(context?.setPaginatedData);
+  const prevPaginatedDataRef = useRef<any[]>([]);
+  const prevPaginatedDataLengthRef = useRef<number>(0);
+
   useEffect(() => {
-    if (setPaginatedData) {
-      setPaginatedData(paginatedData);
+    setPaginatedDataRef.current = context?.setPaginatedData;
+  }, [context?.setPaginatedData]);
+
+  useEffect(() => {
+    // 只有当 paginatedData 真的变化时才更新
+    // 比较长度和每个元素的引用（浅比较）
+    const prevData = prevPaginatedDataRef.current;
+    const prevLength = prevPaginatedDataLengthRef.current;
+    const currentLength = paginatedData.length;
+
+    const hasChanged =
+      prevLength !== currentLength ||
+      (currentLength > 0 &&
+        prevData.some((item, index) => item !== paginatedData[index]));
+
+    if (hasChanged && setPaginatedDataRef.current) {
+      setPaginatedDataRef.current(paginatedData);
+      prevPaginatedDataRef.current = paginatedData;
+      prevPaginatedDataLengthRef.current = currentLength;
     }
-  }, [paginatedData, setPaginatedData]);
+  }, [paginatedData]);
 
   // 处理页码变化（类似 antd）
   const handlePageChange = (newPage: number, newPageSize?: number) => {

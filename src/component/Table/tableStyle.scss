@@ -27,6 +27,7 @@
   font-weight: $font-weight-base;
   line-height: $line-height-base;
   color: $color-text-primary;
+  table-layout: fixed; // 使用固定布局，列宽由 width 属性或平均分配
   // 移除 overflow: hidden，让外层容器控制滚动
 
   // 表格头部样式 - 使用柔和的紫色背景
@@ -43,6 +44,10 @@
       border-bottom: 2px solid $color-primary-300;
       position: relative;
       transition: background-color 0.2s ease;
+      overflow: hidden;
+      text-overflow: ellipsis; // 文本溢出时显示省略号
+      white-space: nowrap; // 不换行
+      max-width: 0; // 配合 table-layout: fixed，允许列宽自适应
 
       // 对齐方式
       &.text-left {
@@ -104,7 +109,11 @@
       line-height: $line-height-base;
       color: $color-text-primary !important; // 确保文字颜色始终可见
       border-bottom: 1px solid rgba($color-primary-200, 0.5);
-
+      // 文本溢出处理
+      overflow: hidden; // 隐藏溢出内容
+      text-overflow: ellipsis; // 文本溢出时显示省略号
+      white-space: nowrap; // 不换行
+      max-width: 0; // 配合 table-layout: fixed，允许列宽自适应
       // 对齐方式
       &.text-left {
         text-align: left;

@@ -23,7 +23,8 @@ const data: DataType[] = [
     key: '1',
     name: 'John Brown',
     age: 32,
-    address: 'New York No. 1 Lake Park',
+    address:
+      'New York No. 1 Lake Park11111111111111111111111111111111111111111111',
     tags: ['nice', 'developer'],
   },
   {
@@ -110,6 +111,118 @@ const data: DataType[] = [
     address: 'London No. 11 Lake Park',
     tags: ['cool'],
   },
+  {
+    key: '14',
+    name: 'Jim White',
+    age: 32,
+    address: 'London No. 12 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '15',
+    name: 'Jim Gray',
+    age: 32,
+    address: 'London No. 13 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '16',
+    name: 'Jim Brown',
+    age: 32,
+    address: 'London No. 14 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '17',
+    name: 'Jim Green',
+    age: 32,
+    address: 'London No. 15 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '18',
+    name: 'Jim Red',
+    age: 32,
+    address: 'London No. 16 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '19',
+    name: 'Jim Blue',
+    age: 32,
+    address: 'London No. 17 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '20',
+    name: 'Jim Black',
+    age: 32,
+    address: 'London No. 18 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '21',
+    name: 'Jim White',
+    age: 32,
+    address: 'London No. 19 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '22',
+    name: 'Jim Gray',
+    age: 32,
+    address: 'London No. 20 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '23',
+    name: 'Jim Brown',
+    age: 32,
+    address: 'London No. 21 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '24',
+    name: 'Jim Green',
+    age: 32,
+    address: 'London No. 22 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '25',
+    name: 'Jim Red',
+    age: 32,
+    address: 'London No. 23 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '26',
+    name: 'Jim Blue',
+    age: 32,
+    address: 'London No. 24 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '27',
+    name: 'Jim Black',
+    age: 32,
+    address: 'London No. 25 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '28',
+    name: 'Jim White',
+    age: 32,
+    address: 'London No. 26 Lake Park',
+    tags: ['cool'],
+  },
+  {
+    key: '29',
+    name: 'Jim Gray',
+    age: 32,
+    address: 'London No. 27 Lake Park',
+    tags: ['cool'],
+  },
 ];
 
 // 基础的表格 - 使用类似 antd 的 API
@@ -154,16 +267,16 @@ export const BasicTable = () => {
           <Button
             btnType={ButtonType.Primary}
             size={ButtonSize.Small}
-            onClick={() => console.log('Invite', record.name)}
+            onClick={() => console.log('编辑', record.name)}
           >
-            Invite {record.name}
+            编辑
           </Button>
           <Button
             btnType={ButtonType.Danger}
             size={ButtonSize.Small}
-            onClick={() => console.log('Delete', record.name)}
+            onClick={() => console.log('删除', record.name)}
           >
-            Delete
+            编辑
           </Button>
         </div>
       ),
@@ -171,7 +284,7 @@ export const BasicTable = () => {
   ];
 
   return (
-    <div style={{ width: '500px', height: '500px' }}>
+    <div style={{ width: '700px', height: '500px' }}>
       <Table<DataType> columns={columns} dataSource={data} />
     </div>
   );
@@ -245,4 +358,44 @@ export const CustomRenderTable = () => {
   ];
 
   return <Table<DataType> columns={customColumns} dataSource={data} />;
+};
+
+// 使用虚拟滚动的表格
+export const VirtualScrollTable = () => {
+  const columns: TableProps<DataType>['columns'] = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      render: text => <a>{text}</a>,
+    },
+    {
+      title: 'Age',
+      dataIndex: 'age',
+      key: 'age',
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address',
+    },
+    {
+      title: 'Tags',
+      key: 'tags',
+      dataIndex: 'tags',
+      render: (_, { tags }) => (
+        <div>{Array.isArray(tags) ? tags.join(', ') : tags}</div>
+      ),
+    },
+  ];
+
+  return (
+    <div style={{ width: '700px', height: '500px' }}>
+      <Table<DataType>
+        columns={columns}
+        dataSource={data}
+        // virtual={true} // 启用虚拟滚动
+      />
+    </div>
+  );
 };
