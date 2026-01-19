@@ -12,7 +12,7 @@ import './tableStyle.scss';
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
 import TableFoot from './TableFoot';
-import { useTableVirtualScroll } from './hooks/useVirtualScroll.ts';
+import { useVirtualScroll } from './hooks/useVirtualScroll.ts';
 import VirtualScrollBody from './TableVirtualBody';
 
 // 定义通用的列接口
@@ -62,7 +62,7 @@ export interface TableContextType<T = any> {
   totalHeight?: number;
   startOffset?: number;
   measureRowElement?: (node: HTMLDivElement | null, index: number) => void;
-  containerRef?: React.RefObject<HTMLDivElement>;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
   handleScroll?: (e: React.UIEvent<HTMLDivElement>) => void;
 }
 
@@ -161,7 +161,7 @@ const TableContainer = <T extends Record<string, any> = any>(
       enabled: true,
       rowHeight: 50,
       containerHeight: effectiveHeight,
-      overscan: 5,
+      overscan: 2,
     };
 
     if (typeof virtual === 'boolean') {
@@ -177,12 +177,11 @@ const TableContainer = <T extends Record<string, any> = any>(
   }, [virtual, containerHeight, headerHeight, footerHeight]);
 
   // 使用虚拟滚动 Hook
-  const virtualScroll = useTableVirtualScroll({
+  const virtualScroll = useVirtualScroll({
     data: paginatedData,
-    rowHeight: virtualConfig.rowHeight, //预估高度
-    containerHeight: virtualConfig.containerHeight, //容器高度
-    overscan: virtualConfig.overscan, //缓冲区大小
-    enabled: virtualConfig.enabled!, //是否启用虚拟滚动
+    estimateSize: virtualConfig.rowHeight || 50,
+    containerHeight: virtualConfig.containerHeight || 400, // 使用计算出的容器高度
+    overscan: virtualConfig.overscan || 2,
   });
 
   // 计算 total
