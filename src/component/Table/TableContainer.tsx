@@ -1,4 +1,13 @@
-import { createContext, useState, ReactNode, useMemo } from 'react';
+import {
+  createContext,
+  useState,
+  ReactNode,
+  useMemo,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+} from 'react';
 import './tableStyle.scss';
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
@@ -80,14 +89,78 @@ const TableContainer = <T extends Record<string, any> = any>(
   const [tableData, setTableData] = useState<T[]>(initialData);
   const [paginatedData, setPaginatedData] = useState<T[]>(initialData);
 
+  // 容器和表头的 ref
+  const containerRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLTableElement>(null);
+  const [containerHeight, setContainerHeight] = useState<number>(400);
+  const [headerHeight, setHeaderHeight] = useState<number>(0);
+  const [footerHeight, setFooterHeight] = useState<number>(0);
+
+  // 计算实际可视区域高度（容器高度 - 表头高度 - 表尾高度）
+  const calculateVisibleHeight = useCallback(() => {
+    if (!containerRef.current || !tableRef.current) return;
+
+    const container = containerRef.current;
+    const table = tableRef.current;
+    const thead = table.querySelector('thead');
+    const tfoot = table.querySelector('tfoot');
+
+    const totalHeight = container.clientHeight;
+    const header = thead?.offsetHeight || 0;
+    const footer = tfoot?.offsetHeight || 0;
+
+    const visibleHeight = Math.max(0, totalHeight - header - footer);
+
+    setContainerHeight(totalHeight);
+    setHeaderHeight(header);
+    setFooterHeight(footer);
+
+    return visibleHeight;
+  }, []);
+
+  // 在布局完成后计算高度
+  useLayoutEffect(() => {
+    if (!virtual) return;
+
+    // 延迟一帧确保 DOM 已渲染
+    requestAnimationFrame(() => {
+      const visibleHeight = calculateVisibleHeight();
+      if (visibleHeight !== undefined && visibleHeight > 0) {
+        // 高度已更新到 state
+      }
+    });
+  }, [virtual, calculateVisibleHeight, columns]);
+
+  // 监听容器尺寸变化
+  useEffect(() => {
+    if (!virtual || !containerRef.current) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      calculateVisibleHeight();
+    });
+
+    resizeObserver.observe(containerRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [virtual, calculateVisibleHeight]);
+
   // 解析虚拟滚动配置
   const virtualConfig = useMemo(() => {
     if (!virtual) return { enabled: false };
 
+    // 计算可视区域高度（容器高度 - 表头高度 - 表尾高度）
+    const visibleHeight = Math.max(
+      0,
+      containerHeight - headerHeight - footerHeight
+    );
+    const effectiveHeight = visibleHeight > 0 ? visibleHeight : 400; // 如果还没计算出来，使用默认值
+
     const defaultConfig: VirtualScrollConfig = {
       enabled: true,
       rowHeight: 50,
-      containerHeight: 400,
+      containerHeight: effectiveHeight,
       overscan: 5,
     };
 
@@ -98,8 +171,10 @@ const TableContainer = <T extends Record<string, any> = any>(
     return {
       ...defaultConfig,
       ...virtual,
+      // 如果用户没有指定 containerHeight，使用计算出的值
+      containerHeight: virtual.containerHeight ?? effectiveHeight,
     };
-  }, [virtual]);
+  }, [virtual, containerHeight, headerHeight, footerHeight]);
 
   // 使用虚拟滚动 Hook
   const virtualScroll = useTableVirtualScroll({
@@ -119,7 +194,7 @@ const TableContainer = <T extends Record<string, any> = any>(
     tableData,
     setTableData,
     total,
-    paginatedData: paginatedData,
+    paginatedData,
     setPaginatedData,
     pagination,
     virtual: virtualConfig,
@@ -134,8 +209,12 @@ const TableContainer = <T extends Record<string, any> = any>(
 
   return (
     <TableContext.Provider value={contextValue}>
-      <div className="cream-table-container">
-        <table className="cream-table">
+      <div
+        ref={containerRef}
+        className="cream-table-container"
+        style={virtualConfig.enabled ? { overflow: 'hidden' } : undefined}
+      >
+        <table ref={tableRef} className="cream-table">
           <TableHeader />
           {virtualConfig.enabled ? <VirtualScrollBody /> : <TableBody />}
           <TableFoot />

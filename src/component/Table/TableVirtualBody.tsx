@@ -119,7 +119,7 @@ const TableVirtualBody = () => {
           style={{
             padding: 0,
             border: 0,
-            height: virtualConfig.containerHeight,
+            height: virtualConfig.containerHeight || '100%',
           }}
         >
           <div
@@ -147,8 +147,8 @@ const TableVirtualBody = () => {
             >
               {/* 虚拟表格 */}
               <table
-                className="cream-table-virtual-inner"
-                style={{ width: '100%', borderCollapse: 'collapse' }}
+                className="cream-table"
+                style={{ width: '100%', scrollbarWidth: 'none' }}
               >
                 <tbody>
                   {virtualItems.map((item, idx) => {
@@ -159,7 +159,6 @@ const TableVirtualBody = () => {
                         key={item.key || actualIndex}
                         ref={node => measureElement(node, actualIndex)}
                         data-index={actualIndex}
-                        className="cream-table-virtual-item"
                       >
                         {columns.map(column => {
                           const alignClass = column.align
@@ -181,16 +180,11 @@ const TableVirtualBody = () => {
                             <td
                               key={column.key}
                               className={className || undefined}
-                              style={{
-                                ...(column.width && { width: column.width }),
-                                padding: '0.875rem 1rem',
-                                borderBottom:
-                                  '1px solid rgba(165, 180, 252, 0.5)',
-                                backgroundColor:
-                                  actualIndex % 2 === 0
-                                    ? 'var(--color-background)'
-                                    : 'var(--color-primary-100)',
-                              }}
+                              style={
+                                column.width
+                                  ? { width: column.width }
+                                  : undefined
+                              }
                             >
                               {cellContent}
                             </td>

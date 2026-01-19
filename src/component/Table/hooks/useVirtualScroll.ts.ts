@@ -126,7 +126,7 @@ export function useVirtualScroll<T>({
     },
     [onScroll]
   );
-
+  console.log('containerHeight', containerHeight);
   return {
     virtualItems,
     totalHeight,
