@@ -11,7 +11,7 @@ const TableHeader = () => {
   }
   const { columns } = context;
   return (
-    <thead className="cream-table-thead">
+    <thead>
       <tr>
         {columns.map(column => {
           const alignClass = column.align

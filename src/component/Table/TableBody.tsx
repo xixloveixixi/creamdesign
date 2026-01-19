@@ -1,7 +1,7 @@
-import { useContext } from 'react';
+import { memo, useContext, useMemo } from 'react';
 import { TableContext } from './TableContainer';
-
-const TableBody = () => {
+// 使用reactmemo优化
+const TableBody = memo(() => {
   // 从context中获取数据
   const context = useContext(TableContext);
   if (!context) {
@@ -59,5 +59,5 @@ const TableBody = () => {
       ))}
     </tbody>
   );
-};
+});
 export default TableBody;
