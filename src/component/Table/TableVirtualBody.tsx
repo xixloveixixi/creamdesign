@@ -73,7 +73,6 @@ const TableVirtualBody = () => {
     estimateSize: virtualConfig.rowHeight || 50,
     containerHeight: virtualConfig.containerHeight || 400,
     overscan: virtualConfig.overscan,
-    getKey: (item: any, index: number) => item.key || item.id || index,
   });
 
   // 处理滚动
