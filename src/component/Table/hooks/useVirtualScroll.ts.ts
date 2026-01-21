@@ -9,26 +9,24 @@ export interface VirtualItem {
 }
 
 export interface UseVirtualScrollOptions<T> {
-  data: T[];
-  estimateSize: number;
-  containerHeight: number;
-  overscan?: number;
-  getKey?: (item: T, index: number) => string | number;
-  onScroll?: (scrollTop: number) => void;
+  data: T[]; //数据
+  estimateSize: number; //预估高度
+  containerHeight: number; //容器高度
+  overscan?: number; //缓冲区大小
+  onScroll?: (scrollTop: number) => void; //滚动回调
 }
 
 export interface UseVirtualScrollReturn<T> {
-  virtualItems: T[];
-  totalHeight: number;
+  virtualItems: T[]; //虚拟列表项
+  totalHeight: number; //总高度
   startOffset: number;
-  containerRef: React.RefObject<HTMLDivElement | null>;
-  scrollTop: number;
-  setScrollTop: (top: number) => void;
-  measureElement: (node: HTMLDivElement | null, index: number) => void;
+  containerRef: React.RefObject<HTMLDivElement | null>; //容器引用
+  scrollTop: number; //滚动位置
+  setScrollTop: (top: number) => void; //设置滚动位置
+  measureElement: (node: HTMLDivElement | null, index: number) => void; //测量元素
   startIndex: number;
-  endIndex: number;
-  handleScroll: (e: React.UIEvent<HTMLDivElement>) => void;
-  isScrolling: boolean;
+  endIndex: number; //结束索引
+  handleScroll: (e: React.UIEvent<HTMLDivElement>) => void; //滚动处理
 }
 
 export function useVirtualScroll<T>({
@@ -39,7 +37,6 @@ export function useVirtualScroll<T>({
   onScroll,
 }: UseVirtualScrollOptions<T>): UseVirtualScrollReturn<T> {
   const [scrollTop, setScrollTop] = useState(0);
-  const [isScrolling, setIsScrolling] = useState(false);
 
   // 使用 useRef 存储状态
   const containerRef = useRef<HTMLDivElement>(null);
@@ -47,22 +44,16 @@ export function useVirtualScroll<T>({
   const scrollTopRef = useRef(0);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const itemRefs = useRef<Map<number, HTMLDivElement>>(new Map());
-
-  // 防抖和节流 refs
   const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const rafRef = useRef<number | null>(null);
-  const lastScrollTimeRef = useRef(0);
 
-  // ==================== 1. 优化初始化测量数据 ====================
+  //阶段一：初始化测量数据
   useEffect(() => {
     // 只有数据长度变化时才重新初始化测量数据
     const currentLength = measurementsRef.current.length;
     const newLength = data.length;
 
     if (currentLength !== newLength || measurementsRef.current.length === 0) {
-      console.log(`初始化测量数据: ${currentLength} -> ${newLength} 条`);
-
       const newMeasurements = data.map((_, i) => ({
         index: i,
         size: estimateSize,
@@ -72,9 +63,9 @@ export function useVirtualScroll<T>({
 
       measurementsRef.current = newMeasurements;
     }
-  }, [data, estimateSize]); // 移除 data.length 依赖，避免 data 引用变化时频繁触发
+  }, [data, estimateSize]);
 
-  // ==================== 2. 优化查找起始索引 ====================
+  //阶段二：查找起始索引
   const findStartIndex = useCallback((scrollTop: number) => {
     const measurements = measurementsRef.current;
     if (measurements.length === 0) return 0;
@@ -113,10 +104,7 @@ export function useVirtualScroll<T>({
 
       // 计算可见项数量（至少显示10项）
       const actualContainerHeight = Math.max(containerHeight, 1);
-      const visibleCount = Math.max(
-        Math.ceil(actualContainerHeight / estimateSize),
-        10 // 至少显示10项，即使容器高度很小
-      );
+      const visibleCount = Math.ceil(actualContainerHeight / estimateSize);
 
       // 计算结束索引
       const actualEndIndex = Math.min(
@@ -124,38 +112,13 @@ export function useVirtualScroll<T>({
         data.length
       );
 
-      // 确保渲染足够多的项
-      const minItemsToRender = Math.max(visibleCount + overscan * 2, 15); // 至少15项
-      const finalEndIndex = Math.max(
-        actualEndIndex,
-        Math.min(actualStartIndex + minItemsToRender, data.length)
-      );
-
-      // 确保开始索引合理
-      const finalStartIndex = Math.min(
-        actualStartIndex,
-        Math.max(0, data.length - minItemsToRender)
-      );
-
       // 获取虚拟列表项
-      const virtualItems = data.slice(finalStartIndex, finalEndIndex);
-      const startOffset = measurements[finalStartIndex]?.start ?? 0;
-
-      // 调试信息（只在重要变化时输出）
-      if (Math.abs(scrollTop - scrollTopRef.current) > 50) {
-        console.log('虚拟滚动计算:', {
-          滚动位置: scrollTop.toFixed(0),
-          容器高度: containerHeight,
-          可见数量: visibleCount,
-          开始索引: finalStartIndex,
-          结束索引: finalEndIndex,
-          虚拟项数量: virtualItems.length,
-        });
-      }
+      const virtualItems = data.slice(actualStartIndex, actualEndIndex);
+      const startOffset = measurements[actualStartIndex]?.start ?? 0;
 
       return {
-        startIndex: finalStartIndex,
-        endIndex: finalEndIndex,
+        startIndex: actualStartIndex,
+        endIndex: actualEndIndex,
         startOffset,
         virtualItems,
         totalHeight,
@@ -265,39 +228,20 @@ export function useVirtualScroll<T>({
     [data.length, estimateSize, resizeItem]
   );
 
-  // ==================== 6. 优化滚动处理（节流） ====================
+  // ==================== 6. 滚动处理（使用 requestAnimationFrame 节流） ====================
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
-      const now = Date.now();
       const top = e.currentTarget.scrollTop;
+      scrollTopRef.current = top;
 
-      // 节流：至少间隔16ms（约60fps）
-      if (now - lastScrollTimeRef.current < 16) {
-        return;
-      }
-
-      lastScrollTimeRef.current = now;
-
-      // 使用 requestAnimationFrame 优化性能
+      // 使用 requestAnimationFrame 节流
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
       }
 
       rafRef.current = requestAnimationFrame(() => {
-        scrollTopRef.current = top;
         setScrollTop(top);
         onScroll?.(top);
-
-        // 设置滚动状态
-        setIsScrolling(true);
-
-        if (scrollTimeoutRef.current) {
-          clearTimeout(scrollTimeoutRef.current);
-        }
-
-        scrollTimeoutRef.current = setTimeout(() => {
-          setIsScrolling(false);
-        }, 150);
       });
     },
     [onScroll]
@@ -317,7 +261,7 @@ export function useVirtualScroll<T>({
     [onScroll]
   );
 
-  // ==================== 8. 清理 ====================
+  // ==================== 7. 清理 ====================
   useEffect(() => {
     return () => {
       if (rafRef.current) {
@@ -325,9 +269,6 @@ export function useVirtualScroll<T>({
       }
       if (resizeTimeoutRef.current) {
         clearTimeout(resizeTimeoutRef.current);
-      }
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
       }
       if (resizeObserverRef.current) {
         resizeObserverRef.current.disconnect();
@@ -346,6 +287,5 @@ export function useVirtualScroll<T>({
     startIndex,
     endIndex,
     handleScroll,
-    isScrolling,
   };
 }

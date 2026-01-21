@@ -516,7 +516,7 @@ export const VirtualScrollTable = () => {
   ];
 
   return (
-    <div style={{ width: '700px', height: '500px' }}>
+    <div style={{ width: '700px', height: '600px' }}>
       <Table<DataType> columns={columns} dataSource={data} virtual={true} />
     </div>
   );

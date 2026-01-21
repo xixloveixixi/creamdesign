@@ -84,13 +84,11 @@ const TableContainer = <T extends Record<string, any> = any>(
 ) => {
   const { columns, dataSource, pagination, virtual } = props;
 
-  // 支持 dataSource 和 data，优先使用 dataSource
-  const initialData = dataSource ?? [];
-  const [tableData, setTableData] = useState<T[]>(initialData);
-  const [paginatedData, setPaginatedData] = useState<T[]>(initialData);
+  const [tableData, setTableData] = useState<T[]>(dataSource ?? []);
+  const [paginatedData, setPaginatedData] = useState<T[]>(dataSource ?? []);
 
   // 容器和表头的 ref
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null); //容器ref
   const tableRef = useRef<HTMLTableElement>(null);
   const [containerHeight, setContainerHeight] = useState<number>(400);
   const [headerHeight, setHeaderHeight] = useState<number>(0);
@@ -108,13 +106,14 @@ const TableContainer = <T extends Record<string, any> = any>(
     const totalHeight = container.clientHeight;
     const header = thead?.offsetHeight || 0;
     const footer = tfoot?.offsetHeight || 0;
-
+    console.log('totalHeight', totalHeight);
+    console.log('header', header);
+    console.log('footer', footer);
     const visibleHeight = Math.max(0, totalHeight - header - footer);
 
-    setContainerHeight(totalHeight);
+    setContainerHeight(visibleHeight);
     setHeaderHeight(header);
     setFooterHeight(footer);
-
     return visibleHeight;
   }, []);
 
@@ -125,9 +124,6 @@ const TableContainer = <T extends Record<string, any> = any>(
     // 延迟一帧确保 DOM 已渲染
     requestAnimationFrame(() => {
       const visibleHeight = calculateVisibleHeight();
-      if (visibleHeight !== undefined && visibleHeight > 0) {
-        // 高度已更新到 state
-      }
     });
   }, [virtual, calculateVisibleHeight, columns]);
 
@@ -170,9 +166,6 @@ const TableContainer = <T extends Record<string, any> = any>(
 
     return {
       ...defaultConfig,
-      ...virtual,
-      // 如果用户没有指定 containerHeight，使用计算出的值
-      containerHeight: virtual.containerHeight ?? effectiveHeight,
     };
   }, [virtual, containerHeight, headerHeight, footerHeight]);
 
