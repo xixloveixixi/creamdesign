@@ -14,6 +14,7 @@ import TableBody from './TableBody';
 import TableFoot from './TableFoot';
 import { useVirtualScroll } from './hooks/useVirtualScroll.ts';
 import VirtualScrollBody from './TableVirtualBody';
+import { useDevice } from '../../hooks/useDevice';
 
 // 定义通用的列接口
 export interface ColumnType<T = any> {
@@ -84,6 +85,9 @@ const TableContainer = <T extends Record<string, any> = any>(
 ) => {
   const { columns, dataSource, pagination, virtual } = props;
 
+  // 设备检测
+  const device = useDevice();
+
   const [tableData, setTableData] = useState<T[]>(dataSource ?? []);
   const [paginatedData, setPaginatedData] = useState<T[]>(dataSource ?? []);
 
@@ -106,9 +110,6 @@ const TableContainer = <T extends Record<string, any> = any>(
     const totalHeight = container.clientHeight;
     const header = thead?.offsetHeight || 0;
     const footer = tfoot?.offsetHeight || 0;
-    console.log('totalHeight', totalHeight);
-    console.log('header', header);
-    console.log('footer', footer);
     const visibleHeight = Math.max(0, totalHeight - header - footer);
 
     setContainerHeight(visibleHeight);
@@ -123,7 +124,7 @@ const TableContainer = <T extends Record<string, any> = any>(
 
     // 延迟一帧确保 DOM 已渲染
     requestAnimationFrame(() => {
-      const visibleHeight = calculateVisibleHeight();
+      calculateVisibleHeight();
     });
   }, [virtual, calculateVisibleHeight, columns]);
 
@@ -143,7 +144,14 @@ const TableContainer = <T extends Record<string, any> = any>(
   }, [virtual, calculateVisibleHeight]);
 
   // 解析虚拟滚动配置
+  // 移动端自动禁用虚拟滚动，平板和桌面根据配置决定
   const virtualConfig = useMemo(() => {
+    // 移动端禁用虚拟滚动（性能考虑，移动端通常数据量不大）
+    if (device.isMobile) {
+      return { enabled: false };
+    }
+
+    // 如果用户明确禁用，则禁用
     if (!virtual) return { enabled: false };
 
     // 计算可视区域高度（容器高度 - 表头高度 - 表尾高度）
@@ -155,9 +163,9 @@ const TableContainer = <T extends Record<string, any> = any>(
 
     const defaultConfig: VirtualScrollConfig = {
       enabled: true,
-      rowHeight: 50,
+      rowHeight: device.isTablet ? 45 : 50, // 平板端行高稍小
       containerHeight: effectiveHeight,
-      overscan: 2,
+      overscan: device.isTablet ? 3 : 2, // 平板端增加预渲染行数
     };
 
     if (typeof virtual === 'boolean') {
@@ -166,8 +174,17 @@ const TableContainer = <T extends Record<string, any> = any>(
 
     return {
       ...defaultConfig,
+      ...virtual,
+      containerHeight: virtual.containerHeight ?? effectiveHeight,
     };
-  }, [virtual, containerHeight, headerHeight, footerHeight]);
+  }, [
+    virtual,
+    containerHeight,
+    headerHeight,
+    footerHeight,
+    device.isMobile,
+    device.isTablet,
+  ]);
 
   // 使用虚拟滚动 Hook
   const virtualScroll = useVirtualScroll({
@@ -199,6 +216,9 @@ const TableContainer = <T extends Record<string, any> = any>(
     handleScroll: virtualScroll.handleScroll,
   };
 
+  // 根据设备类型添加响应式类名（移动端保持表格布局，不需要特殊类名）
+  const tableClassName = 'cream-table';
+
   return (
     <TableContext.Provider value={contextValue}>
       <div
@@ -206,7 +226,7 @@ const TableContainer = <T extends Record<string, any> = any>(
         className="cream-table-container"
         style={virtualConfig.enabled ? { overflow: 'hidden' } : undefined}
       >
-        <table ref={tableRef} className="cream-table">
+        <table ref={tableRef} className={tableClassName}>
           <TableHeader />
           {virtualConfig.enabled ? <VirtualScrollBody /> : <TableBody />}
           <TableFoot />

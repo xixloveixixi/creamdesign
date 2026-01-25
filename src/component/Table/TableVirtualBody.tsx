@@ -1,11 +1,4 @@
-import {
-  useContext,
-  useRef,
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-} from 'react';
+import { useContext, useRef, useCallback, useMemo } from 'react';
 import { TableContext } from './TableContainer';
 import { useVirtualScroll } from './hooks/useVirtualScroll.ts';
 
@@ -14,8 +7,6 @@ const TableVirtualBody = () => {
 
   // 必须无条件地调用所有 Hook
   const containerRef = useRef<HTMLDivElement>(null);
-  const tbodyRef = useRef<HTMLTableSectionElement>(null);
-  const [isMounted, setIsMounted] = useState(false);
 
   // 无条件地调用 useCallback
   const getCellValue = useCallback((record: any, column: any) => {
@@ -82,16 +73,6 @@ const TableVirtualBody = () => {
     },
     [setScrollTop]
   );
-
-  // 计算列宽
-  const columnWidths = useMemo(() => {
-    return columns.map(col => col.width || 'auto');
-  }, [columns]);
-
-  // 设置 mounted 状态
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   // 如果没有 context 或没有数据
   if (!hasValidContext) {

@@ -57,7 +57,7 @@ $theme-colors: (
   warning: $color-warning,
   error: $color-error,
   info: $color-info,
-  disabled: $color-disabled
+  disabled: $color-disabled,
 );
 // 语义化颜色变量
 $color-background: $color-neutral-50;
@@ -71,7 +71,8 @@ $color-divider: $color-neutral-200;
 
 // ===== 字体系统 =====
 // 字体家族设置
-$font-family-sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+$font-family-sans-serif:
+  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
   Arial, sans-serif;
 $font-family-monospace: monospace;
 $font-family-base: $font-family-sans-serif;
@@ -179,8 +180,9 @@ $color-neutral-900-dark: rgba($color-neutral-900, $opacity-dark);
   @return rgba($color, $opacity);
 }
 
-// 导入混合器
+// 导入混合器和断点系统
 @import './mixin';
+@import './breakpoints';
 
 // ===== 色彩工具类 =====
 // 文本颜色工具类
@@ -765,7 +767,8 @@ a {
   $shadow-depth: $level * 2;
   $shadow-opacity: 0.08 + ($level * 0.02);
 
-  box-shadow: 0 $shadow-depth px $shadow-depth * 2 px rgba($color-neutral-900, $shadow-opacity);
+  box-shadow: 0 $shadow-depth px $shadow-depth * 2 px
+    rgba($color-neutral-900, $shadow-opacity);
 }
 
 // ===== 导出变量（用于JavaScript） =====

@@ -16,6 +16,10 @@
   overflow-x: auto;
   border-radius: 0.5rem;
   @include card-shadow(1);
+
+  // 确保移动端容器可见
+  min-height: 200px;
+  background-color: $color-background;
 }
 
 .cream-table {
@@ -284,58 +288,277 @@
 }
 
 // ===== 响应式设计 =====
-@media (max-width: 768px) {
+
+// 移动端样式 (< 768px)
+@media (max-width: 767px) {
   .cream-table {
-    font-size: $font-size-sm;
+    width: 100%;
+    height: 100%; // 使用百分比高度，适应容器
+    font-size: clamp(
+      0.65rem,
+      2vw,
+      $font-size-sm * 0.75
+    ); // 使用 clamp 和 vw 单位，响应式字体
+    // 移动端保持表格布局，但优化显示
 
-    thead th,
-    tbody td,
-    tfoot td {
-      padding: 0.625rem 0.75rem;
-    }
-  }
-
-  // 移动端隐藏表头，使用卡片布局
-  .cream-table-responsive {
     thead {
-      display: none;
+      height: auto; // 自适应高度
+      th {
+        padding: 0.25%; // 使用百分比内边距
+        font-size: clamp(0.6rem, 1.8vw, $font-size-sm * 0.7); // 响应式字体
+        white-space: nowrap;
+        line-height: 1.2;
+        font-weight: $font-weight-bold;
+      }
     }
 
     tbody {
+      height: auto; // 自适应高度
       tr {
-        display: block;
-        margin-bottom: 1rem;
-        border: 1px solid $color-primary-200;
-        border-radius: 0.5rem;
-        padding: 1rem;
-        background-color: $color-background;
-        @include card-shadow(1);
-
-        &:hover {
-          background-color: $color-primary-100;
-          box-shadow: 0 4px 12px rgba($color-primary-900, 0.1);
-        }
-
-        td {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0.75rem 0;
-          border-bottom: 1px solid $color-divider;
-
-          &:last-child {
-            border-bottom: none;
-          }
-
-          // 添加标签
-          &::before {
-            content: attr(data-label);
-            font-weight: $font-weight-bold;
-            color: $color-primary-700;
-            min-width: 100px;
-          }
-        }
+        border-bottom: 1px solid rgba($color-primary-200, 0.25);
+        height: auto; // 自适应行高
       }
+
+      td {
+        padding: 0.25%; // 使用百分比内边距
+        font-size: clamp(0.65rem, 2vw, $font-size-sm * 0.75); // 响应式字体
+        line-height: 1.3;
+        // 移动端文本溢出处理
+        word-break: break-word;
+        max-width: 0; // 配合 table-layout: fixed 允许内容溢出
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    tfoot {
+      height: auto; // 自适应高度
+      td {
+        padding: 0.75% 0.75%; // 使用百分比内边距
+      }
+    }
+
+    // 移动端优化触摸目标（使用百分比和最小尺寸结合）
+    // 针对表格内的按钮组件
+    button,
+    .btn,
+    a,
+    input[type='button'],
+    input[type='submit'] {
+      min-height: clamp(
+        32px,
+        5vh,
+        36px
+      ); // 使用 clamp，最小 32px，最大 36px，根据视口高度
+      min-width: clamp(
+        32px,
+        5vw,
+        36px
+      ); // 使用 clamp，最小 32px，最大 36px，根据视口宽度
+      padding: 0.5% 1% !important; // 使用百分比内边距，!important 确保覆盖 Button 组件的默认样式
+      font-size: clamp(0.6rem, 1.8vw, $font-size-sm * 0.7) !important;
+    }
+  }
+
+  // 移动端表格容器优化
+  .cream-table-container {
+    // 移动端允许横向滚动
+    // overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; // iOS 平滑滚动
+
+    // 确保表格最小宽度，避免过度压缩
+    .cream-table {
+      min-width: 100%;
+      // 移动端可以设置最小宽度，确保列不会被过度压缩
+      // 如果列太多，会自动出现横向滚动
+    }
+  }
+
+  // 移动端响应式类（如果需要特殊处理）
+  // .cream-table-responsive 类已移除，移动端直接使用表格布局
+}
+
+// 平板端样式 (768px - 991px)
+@media (min-width: 768px) and (max-width: 991px) {
+  .cream-table {
+    width: 100%;
+    height: 100%; // 使用百分比高度，适应容器
+    font-size: clamp(
+      $font-size-sm * 0.9,
+      1.5vw,
+      $font-size-base
+    ); // 使用 clamp 和 vw 单位，响应式字体
+    // 平板端保持表格布局，优化显示
+
+    thead {
+      height: auto; // 自适应高度
+      th {
+        padding: 0.4% 0.6%; // 使用百分比内边距
+        font-size: clamp(
+          $font-size-sm * 0.85,
+          1.3vw,
+          $font-size-sm
+        ); // 响应式字体
+        white-space: nowrap;
+        line-height: 1.3;
+      }
+    }
+
+    tbody {
+      height: auto; // 自适应高度
+      tr {
+        border-bottom: 1px solid rgba($color-primary-200, 0.3);
+        height: auto; // 自适应行高
+      }
+
+      td {
+        padding: 0.4% 0.6%; // 使用百分比内边距
+        font-size: clamp(
+          $font-size-sm * 0.9,
+          1.5vw,
+          $font-size-sm
+        ); // 响应式字体
+        line-height: 1.4;
+        // 平板端文本溢出处理
+        word-break: break-word;
+        max-width: 0; // 配合 table-layout: fixed 允许内容溢出
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    tfoot {
+      height: auto; // 自适应高度
+      td {
+        padding: 0.5% 0.6%; // 使用百分比内边距
+      }
+    }
+
+    // 平板端优化触摸目标（支持触摸和鼠标，使用响应式单位）
+    // 针对表格内的按钮组件
+    button,
+    .btn,
+    a,
+    input[type='button'],
+    input[type='submit'] {
+      min-height: clamp(
+        36px,
+        4vh,
+        40px
+      ); // 使用 clamp，最小 36px，最大 40px，根据视口高度
+      min-width: clamp(
+        36px,
+        4vw,
+        40px
+      ); // 使用 clamp，最小 36px，最大 40px，根据视口宽度
+      padding: 0.4% 0.8% !important; // 使用百分比内边距，!important 确保覆盖 Button 组件的默认样式
+      font-size: clamp($font-size-sm * 0.85, 1.3vw, $font-size-sm) !important;
+    }
+  }
+
+  // 平板端表格容器优化
+  .cream-table-container {
+    width: 100%;
+    height: 100%; // 使用百分比高度，适应父容器
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; // iOS 平滑滚动
+
+    // 确保表格最小宽度，避免过度压缩
+    .cream-table {
+      min-width: 100%;
+      // 平板端可以显示更多列，但需要优化
+      // 如果列太多，会自动出现横向滚动
+    }
+  }
+}
+
+// 桌面端样式 (≥ 992px)
+@media (min-width: 992px) {
+  .cream-table {
+    width: 100%;
+    height: 100%; // 使用百分比高度，适应容器
+    font-size: clamp(
+      $font-size-base,
+      1.2vw,
+      $font-size-base * 1.1
+    ); // 使用 clamp 和 vw 单位，响应式字体
+
+    thead {
+      height: auto; // 自适应高度
+      th {
+        padding: 0.6% 0.8%; // 使用百分比内边距
+        font-size: clamp($font-size-sm, 1vw, $font-size-base); // 响应式字体
+        white-space: nowrap;
+        line-height: 1.4;
+      }
+    }
+
+    tbody {
+      height: auto; // 自适应高度
+      tr {
+        border-bottom: 1px solid rgba($color-primary-200, 0.5);
+        height: auto; // 自适应行高
+      }
+
+      td {
+        padding: 0.6% 0.8%; // 使用百分比内边距
+        font-size: clamp(
+          $font-size-base,
+          1.2vw,
+          $font-size-base * 1.1
+        ); // 响应式字体
+        line-height: 1.5;
+        // 桌面端文本溢出处理
+        word-break: break-word;
+        max-width: 0; // 配合 table-layout: fixed 允许内容溢出
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    tfoot {
+      height: auto; // 自适应高度
+      td {
+        padding: 0.7% 0.8%; // 使用百分比内边距
+      }
+    }
+
+    // 桌面端按钮优化（使用响应式单位）
+    // 针对表格内的按钮组件
+    button,
+    .btn,
+    a,
+    input[type='button'],
+    input[type='submit'] {
+      min-height: clamp(
+        38px,
+        3vh,
+        44px
+      ); // 使用 clamp，最小 38px，最大 44px，根据视口高度
+      min-width: clamp(
+        38px,
+        3vw,
+        44px
+      ); // 使用 clamp，最小 38px，最大 44px，根据视口宽度
+      padding: 0.5% 1% !important; // 使用百分比内边距，!important 确保覆盖 Button 组件的默认样式
+      font-size: clamp($font-size-sm, 1vw, $font-size-base) !important;
+    }
+  }
+
+  // 桌面端表格容器优化
+  .cream-table-container {
+    width: 100%;
+    height: 100%; // 使用百分比高度，适应父容器
+    overflow-x: auto;
+    overflow-y: auto;
+
+    // 确保表格最小宽度，避免过度压缩
+    .cream-table {
+      min-width: 100%;
+      // 桌面端可以显示所有列
+      // 如果列太多，会自动出现横向滚动
     }
   }
 }
