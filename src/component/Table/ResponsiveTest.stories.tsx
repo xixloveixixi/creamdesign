@@ -5,7 +5,6 @@
 
 import { Meta, StoryObj } from '@storybook/react';
 import Table, { TableProps } from './TableContainer';
-import { DeviceDebug } from '../DeviceDebug/DeviceDebug';
 import { useState } from 'react';
 import Button from '../Button';
 import { ButtonSize, ButtonType } from '../Button/buttion';
@@ -122,7 +121,6 @@ export const TabletTest: Story = {
         border: '2px solid #ccc',
       }}
     >
-      <DeviceDebug position="top-left" />
       <Table<DataType> columns={columns} dataSource={data} virtual={true} />
     </div>
   ),
@@ -144,7 +142,6 @@ export const DesktopTest: Story = {
         border: '2px solid #ccc',
       }}
     >
-      <DeviceDebug position="top-left" />
       <Table<DataType> columns={columns} dataSource={data} virtual={true} />
     </div>
   ),
@@ -169,7 +166,6 @@ const DynamicSizeTestComponent = () => {
           marginBottom: '1rem',
         }}
       >
-        <DeviceDebug position="top-right" />
         <h3>动态尺寸测试</h3>
         <div style={{ marginBottom: '1rem' }}>
           <label>
