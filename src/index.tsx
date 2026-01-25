@@ -1,5 +1,6 @@
 // 使用中转导出
-export { default as Button } from './component/Button';
+export { default as Button, ButtonType, ButtonSize } from './component/Button';
+export type { ButtonTypeValue, ButtonSizeValue } from './component/Button';
 export { default as Menu } from './component/Menu';
 export { default as Table } from './component/Table';
 export { default as Form } from './component/Form';

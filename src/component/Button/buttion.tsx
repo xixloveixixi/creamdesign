@@ -22,10 +22,25 @@ export enum ButtonSize {
   Normal = 'normal',
   Small = 'small',
 }
+
+// 类型别名：支持枚举和字符串字面量
+export type ButtonTypeValue =
+  | ButtonType
+  | 'primary'
+  | 'secondary'
+  | 'danger'
+  | 'warning'
+  | 'info'
+  | 'success'
+  | 'outline'
+  | 'ghost'
+  | 'text';
+export type ButtonSizeValue = ButtonSize | 'large' | 'normal' | 'small';
+
 // 2、创建interface：ButtonProps
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  btnType?: ButtonType;
-  size?: ButtonSize;
+  btnType?: ButtonTypeValue;
+  size?: ButtonSizeValue;
   disabled?: boolean;
   loading?: boolean;
   icon?: React.ReactNode;
