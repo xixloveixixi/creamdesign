@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# 简单的 commit message 格式检查
+# 格式: type(scope): subject
+# 例如: feat(table): 添加虚拟滚动功能
+commit_msg=$(cat "$1")
+
+# 检查 commit message 是否为空
+if [ -z "$commit_msg" ]; then
+  echo "❌ Commit message 不能为空"
+  exit 1
+fi
+
+# 检查 commit message 长度（至少 10 个字符）
+if [ ${#commit_msg} -lt 10 ]; then
+  echo "❌ Commit message 太短，请提供更详细的描述"
+  exit 1
+fi
+
+# 可选：检查是否符合约定式提交格式（feat, fix, docs, style, refactor, test, chore）
+# 如果不符合，给出警告但不阻止提交
+if ! echo "$commit_msg" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?:"; then
+  echo "⚠️  建议使用约定式提交格式: type(scope): subject"
+  echo "   例如: feat(table): 添加虚拟滚动功能"
+  echo "   类型: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert"
+fi
+

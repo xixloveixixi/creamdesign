@@ -23,3 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 
 *storybook.log
+
+# Husky (需要提交到仓库)
+# .husky 目录应该被提交，所以不忽略
