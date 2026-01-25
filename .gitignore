@@ -12,6 +12,9 @@
 /build
 /dist
 
+# Yalc 测试目录
+.yalc/
+
 # misc
 .DS_Store
 .env.local

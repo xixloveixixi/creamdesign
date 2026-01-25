@@ -1,7 +1,7 @@
 {
   "name": "creamdesign",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "type": "module",
   "main": "dist/index.es.js",
   "module": "dist/index.es.js",
@@ -19,6 +19,10 @@
     "./dist/*": "./dist/*"
   },
   "style": "dist/index.es.css",
+  "peerDependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
@@ -31,6 +35,7 @@
     "async-validator": "^4.2.5",
     "axios": "^1.13.2",
     "classnames": "^2.5.1",
+    "creamdesign": "file:.yalc/creamdesign",
     "lodash-es": "^4.17.22",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

@@ -10,6 +10,8 @@ const config = {
     file: 'dist/index.es.js',
     format: 'es',
   },
+  // 将 React 和 React-DOM 标记为外部依赖，不打包进组件库
+  external: ['react', 'react-dom', 'react/jsx-runtime'],
   plugins: [
     // TypeScript 插件应该在其他插件之前运行
     typescript({
