@@ -1,47 +1,56 @@
 /**
  * Form组件基础样式
  * 基于CreamDesign设计系统
+ * 支持多端适配（移动端、平板、桌面）
  */
 
 @import '../../style/creamdesign';
 @import '../../style/mixin';
 
-
 // ===== 表单基础样式 =====
 .cream-form {
   width: 100%;
+  height: 100%; // 使用百分比高度，适应容器
   margin: 0 auto;
-  padding: 1.5rem;
+  padding: clamp(0.75rem, 2%, 1.5rem); // 响应式内边距
   background-color: $color-card;
   border-radius: 0.5rem;
   box-shadow: 0 2px 8px rgba($color-neutral-900, 0.1);
   @include card-shadow(1);
+  font-size: clamp($font-size-sm, 1.2vw, $font-size-base); // 响应式字体
 
   // 表单行样式
   .cream-row {
     display: flex;
-    align-items: center;
-    margin-bottom: 25px;
+    align-items: flex-start; // 改为顶部对齐，适应移动端
+    margin-bottom: clamp(1rem, 2%, 1.5rem); // 响应式间距
 
     &.cream-row-no-label {
-      margin-left: 30%;
-      padding-left: 14px;
+      margin-left: 0; // 移动端不需要左边距
+      padding-left: 0;
+
+      @media (min-width: 768px) {
+        margin-left: 30%;
+        padding-left: 14px;
+      }
     }
 
     // 表单标签样式
     .cream-form-item-label {
       flex-basis: 30%;
       text-align: right;
-      padding-right: 20px;
+      padding-right: clamp(0.5rem, 1.5%, 1.25rem); // 响应式内边距
+      font-size: clamp($font-size-sm * 0.9, 1.1vw, $font-size-base);
+      line-height: 1.5;
 
-      >label.cream-form-item-required:before {
+      > label.cream-form-item-required:before {
         display: inline-block;
         margin-right: 4px;
         color: $color-error;
-        font-size: 14px;
+        font-size: clamp(0.75rem, 1vw, 0.875rem);
         font-family: SimSun, sans-serif;
         line-height: 1;
-        content: "*";
+        content: '*';
       }
     }
 
@@ -49,7 +58,6 @@
     .cream-form-item {
       flex-basis: 70%;
       position: relative;
-
 
       // 错误状态
       .cream-form-item-has-error.cream-form-item-control {
@@ -67,9 +75,10 @@
         position: absolute;
         bottom: -25px;
         left: 0;
-        line-height: 25px;
+        line-height: 1.5;
         color: $color-error;
         min-width: 100px;
+        font-size: clamp(0.7rem, 1vw, 0.875rem);
       }
     }
   }
@@ -79,5 +88,133 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: clamp(0.5rem, 1%, 1rem); // 响应式间距
+    flex-wrap: wrap; // 移动端允许换行
+    margin-top: clamp(1rem, 2%, 1.5rem);
+  }
+}
+
+// ===== 响应式设计 =====
+
+// 移动端样式 (< 768px)
+@media (max-width: 767px) {
+  .cream-form {
+    padding: clamp(0.5rem, 1.5%, 1rem); // 移动端减小内边距
+    font-size: clamp($font-size-sm * 0.9, 2vw, $font-size-sm);
+
+    // 表单行样式 - 移动端垂直布局
+    .cream-row {
+      flex-direction: column; // 垂直排列
+      align-items: stretch; // 拉伸填满宽度
+      margin-bottom: clamp(0.75rem, 2%, 1.25rem);
+
+      &.cream-row-no-label {
+        margin-left: 0;
+        padding-left: 0;
+      }
+
+      // 表单标签样式 - 移动端
+      .cream-form-item-label {
+        flex-basis: 100%; // 占满宽度
+        text-align: left; // 左对齐
+        padding-right: 0;
+        padding-bottom: clamp(0.25rem, 0.5%, 0.5rem);
+        font-size: clamp($font-size-sm * 0.85, 1.8vw, $font-size-sm);
+        font-weight: $font-weight-bold;
+        margin-bottom: 0.25rem;
+      }
+
+      // 表单内容区域 - 移动端
+      .cream-form-item {
+        flex-basis: 100%; // 占满宽度
+        width: 100%;
+
+        // 错误信息 - 移动端调整位置
+        .cream-form-item-explain {
+          position: relative;
+          bottom: auto;
+          margin-top: 0.25rem;
+          font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+        }
+      }
+    }
+
+    // 提交区域 - 移动端
+    .cream-form-submit-area {
+      flex-direction: column; // 垂直排列按钮
+      width: 100%;
+
+      button,
+      .btn {
+        width: 100%; // 按钮占满宽度
+        min-height: clamp(40px, 6vh, 44px); // 触摸目标优化
+      }
+    }
+  }
+}
+
+// 平板端样式 (768px - 991px)
+@media (min-width: 768px) and (max-width: 991px) {
+  .cream-form {
+    padding: clamp(1rem, 2%, 1.25rem);
+    font-size: clamp($font-size-sm, 1.3vw, $font-size-base);
+
+    // 表单行样式 - 平板端
+    .cream-row {
+      margin-bottom: clamp(1rem, 1.5%, 1.25rem);
+
+      // 表单标签样式 - 平板端
+      .cream-form-item-label {
+        flex-basis: 28%; // 稍微减小标签宽度
+        padding-right: clamp(0.75rem, 1.5%, 1rem);
+        font-size: clamp($font-size-sm * 0.9, 1.2vw, $font-size-sm);
+      }
+
+      // 表单内容区域 - 平板端
+      .cream-form-item {
+        flex-basis: 72%; // 稍微增加控件宽度
+      }
+    }
+
+    // 提交区域 - 平板端
+    .cream-form-submit-area {
+      button,
+      .btn {
+        min-height: clamp(38px, 4vh, 40px);
+        padding: clamp(0.4rem, 0.8%, 0.5rem) clamp(0.75rem, 1.5%, 1rem);
+      }
+    }
+  }
+}
+
+// 桌面端样式 (≥ 992px)
+@media (min-width: 992px) {
+  .cream-form {
+    padding: clamp(1.25rem, 2%, 1.5rem);
+    font-size: clamp($font-size-base, 1.2vw, $font-size-base * 1.05);
+
+    // 表单行样式 - 桌面端
+    .cream-row {
+      margin-bottom: clamp(1.25rem, 1.5%, 1.5rem);
+
+      // 表单标签样式 - 桌面端
+      .cream-form-item-label {
+        flex-basis: 30%;
+        padding-right: clamp(1rem, 1.5%, 1.25rem);
+      }
+
+      // 表单内容区域 - 桌面端
+      .cream-form-item {
+        flex-basis: 70%;
+      }
+    }
+
+    // 提交区域 - 桌面端
+    .cream-form-submit-area {
+      button,
+      .btn {
+        min-height: clamp(40px, 3vh, 44px);
+      }
+    }
   }
 }
