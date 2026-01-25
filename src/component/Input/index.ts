@@ -8,3 +8,5 @@ export type InputComponent = FC<InputProps> & {
 
 const TransInput = Input as InputComponent;
 TransInput.AutoComplate = AutoComplate;
+
+export default TransInput;

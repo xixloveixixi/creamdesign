@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react';
 import { InputProps, Input } from './input';
 import { useDebounce } from '../../hooks/useDebounce';
 import classNames from 'classnames';
@@ -42,7 +42,9 @@ export const AutoComplate = <T,>({
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const triggerSearch = useRef(true);
   // 点击外面时，清空建议列表
-  const componentRef = useRef<HTMLDivElement>(null);
+  const componentRef = useRef<HTMLDivElement>(
+    null
+  ) as RefObject<HTMLDivElement>;
   useClickOutSide(componentRef, () => {
     setSuggestions([]);
   });

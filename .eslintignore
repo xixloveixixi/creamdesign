@@ -1,0 +1,14 @@
+# 构建输出目录
+dist/
+build/
+coverage/
+
+# 依赖
+node_modules/
+
+# Storybook
+storybook-static/
+
+# 其他
+*.d.ts.map
+

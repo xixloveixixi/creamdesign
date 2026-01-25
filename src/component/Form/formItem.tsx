@@ -26,16 +26,18 @@ export interface FormItemProps {
 }
 export const FormItem: FC<FormItemProps> = props => {
   const {
-    name,
+    name = 'form-item',
+    valuePropsName = 'value',
+    trigger = 'onChange',
+    getValueFormEvent = (e: any) => {
+      return e.target.value;
+    },
+    validateTrigger = 'onBlur',
+    rules = [],
     children,
     label,
-    rules = [], // 验证规则数组，类型为RuleItem[]以便灵活扩展
     error,
     className,
-    valuePropsName,
-    trigger = 'onChange',
-    validateTrigger = 'onBlur', // 验证触发事件
-    getValueFormEvent = (e: any) => e.target.value,
   } = props as SomeRequired<
     FormItemProps,
     | 'validateTrigger'
@@ -176,15 +178,4 @@ export const FormItem: FC<FormItemProps> = props => {
       </div>
     </div>
   );
-};
-
-FormItem.defaultProps = {
-  name: 'form-item',
-  valuePropsName: 'value',
-  trigger: 'onChange',
-  getValueFormEvent: (e: any) => {
-    return e.target.value;
-  },
-  validateTrigger: 'onBlur',
-  rules: [],
 };

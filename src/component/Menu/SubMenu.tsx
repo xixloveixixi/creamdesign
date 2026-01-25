@@ -29,7 +29,14 @@ export interface SubMenuProps {
  * @returns {JSX.Element} 子菜单组件
  */
 const SubMenu: React.FC<SubMenuProps> = (props: SubMenuProps) => {
-  const { index, title, disabled, className, style, children } = props;
+  const {
+    index = 0,
+    title,
+    disabled = false,
+    className,
+    style,
+    children,
+  } = props;
   const context = useContext(MenuContext);
   const {
     activeIndex,
@@ -123,10 +130,6 @@ const SubMenu: React.FC<SubMenuProps> = (props: SubMenuProps) => {
       </ul>
     </li>
   );
-};
-
-SubMenu.defaultProps = {
-  disabled: false,
 };
 
 SubMenu.displayName = 'SubMenu';

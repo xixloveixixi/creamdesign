@@ -703,3 +703,5 @@ export type FormComponent = ForwardRefExoticComponent<
 
 const TransForm = Form as unknown as FormComponent;
 TransForm.FormItem = FormItem;
+
+export default TransForm;

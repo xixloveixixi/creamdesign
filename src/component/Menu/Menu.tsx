@@ -60,7 +60,7 @@ const Menu: React.FC<MenuProps> = (props: MenuProps) => {
     mode = 'horizontal',
     onSelect,
     className,
-    defaultIndex,
+    defaultIndex = 0,
     style,
     children,
   } = props;
@@ -142,11 +142,6 @@ const Menu: React.FC<MenuProps> = (props: MenuProps) => {
       </MenuContext.Provider>
     </ul>
   );
-};
-
-Menu.defaultProps = {
-  mode: 'horizontal',
-  defaultIndex: 0,
 };
 
 export default Menu;

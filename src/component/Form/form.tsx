@@ -47,7 +47,7 @@ export const FormContext = createContext<IFormContext>({
 // 注意这里的类型要使用泛型来定义，因为ref是React.RefObject<HTMLFormElement>类型
 export const Form = forwardRef<FormRefType, FormProps>((props, ref) => {
   const {
-    name,
+    name = 'form',
     children,
     className,
     style,
@@ -123,7 +123,3 @@ export const Form = forwardRef<FormRefType, FormProps>((props, ref) => {
     </div>
   );
 });
-
-Form.defaultProps = {
-  name: 'form',
-};

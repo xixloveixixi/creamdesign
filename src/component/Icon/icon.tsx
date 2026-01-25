@@ -3,7 +3,9 @@ import {
   FontAwesomeIconProps,
 } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
-export type IconTheme =
+
+// 类型定义（使用字符串字面量联合类型）
+type IconTheme =
   | 'primary'
   | 'secondary'
   | 'success'
@@ -12,6 +14,7 @@ export type IconTheme =
   | 'info'
   | 'light'
   | 'dark';
+
 interface IconProps extends FontAwesomeIconProps {
   theme?: IconTheme;
   className?: string;
