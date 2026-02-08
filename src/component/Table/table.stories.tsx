@@ -146,7 +146,14 @@ export const BasicTable = () => {
   ];
 
   return (
-    <div style={{ width: '700px', height: '500px' }}>
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '1400px',
+        height: '600px',
+        padding: '20px',
+      }}
+    >
       <Table<DataType> columns={columns} dataSource={data} />
     </div>
   );
@@ -181,7 +188,18 @@ export const AlignedTable = () => {
     },
   ];
 
-  return <Table<DataType> columns={alignedColumns} dataSource={data} />;
+  return (
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '1400px',
+        height: '600px',
+        padding: '20px',
+      }}
+    >
+      <Table<DataType> columns={alignedColumns} dataSource={data} />
+    </div>
+  );
 };
 
 // 带自定义渲染的表格
@@ -219,7 +237,18 @@ export const CustomRenderTable = () => {
     },
   ];
 
-  return <Table<DataType> columns={customColumns} dataSource={data} />;
+  return (
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '1400px',
+        height: '600px',
+        padding: '20px',
+      }}
+    >
+      <Table<DataType> columns={customColumns} dataSource={data} />
+    </div>
+  );
 };
 
 export const VirtualScrollTable = () => {
@@ -280,8 +309,69 @@ export const VirtualScrollTable = () => {
   ];
 
   return (
-    <div style={{ width: '700px', height: '600px' }}>
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '1400px',
+        height: '700px',
+        padding: '20px',
+      }}
+    >
       <Table<DataType> columns={columns} dataSource={data} virtual={true} />
+    </div>
+  );
+};
+
+// 带行选择和虚拟滚动的表格
+export const TableWithSelectionAndVirtual = () => {
+  const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>(
+    []
+  );
+
+  const selectionColumns: TableProps<DataType>['columns'] = [
+    {
+      title: '姓名',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '年龄',
+      dataIndex: 'age',
+      key: 'age',
+    },
+    {
+      title: '地址',
+      dataIndex: 'address',
+      key: 'address',
+    },
+  ];
+
+  return (
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '1400px',
+        height: '700px',
+        padding: '20px',
+      }}
+    >
+      <div style={{ marginBottom: '16px' }}>
+        <p>
+          已选择 {selectedRowKeys.length} 项（共 {data.length} 项）
+        </p>
+      </div>
+      <Table<DataType>
+        columns={selectionColumns}
+        dataSource={data}
+        virtual={true}
+        rowSelection={{
+          type: 'checkbox',
+          selectedRowKeys,
+          onChange: keys => {
+            setSelectedRowKeys(keys);
+          },
+        }}
+      />
     </div>
   );
 };

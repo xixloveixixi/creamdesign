@@ -168,11 +168,13 @@ const TableFoot = () => {
   const showTotal = paginationConfig?.showTotal ?? true;
   const showSizeChanger = paginationConfig?.showSizeChanger ?? true;
   const columns = context.columns;
+  const isRowSelectionEnabled = !!context.rowSelection;
+  const colSpan = isRowSelectionEnabled ? columns.length + 1 : columns.length;
 
   return (
     <tfoot className="cream-table-foot">
       <tr>
-        <td colSpan={columns.length}>
+        <td colSpan={colSpan}>
           <div className="cream-table-foot-content">
             <Pagination
               total={total}
