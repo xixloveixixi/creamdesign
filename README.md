@@ -1,4 +1,30 @@
-# Getting Started with Create React App
+# CreamDesign
+
+一个现代化的 React 组件库，基于 TypeScript 和 SCSS 构建。
+
+## 🚀 CI/CD
+
+项目配置了完整的 CI/CD 流程，包括：
+
+- ✅ **自动化测试** - 每次提交自动运行测试
+- ✅ **代码检查** - ESLint 和 Prettier 格式检查
+- ✅ **自动构建** - 构建组件库和 Storybook
+- ✅ **PR 预览** - 自动部署 Storybook 预览到 Surge
+- ✅ **自动发布** - 推送版本标签自动发布到 npm
+- ✅ **安全扫描** - CodeQL 代码安全分析
+
+### 工作流状态
+
+[![CI](https://github.com/YOUR_USERNAME/creamdesign/workflows/CI/badge.svg)](https://github.com/YOUR_USERNAME/creamdesign/actions)
+[![Release](https://github.com/YOUR_USERNAME/creamdesign/workflows/Release/badge.svg)](https://github.com/YOUR_USERNAME/creamdesign/actions)
+
+### 配置指南
+
+详细的 CI/CD 配置说明请查看 [.github/CICD_SETUP.md](.github/CICD_SETUP.md)
+
+---
+
+## 📦 Getting Started
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
