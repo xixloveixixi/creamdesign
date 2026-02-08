@@ -11,11 +11,15 @@ const TableFoot = () => {
   // pagination === true 或 undefined: 使用默认配置（启用分页）
   // pagination === 对象: 使用配置对象
   const isPaginationDisabled = pagination === false;
-  const paginationConfig: PaginationConfig | undefined = isPaginationDisabled
-    ? undefined
-    : pagination === true || pagination === undefined
-      ? {}
-      : pagination;
+  const paginationConfig: PaginationConfig | undefined = (() => {
+    if (isPaginationDisabled) {
+      return undefined;
+    }
+    if (pagination === true || pagination === undefined) {
+      return {};
+    }
+    return pagination;
+  })();
 
   // 2、计算 total：优先使用 pagination.total（服务端分页），否则使用 dataSource.length（客户端分页）
   const initialTotal = context?.total ?? 0;

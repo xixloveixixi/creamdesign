@@ -3,22 +3,72 @@
   "version": "0.1.0",
   "private": false,
   "type": "module",
-  "main": "dist/index.es.js",
-  "module": "dist/index.es.js",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.es.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "style": "./dist/index.es.css"
+    },
+    "./button": {
+      "import": "./dist/button/index.esm.js",
+      "require": "./dist/button/index.js",
+      "types": "./dist/button/index.d.ts"
+    },
+    "./menu": {
+      "import": "./dist/menu/index.esm.js",
+      "require": "./dist/menu/index.js",
+      "types": "./dist/menu/index.d.ts"
+    },
+    "./table": {
+      "import": "./dist/table/index.esm.js",
+      "require": "./dist/table/index.js",
+      "types": "./dist/table/index.d.ts"
+    },
+    "./form": {
+      "import": "./dist/form/index.esm.js",
+      "require": "./dist/form/index.js",
+      "types": "./dist/form/index.d.ts"
+    },
+    "./input": {
+      "import": "./dist/input/index.esm.js",
+      "require": "./dist/input/index.js",
+      "types": "./dist/input/index.d.ts"
+    },
+    "./progress": {
+      "import": "./dist/progress/index.esm.js",
+      "require": "./dist/progress/index.js",
+      "types": "./dist/progress/index.d.ts"
+    },
+    "./pagination": {
+      "import": "./dist/pagination/index.esm.js",
+      "require": "./dist/pagination/index.js",
+      "types": "./dist/pagination/index.d.ts"
+    },
+    "./upload": {
+      "import": "./dist/upload/index.esm.js",
+      "require": "./dist/upload/index.js",
+      "types": "./dist/upload/index.d.ts"
+    },
+    "./icon": {
+      "import": "./dist/icon/index.esm.js",
+      "require": "./dist/icon/index.js",
+      "types": "./dist/icon/index.d.ts"
     },
     "./style": "./dist/index.es.css",
-    "./dist/index.es.css": "./dist/index.es.css",
     "./dist/*": "./dist/*"
   },
   "style": "dist/index.es.css",
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
   "peerDependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
@@ -55,7 +105,7 @@
     "eject": "react-scripts eject",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build-es": "rollup --config rollup.config.js",
+    "build-es": "rollup --config rollup.config.js && node scripts/copy-types.js",
     "prepare": "husky install",
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix",
