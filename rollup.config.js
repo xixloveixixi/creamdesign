@@ -4,9 +4,11 @@ import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import postcss from 'rollup-plugin-postcss';
 import excludeDependenciesFromBundle from 'rollup-plugin-exclude-dependencies-from-bundle';
+import copy from 'rollup-plugin-copy'; // 可选：复制额外文件
 
-// 共享的基础插件配置（不包含 TypeScript）
-const getBasePlugins = () => [
+const isProd = process.env.NODE_ENV === 'production';
+
+const getBasePlugins = (options = {}) => [
   nodeResolve({
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
   }),
@@ -14,50 +16,36 @@ const getBasePlugins = () => [
   json(),
   excludeDependenciesFromBundle(),
   postcss({
-    extract: true, // 提取 CSS 到单独文件
-    modules: false, // 全局 CSS
+    extract: options.extractCSS ?? false,
+    modules: false,
     use: ['sass'],
-    minimize: false, // 开发时不压缩
+    minimize: isProd,
+    inject: options.injectCSS ?? true,
+    sourceMap: !isProd,
   }),
 ];
 
-// TypeScript 插件配置
-const getTypeScriptPlugin = (options = {}) => {
-  const compilerOptions = {
-    declaration: options.declaration !== false,
-    declarationMap: options.declarationMap !== false,
-    jsx: 'react-jsx',
-    emitDeclarationOnly: false,
-    module: 'esnext',
-    target: 'es5',
-    moduleResolution: 'node',
-    esModuleInterop: true,
-    allowSyntheticDefaultImports: true,
-  };
+const external = [
+  'react',
+  'react-dom',
+  'react/jsx-runtime',
+  /@company\//, // 内部包也作为外部依赖
+];
 
-  // 只有在使用 dir 输出时才设置 outDir
-  if (options.outDir) {
-    compilerOptions.outDir = options.outDir;
-  }
-
-  return typescript({
-    tsconfig: './tsconfig.json',
-    compilerOptions,
-    exclude: [
-      '**/*.test.ts',
-      '**/*.test.tsx',
-      '**/*.stories.ts',
-      '**/*.stories.tsx',
-    ],
-    include: ['src/**/*.ts', 'src/**/*.tsx'],
-  });
+const componentEntries = {
+  button: 'src/component/Button/index.tsx',
+  menu: 'src/component/Menu/index.ts',
+  table: 'src/component/Table/index.tsx',
+  form: 'src/component/Form/index.tsx',
+  input: 'src/component/Input/index.ts',
+  progress: 'src/component/Progress/index.tsx',
+  pagination: 'src/component/Pagination/index.ts',
+  upload: 'src/component/Upload/index.ts',
+  icon: 'src/component/Icon/index.ts',
 };
 
-// 外部依赖
-const external = ['react', 'react-dom', 'react/jsx-runtime'];
-
 export default [
-  // 主入口 - 整体打包 (CJS)
+  // 1. 主入口 - CJS (包含类型声明)
   {
     input: 'src/index.tsx',
     output: {
@@ -65,79 +53,120 @@ export default [
       format: 'cjs',
       entryFileNames: 'index.js',
       exports: 'named',
+      sourcemap: !isProd,
     },
     external,
-    plugins: [getTypeScriptPlugin({ outDir: 'dist' }), ...getBasePlugins()],
+    plugins: [
+      typescript({
+        tsconfig: './tsconfig.json',
+        compilerOptions: {
+          declaration: true,
+          declarationMap: true,
+          outDir: 'dist',
+          target: 'es2018',
+          module: 'esnext',
+          jsx: 'react-jsx',
+        },
+        exclude: ['**/*.test.*', '**/*.stories.*'],
+      }),
+      ...getBasePlugins({ extractCSS: true, injectCSS: false }),
+    ],
   },
-  // 主入口 - 整体打包 (ESM)
+
+  // 2. 主入口 - ESM
   {
     input: 'src/index.tsx',
     output: {
       dir: 'dist',
       format: 'es',
       entryFileNames: 'index.esm.js',
+      sourcemap: !isProd,
     },
     external,
     plugins: [
-      getTypeScriptPlugin({
-        declaration: false,
-        declarationMap: false,
-        outDir: 'dist',
+      typescript({
+        compilerOptions: {
+          declaration: false,
+          declarationMap: false,
+          outDir: 'dist',
+          target: 'es2018',
+          module: 'esnext',
+          jsx: 'react-jsx',
+        },
       }),
-      ...getBasePlugins(),
+      ...getBasePlugins({ extractCSS: false, injectCSS: false }),
     ],
   },
-  // 按需加载 - 每个组件单独打包 (ESM)
+
+  // 3. 按需加载 - ESM 组件代码
   {
-    input: {
-      button: 'src/component/Button/index.tsx',
-      menu: 'src/component/Menu/index.ts',
-      table: 'src/component/Table/index.tsx',
-      form: 'src/component/Form/index.tsx',
-      input: 'src/component/Input/index.ts',
-      progress: 'src/component/Progress/index.tsx',
-      pagination: 'src/component/Pagination/index.ts',
-      upload: 'src/component/Upload/index.ts',
-      icon: 'src/component/Icon/index.ts',
-    },
+    input: componentEntries,
     output: {
       dir: 'dist',
       format: 'es',
-      entryFileNames: '[name]/index.esm.js',
+      entryFileNames: '[name]/index.js',
       chunkFileNames: 'chunks/[name]-[hash].js',
       exports: 'named',
-    },
-    external,
-    plugins: [getTypeScriptPlugin({ outDir: 'dist' }), ...getBasePlugins()],
-  },
-  // 按需加载 - 每个组件单独打包 (CJS)
-  {
-    input: {
-      button: 'src/component/Button/index.tsx',
-      menu: 'src/component/Menu/index.ts',
-      table: 'src/component/Table/index.tsx',
-      form: 'src/component/Form/index.tsx',
-      input: 'src/component/Input/index.ts',
-      progress: 'src/component/Progress/index.tsx',
-      pagination: 'src/component/Pagination/index.ts',
-      upload: 'src/component/Upload/index.ts',
-      icon: 'src/component/Icon/index.ts',
-    },
-    output: {
-      dir: 'dist',
-      format: 'cjs',
-      entryFileNames: '[name]/index.js',
-      chunkFileNames: 'chunks/[name]-[hash].cjs.js',
-      exports: 'named',
+      sourcemap: !isProd,
     },
     external,
     plugins: [
-      getTypeScriptPlugin({
-        declaration: false,
-        declarationMap: false,
-        outDir: 'dist',
+      typescript({
+        compilerOptions: {
+          declaration: false,
+          declarationMap: false,
+          outDir: 'dist',
+        },
       }),
-      ...getBasePlugins(),
+      ...getBasePlugins({ extractCSS: false, injectCSS: false }),
     ],
+  },
+
+  // 4. 按需加载 - CJS 组件代码
+  {
+    input: componentEntries,
+    output: {
+      dir: 'dist',
+      format: 'cjs',
+      entryFileNames: '[name]/index.cjs.js',
+      chunkFileNames: 'chunks/[name]-[hash].cjs.js',
+      exports: 'named',
+      sourcemap: !isProd,
+    },
+    external,
+    plugins: [
+      typescript({
+        compilerOptions: {
+          declaration: false,
+          declarationMap: false,
+          outDir: 'dist',
+        },
+      }),
+      ...getBasePlugins({ extractCSS: false, injectCSS: true }),
+    ],
+  },
+
+  // 5. 按需加载 - 类型声明文件（单独）
+  {
+    input: componentEntries,
+    output: {
+      dir: 'dist',
+      format: 'es',
+      entryFileNames: '[name]/index.d.ts',
+    },
+    plugins: [
+      typescript({
+        compilerOptions: {
+          declaration: true,
+          emitDeclarationOnly: true,
+          outDir: 'dist',
+          target: 'es2018',
+          module: 'esnext',
+          jsx: 'react-jsx',
+        },
+        exclude: ['**/*.test.*', '**/*.stories.*'],
+      }),
+    ],
+    external,
   },
 ];
