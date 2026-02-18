@@ -24,64 +24,80 @@
 
 // 按钮类型样式
 .btn-primary {
-  @include btn-variant($color-primary-600,
+  @include btn-variant(
+    $color-primary-600,
     white,
     $color-primary-700,
-    $color-primary-800 );
+    $color-primary-800
+  );
 }
 
 .btn-secondary {
-  @include btn-variant($color-primary-400,
+  @include btn-variant(
+    $color-primary-400,
     white,
     $color-primary-500,
-    $color-primary-600 );
+    $color-primary-600
+  );
 }
 
 .btn-outline {
-  @include btn-variant(transparent,
+  @include btn-variant(
+    transparent,
     $color-primary-900,
     $color-primary-100,
     $color-primary-200,
-    $color-primary-600 );
+    $color-primary-600
+  );
 }
 
 // 危险按钮样式
 .btn-danger {
-  @include btn-variant($color-error,
+  @include btn-variant(
+    $color-error,
     white,
     darken-color($color-error, 10%),
-    darken-color($color-error, 20%));
+    darken-color($color-error, 20%)
+  );
 }
 
 // 警告按钮样式
 .btn-warning {
-  @include btn-variant($color-warning,
+  @include btn-variant(
+    $color-warning,
     white,
     darken-color($color-warning, 10%),
-    darken-color($color-warning, 20%));
+    darken-color($color-warning, 20%)
+  );
 }
 
 // 信息按钮样式
 .btn-info {
-  @include btn-variant($color-info,
+  @include btn-variant(
+    $color-info,
     white,
     darken-color($color-info, 10%),
-    darken-color($color-info, 20%));
+    darken-color($color-info, 20%)
+  );
 }
 
 // 成功按钮样式
 .btn-success {
-  @include btn-variant($color-success,
+  @include btn-variant(
+    $color-success,
     white,
     darken-color($color-success, 10%),
-    darken-color($color-success, 20%));
+    darken-color($color-success, 20%)
+  );
 }
 
 .btn-ghost {
-  @include btn-variant(transparent,
+  @include btn-variant(
+    transparent,
     $color-text-primary,
     $color-primary-100,
-    $color-primary-200 );
+    $color-primary-200
+  );
 
   &:hover:not(:disabled) {
     color: $color-primary-900;
@@ -89,10 +105,12 @@
 }
 
 .btn-text {
-  @include btn-variant(transparent,
+  @include btn-variant(
+    transparent,
     $color-primary-600,
     $color-primary-100,
-    $color-primary-100 );
+    $color-primary-100
+  );
   font-weight: 400;
 
   &:hover:not(:disabled) {

@@ -4,7 +4,7 @@ import {
   ButtonSize,
   ButtonTypeValue,
   ButtonSizeValue,
-} from './buttion';
+} from './Button';
 
 export default Button;
 // 枚举是值，需要作为值导出

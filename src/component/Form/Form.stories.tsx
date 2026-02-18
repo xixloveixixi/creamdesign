@@ -1,8 +1,8 @@
 import { Meta } from '@storybook/react';
-import { FormItem } from './formItem';
-import { Form, FormRefType } from './form';
+import { FormItem } from './FormItem';
+import { Form, FormRefType } from './Form';
 import Button from '../Button';
-import { ButtonType } from '../Button/buttion';
+import { ButtonType } from '../Button/Button';
 import { CustomRule } from './useStore';
 import { useRef } from 'react';
 const meta: Meta<typeof Form> = {
@@ -218,7 +218,7 @@ export const RequiredForm = () => (
       getValueFormEvent={(e: any) => e.target.checked}
     >
       <input type="checkbox" />
-      <a href="https://www.baidu.com" target="_blank">
+      <a href="https://www.baidu.com" target="_blank" rel="noreferrer">
         同意
       </a>
     </FormItem>

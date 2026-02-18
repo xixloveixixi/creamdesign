@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, InputProps } from './input';
+import { Input, InputProps } from './Input';
 import type { Meta, StoryObj } from '@storybook/react';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 

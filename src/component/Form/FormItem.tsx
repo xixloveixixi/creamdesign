@@ -2,7 +2,7 @@
 import { FC, ReactElement, ReactNode, useContext, useEffect } from 'react';
 import './Form.scss';
 import classNames from 'classnames';
-import { FormContext } from './form';
+import { FormContext } from './Form';
 import React from 'react';
 import { RuleItem } from 'async-validator';
 import { CustomRule } from './useStore';

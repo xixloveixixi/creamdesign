@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import './paginationStyle.scss';
+import './Pagination.scss';
 
 export interface PaginationProps {
   // 当前页码（从1开始）

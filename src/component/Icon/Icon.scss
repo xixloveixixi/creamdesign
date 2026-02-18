@@ -1,0 +1,8 @@
+// 使用each
+@import '../../style/_creamdesign.scss';
+
+@each $key, $val in $theme-colors {
+  .icon-#{$key} {
+    color: $val;
+  }
+}

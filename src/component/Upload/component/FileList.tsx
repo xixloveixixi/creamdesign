@@ -1,7 +1,7 @@
 import { FileItem } from '../Upload';
-import './fileList.scss';
+import './FileList.scss';
 import Progress from '../../Progress/index';
-import Icon from '../../Icon/icon';
+import Icon from '../../Icon/Icon';
 import {
   faFile,
   faCircleCheck,

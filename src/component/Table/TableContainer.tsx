@@ -8,11 +8,11 @@ import {
   useLayoutEffect,
   useCallback,
 } from 'react';
-import './tableStyle.scss';
+import './Table.scss';
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
 import TableFoot from './TableFoot';
-import { useVirtualScroll } from './hooks/useVirtualScroll.ts';
+import { useVirtualScroll } from './hooks/useVirtualScroll';
 import VirtualScrollBody from './TableVirtualBody';
 
 // 定义通用的列接口
@@ -286,7 +286,14 @@ const TableContainer = <T extends Record<string, any> = any>(
         rowSelection.onSelect(record, newSelected, selectedRows);
       }
     },
-    [selectedRowKeys, selectionType, tableData, rowSelection, isRowSelected]
+    [
+      selectedRowKeys,
+      selectionType,
+      tableData,
+      rowSelection,
+      isRowSelected,
+      setSelectedRowKeys,
+    ]
   );
 
   // 切换所有行的选中状态

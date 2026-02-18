@@ -2,8 +2,8 @@
 
 import { Meta } from '@storybook/react';
 import Table, { TableProps } from './TableContainer';
-import Button, { ButtonType, ButtonSize } from '../Button/buttion';
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import Button, { ButtonType, ButtonSize } from '../Button/Button';
+import React, { useState } from 'react';
 const meta: Meta<typeof Table> = {
   title: 'Table组件',
   component: Table,
@@ -94,7 +94,7 @@ export const BasicTable = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: text => <a>{text}</a>,
+      render: text => <a href="#">{text}</a>,
     },
     {
       title: 'Age',
@@ -257,7 +257,7 @@ export const VirtualScrollTable = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: text => <a>{text}</a>,
+      render: text => <a href="#">{text}</a>,
     },
     {
       title: 'Age',

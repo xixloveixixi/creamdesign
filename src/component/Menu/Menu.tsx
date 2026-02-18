@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react';
 import classNames from 'classnames';
-import './style.scss';
+import './Menu.scss';
 import { MenuItemProps } from './MenuItems';
 import { SubMenuProps } from './SubMenu';
 

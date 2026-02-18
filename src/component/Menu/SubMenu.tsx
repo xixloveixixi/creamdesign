@@ -2,7 +2,7 @@ import React, { useContext, ReactNode } from 'react';
 import classNames from 'classnames';
 import { MenuContext } from './Menu';
 import { MenuItemProps } from './MenuItems';
-import Icon from '../Icon/icon';
+import Icon from '../Icon/Icon';
 
 /**
  * SubMenu组件的属性接口
@@ -38,14 +38,8 @@ const SubMenu: React.FC<SubMenuProps> = (props: SubMenuProps) => {
     children,
   } = props;
   const context = useContext(MenuContext);
-  const {
-    activeIndex,
-    setActiveIndex,
-    expandedIndex,
-    onToggleSubMenu,
-    mode,
-    childActiveIndex,
-  } = context;
+  const { activeIndex, setActiveIndex, expandedIndex, onToggleSubMenu, mode } =
+    context;
 
   // 子菜单是否展开，由MenuContext的expandedIndex控制
   const expanded = expandedIndex === index;

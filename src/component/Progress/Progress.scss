@@ -45,47 +45,91 @@
     background: linear-gradient(90deg, $color-primary-500, $color-primary-600);
 
     &:hover {
-      background: linear-gradient(90deg, $color-primary-600, $color-primary-700);
+      background: linear-gradient(
+        90deg,
+        $color-primary-600,
+        $color-primary-700
+      );
     }
   }
 
   &.progress-fill-secondary {
-    background: linear-gradient(90deg, $color-secondary-blue-500, $color-secondary-blue-700);
+    background: linear-gradient(
+      90deg,
+      $color-secondary-blue-500,
+      $color-secondary-blue-700
+    );
 
     &:hover {
-      background: linear-gradient(90deg, $color-secondary-blue-700, darken-color($color-secondary-blue-700, 10%));
+      background: linear-gradient(
+        90deg,
+        $color-secondary-blue-700,
+        darken-color($color-secondary-blue-700, 10%)
+      );
     }
   }
 
   &.progress-fill-success {
-    background: linear-gradient(90deg, $color-success, lighten-color($color-success, 10%));
+    background: linear-gradient(
+      90deg,
+      $color-success,
+      lighten-color($color-success, 10%)
+    );
 
     &:hover {
-      background: linear-gradient(90deg, lighten-color($color-success, 10%), lighten-color($color-success, 15%));
+      background: linear-gradient(
+        90deg,
+        lighten-color($color-success, 10%),
+        lighten-color($color-success, 15%)
+      );
     }
   }
 
   &.progress-fill-warning {
-    background: linear-gradient(90deg, $color-warning, lighten-color($color-warning, 10%));
+    background: linear-gradient(
+      90deg,
+      $color-warning,
+      lighten-color($color-warning, 10%)
+    );
 
     &:hover {
-      background: linear-gradient(90deg, lighten-color($color-warning, 10%), lighten-color($color-warning, 15%));
+      background: linear-gradient(
+        90deg,
+        lighten-color($color-warning, 10%),
+        lighten-color($color-warning, 15%)
+      );
     }
   }
 
   &.progress-fill-error {
-    background: linear-gradient(90deg, $color-error, lighten-color($color-error, 10%));
+    background: linear-gradient(
+      90deg,
+      $color-error,
+      lighten-color($color-error, 10%)
+    );
 
     &:hover {
-      background: linear-gradient(90deg, lighten-color($color-error, 10%), lighten-color($color-error, 15%));
+      background: linear-gradient(
+        90deg,
+        lighten-color($color-error, 10%),
+        lighten-color($color-error, 15%)
+      );
     }
   }
 
   &.progress-fill-info {
-    background: linear-gradient(90deg, $color-info, lighten-color($color-info, 10%));
+    background: linear-gradient(
+      90deg,
+      $color-info,
+      lighten-color($color-info, 10%)
+    );
 
     &:hover {
-      background: linear-gradient(90deg, lighten-color($color-info, 10%), lighten-color($color-info, 15%));
+      background: linear-gradient(
+        90deg,
+        lighten-color($color-info, 10%),
+        lighten-color($color-info, 15%)
+      );
     }
   }
 }
@@ -132,10 +176,12 @@
 .progress-fill.animate {
   background-size: 200px 100%;
   background-repeat: no-repeat;
-  background-image: linear-gradient(90deg,
-      transparent,
-      rgba(255, 255, 255, 0.3),
-      transparent);
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   animation: progress-shimmer 1.5s infinite;
 }
 

@@ -118,6 +118,23 @@
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "**/*.test.{ts,tsx}",
+          "**/*.stories.{ts,tsx}"
+        ],
+        "rules": {
+          "testing-library/render-result-naming-convention": "off",
+          "testing-library/prefer-screen-queries": "off",
+          "testing-library/no-node-access": "off",
+          "testing-library/no-container": "off",
+          "testing-library/no-render-in-setup": "off",
+          "testing-library/no-wait-for-multiple-assertions": "off",
+          "testing-library/prefer-presence-queries": "off"
+        }
+      }
     ]
   },
   "browserslist": {
@@ -177,11 +194,11 @@
     "webpack": "^5.103.0"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
+    "src/**/*.{ts,tsx,js,jsx}": [
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{scss,css}": [
+    "src/**/*.{scss,css}": [
       "prettier --write"
     ],
     "*.{json,md}": [

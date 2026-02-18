@@ -8,7 +8,7 @@
 // theme：主题颜色，继承自Icon组件的主题系统
 // minimumDisplayTime：最小显示时间（毫秒），确保小文件也能看到进度条，默认3000ms
 import classNames from 'classnames';
-import type { IconTheme } from '../Icon/icon.d';
+import type { IconTheme } from '../Icon/Icon.d';
 import { useEffect, useState } from 'react';
 import './progress.scss';
 interface ProgressProps {

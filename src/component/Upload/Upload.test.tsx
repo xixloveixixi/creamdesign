@@ -50,7 +50,7 @@ jest.mock('axios', () => ({
 }));
 // 获取 mock 后的 axios
 const mockedAxios = axios as jest.Mocked<typeof axios>;
-jest.mock('../Icon/icon', () => {
+jest.mock('../Icon/Icon', () => {
   return function MockIcon({ icon, className }: any) {
     // 根据 FontAwesome 图标的 iconName 属性返回对应的文字
     // 使用 icon?.iconName 来识别图标，避免引用外部作用域变量

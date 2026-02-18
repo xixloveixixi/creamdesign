@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { Form, FormProps } from './form';
-import { FormItem } from '../Form/formItem';
-import { Input } from '../Input/input';
+import { Form, FormProps } from './Form';
+import { FormItem } from '../Form/FormItem';
+import { Input } from '../Input/Input';
 import Button from '../Button';
-import { ButtonType } from '../Button/buttion';
+import { ButtonType } from '../Button/Button';
 import { CustomRule, CustomRuleFunc } from './useStore';
 import Schema from 'async-validator';
 let originalWarn: any;

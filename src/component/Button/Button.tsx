@@ -3,7 +3,7 @@
 // 2、btnType：primary、secondary、danger、warning、info、success
 // 3、禁用状态：是否禁用按钮点击
 import React from 'react';
-import '../Button/buttonStyle.scss';
+import './Button.scss';
 
 // 创建枚举：type和size
 export enum ButtonType {

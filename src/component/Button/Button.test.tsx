@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Button from './index';
-import { ButtonType, ButtonSize } from './buttion';
+import { ButtonType, ButtonSize } from './Button';
 
 describe('Button Component', () => {
   // 模拟Ant Design风格的图标组件

@@ -18,11 +18,9 @@
 // 1、添加拖拽区域，用户可以将文件拖拽到区域内
 // 2、onPreview: 点击文件预览时触发
 import { useRef, useState, useMemo } from 'react';
-import Button from '../Button';
-import { ButtonType } from '../Button/buttion';
 import axios from 'axios';
-import { FileList } from './component/fileList';
-import { Dragger } from './component/dragger';
+import { FileList } from './component/FileList';
+import { Dragger } from './component/Dragger';
 import { useLargeFileUpload } from './hooks/useLargeFileUpload';
 import { createDefaultAdapter } from './hooks/useLargeFileUpload/adapter';
 import { UploadAdapter } from './hooks/useLargeFileUpload/types';
@@ -196,36 +194,6 @@ export const Upload = ({
       // 大文件上传失败的处理在 uploadLargeFile 中完成
     },
   });
-  // 模拟默认文件列表
-  const defaultFileListMock: FileItem[] = [
-    {
-      uid: '1',
-      size: 1024,
-      name: 'file1.txt',
-      status: 'success',
-      percent: 100,
-      raw: new File([''], 'file1.txt'),
-      response: { message: 'success' },
-    },
-    {
-      uid: '2',
-      size: 2048,
-      name: 'file2.txt',
-      status: 'uploading',
-      percent: 100,
-      raw: new File([''], 'file2.txt'),
-      response: { message: 'success' },
-    },
-    {
-      uid: '3',
-      size: 3072,
-      name: 'file3.txt',
-      status: 'error',
-      percent: 0,
-      raw: new File([''], 'file3.txt'),
-      error: { message: 'upload failed' },
-    },
-  ];
   // 创建一个更新文件列表的函数
   const updateFileList = (targetUid: string, updateObj: Partial<FileItem>) => {
     setFileList(prevList => {

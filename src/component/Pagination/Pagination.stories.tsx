@@ -32,7 +32,7 @@ export const WithTotal = () => {
       current={1}
       pageSize={10}
       showTotal={true}
-      onChange={(page) => console.log('Page:', page)}
+      onChange={page => console.log('Page:', page)}
     />
   );
 };
@@ -76,7 +76,7 @@ export const LargeData = () => {
       current={50}
       pageSize={20}
       showTotal={true}
-      onChange={(page) => console.log('Page:', page)}
+      onChange={page => console.log('Page:', page)}
     />
   );
 };
@@ -94,4 +94,3 @@ export const Disabled = () => {
     />
   );
 };
-

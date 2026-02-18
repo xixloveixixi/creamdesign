@@ -1,6 +1,6 @@
 import { useContext, useRef, useCallback, useMemo } from 'react';
 import { TableContext } from './TableContainer';
-import { useVirtualScroll } from './hooks/useVirtualScroll.ts';
+import { useVirtualScroll } from './hooks/useVirtualScroll';
 import Icon from '../Icon';
 import {
   faSquare,

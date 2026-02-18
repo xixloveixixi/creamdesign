@@ -139,7 +139,7 @@
     }
 
     // 悬浮时显示删除按钮
-    &+.remove-btn-overlay:not(.always-show) {
+    & + .remove-btn-overlay:not(.always-show) {
       opacity: 1;
       visibility: visible;
     }

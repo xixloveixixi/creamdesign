@@ -23,12 +23,12 @@ export type {
 
 // Form 组件
 export { default as Form } from './component/Form';
-export type { FormProps, FormRefType } from './component/Form/form';
-export type { FormItemProps } from './component/Form/formItem';
+export type { FormProps, FormRefType } from './component/Form/Form';
+export type { FormItemProps } from './component/Form/FormItem';
 
 // Input 组件
 export { default as Input } from './component/Input';
-export type { InputProps } from './component/Input/input';
+export type { InputProps } from './component/Input/Input';
 
 // Progress 组件
 export { default as Progress } from './component/Progress';
@@ -41,4 +41,4 @@ export { default as Upload } from './component/Upload';
 
 // Icon 组件
 export { default as Icon } from './component/Icon';
-export type { IconTheme } from './component/Icon/icon.d';
+export type { IconTheme } from './component/Icon/Icon.d';

@@ -149,9 +149,7 @@ function useStore(initialValues?: Record<string, any>) {
     let fieldErrors: Record<string, ValidateError[]> = {};
     // 获取值和规则，我们使用lodash-es的mapValues方法
     // 注意：这里直接使用 fields，因为 useReducer 返回的 fields 总是最新的
-    console.log('validateAllFields - fields:', fields);
     const valueMap = mapValues(fields, field => field.value);
-    console.log('validateAllFields - valueMap:', valueMap);
     // 进行转换：将CustomRule[]转换为RuleItem[]
     // 只处理有规则的字段
     const rulesMap: Record<string, RuleItem[]> = {};
@@ -226,8 +224,6 @@ function useStore(initialValues?: Record<string, any>) {
     } finally {
       // 基于 fieldErrors 计算最终是否有效
       const finalIsValid = Object.keys(fieldErrors).length === 0;
-      console.log('fieldErrors 数量:', Object.keys(fieldErrors).length);
-      console.log('finalIsValid:', finalIsValid);
 
       // 确保使用函数式更新，避免状态合并问题
       setForm(prevForm => ({

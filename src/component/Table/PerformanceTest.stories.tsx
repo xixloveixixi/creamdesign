@@ -7,7 +7,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import Table, { TableProps } from './TableContainer';
 import Button from '../Button';
-import { ButtonSize, ButtonType } from '../Button/buttion';
+import { ButtonSize, ButtonType } from '../Button/Button';
 
 const meta: Meta<typeof Table> = {
   title: 'Table组件/性能测试',

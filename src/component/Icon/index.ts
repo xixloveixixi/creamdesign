@@ -1,4 +1,4 @@
-import Icon from './icon';
+import Icon from './Icon';
 
 export default Icon;
-export type { IconTheme } from './icon.d';
+export type { IconTheme } from './Icon.d';
