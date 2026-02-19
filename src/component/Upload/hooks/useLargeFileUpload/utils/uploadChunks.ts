@@ -1,11 +1,11 @@
-// 思路：
-// 1. 将 chunks 数组分批（每批 concurrent 个）
-// 2. 使用 Promise.all 并发上传一批
-// 3. 等待一批完成后再上传下一批
-// 4. 实时更新进度
+/**
+ * 并发分片上传
+ * 支持：跳过已上传分片（断点续传）、AbortSignal 取消、暂停恢复
+ */
 
 import { UploadAdapter, ProgressInfo } from '../types';
 import { uploadChunkWithRetry } from './uploadChunkWithRetry';
+import { markChunkUploaded } from './chunkStore';
 
 interface UploadChunksParams {
   chunks: Blob[];
@@ -18,6 +18,14 @@ interface UploadChunksParams {
   concurrent: number;
   maxRetries: number;
   retryDelay: number;
+  /** 已上传的分片索引（用于断点续传，跳过这些分片） */
+  uploadedChunkIndices?: number[];
+  /** 用于取消上传的 AbortSignal */
+  signal?: AbortSignal;
+  /** 暂停状态检查函数 */
+  isPaused?: () => boolean;
+  /** 等待恢复的 Promise 工厂 */
+  waitForResume?: () => Promise<void>;
   onProgress?: (progress: ProgressInfo) => void;
   onChunkComplete?: (chunkIndex: number, totalChunks: number) => void;
 }
@@ -37,23 +45,59 @@ export const uploadChunks = async (params: UploadChunksParams) => {
     concurrent,
     maxRetries,
     retryDelay,
+    uploadedChunkIndices = [],
+    signal,
+    isPaused,
+    waitForResume,
     onProgress,
     onChunkComplete,
   } = params;
 
-  let uploadedChunks = 0;
+  // 构建待上传的分片索引列表（跳过已上传的）
+  const uploadedSet = new Set(uploadedChunkIndices);
+  const pendingIndices = Array.from(
+    { length: chunks.length },
+    (_, i) => i
+  ).filter(i => !uploadedSet.has(i));
+
+  let uploadedChunks = uploadedChunkIndices.length;
+
+  // 报告初始进度（已有断点续传的进度）
+  if (uploadedChunks > 0) {
+    onProgress?.({
+      percent: Math.round((uploadedChunks / totalChunks) * 100),
+      uploadedChunks,
+      totalChunks,
+      uploadedSize: (uploadedChunks / totalChunks) * fileSize,
+      totalSize: fileSize,
+      state: 'uploading',
+    });
+  }
 
   // 分批上传
-  for (let i = 0; i < chunks.length; i += concurrent) {
-    const batch = chunks.slice(i, i + concurrent);
+  for (let i = 0; i < pendingIndices.length; i += concurrent) {
+    // 检查是否已取消
+    if (signal?.aborted) {
+      throw new DOMException('上传已取消', 'AbortError');
+    }
+
+    // 检查是否暂停，等待恢复
+    if (isPaused?.() && waitForResume) {
+      await waitForResume();
+    }
+
+    const batch = pendingIndices.slice(i, i + concurrent);
 
     // 并发上传当前批次
     await Promise.all(
-      batch.map(async (chunk, batchIndex) => {
-        const chunkIndex = i + batchIndex;
+      batch.map(async chunkIndex => {
+        // 再次检查暂停
+        if (isPaused?.() && waitForResume) {
+          await waitForResume();
+        }
 
         await uploadChunkWithRetry({
-          chunk,
+          chunk: chunks[chunkIndex],
           chunkIndex,
           adapter,
           uploadId,
@@ -63,21 +107,26 @@ export const uploadChunks = async (params: UploadChunksParams) => {
           totalChunks,
           maxRetries,
           retryDelay,
+          signal,
         });
 
         uploadedChunks++;
         onChunkComplete?.(chunkIndex, totalChunks);
 
+        // 持久化已上传分片记录（断点续传）
+        markChunkUploaded(fileHash, chunkIndex).catch(() => {
+          // 静默失败，不影响上传
+        });
+
         // 更新进度
-        const progress: ProgressInfo = {
+        onProgress?.({
           percent: Math.round((uploadedChunks / totalChunks) * 100),
           uploadedChunks,
           totalChunks,
           uploadedSize: (uploadedChunks / totalChunks) * fileSize,
           totalSize: fileSize,
-        };
-
-        onProgress?.(progress);
+          state: 'uploading',
+        });
       })
     );
   }

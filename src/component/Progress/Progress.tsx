@@ -10,7 +10,7 @@
 import classNames from 'classnames';
 import type { IconTheme } from '../Icon/Icon.d';
 import { useEffect, useState } from 'react';
-import './progress.scss';
+import './Progress.scss';
 interface ProgressProps {
   percent: number;
   strokeHeight?: number;

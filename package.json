@@ -11,55 +11,55 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.esm.js",
       "require": "./dist/index.js",
-      "types": "./dist/index.d.ts",
       "style": "./dist/index.es.css"
     },
     "./button": {
+      "types": "./dist/button/index.d.ts",
       "import": "./dist/button/index.esm.js",
-      "require": "./dist/button/index.js",
-      "types": "./dist/button/index.d.ts"
+      "require": "./dist/button/index.js"
     },
     "./menu": {
+      "types": "./dist/menu/index.d.ts",
       "import": "./dist/menu/index.esm.js",
-      "require": "./dist/menu/index.js",
-      "types": "./dist/menu/index.d.ts"
+      "require": "./dist/menu/index.js"
     },
     "./table": {
+      "types": "./dist/table/index.d.ts",
       "import": "./dist/table/index.esm.js",
-      "require": "./dist/table/index.js",
-      "types": "./dist/table/index.d.ts"
+      "require": "./dist/table/index.js"
     },
     "./form": {
+      "types": "./dist/form/index.d.ts",
       "import": "./dist/form/index.esm.js",
-      "require": "./dist/form/index.js",
-      "types": "./dist/form/index.d.ts"
+      "require": "./dist/form/index.js"
     },
     "./input": {
+      "types": "./dist/input/index.d.ts",
       "import": "./dist/input/index.esm.js",
-      "require": "./dist/input/index.js",
-      "types": "./dist/input/index.d.ts"
+      "require": "./dist/input/index.js"
     },
     "./progress": {
+      "types": "./dist/progress/index.d.ts",
       "import": "./dist/progress/index.esm.js",
-      "require": "./dist/progress/index.js",
-      "types": "./dist/progress/index.d.ts"
+      "require": "./dist/progress/index.js"
     },
     "./pagination": {
+      "types": "./dist/pagination/index.d.ts",
       "import": "./dist/pagination/index.esm.js",
-      "require": "./dist/pagination/index.js",
-      "types": "./dist/pagination/index.d.ts"
+      "require": "./dist/pagination/index.js"
     },
     "./upload": {
+      "types": "./dist/upload/index.d.ts",
       "import": "./dist/upload/index.esm.js",
-      "require": "./dist/upload/index.js",
-      "types": "./dist/upload/index.d.ts"
+      "require": "./dist/upload/index.js"
     },
     "./icon": {
+      "types": "./dist/icon/index.d.ts",
       "import": "./dist/icon/index.esm.js",
-      "require": "./dist/icon/index.js",
-      "types": "./dist/icon/index.d.ts"
+      "require": "./dist/icon/index.js"
     },
     "./style": "./dist/index.es.css",
     "./dist/*": "./dist/*"

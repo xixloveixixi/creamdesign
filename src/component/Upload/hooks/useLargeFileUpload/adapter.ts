@@ -7,6 +7,8 @@ import { UploadAdapter } from './types';
 
 interface DefaultAdapterConfig {
   action: string;
+  /** 秒传检查接口 URL（可选） */
+  checkUrl?: string;
   initUrl?: string;
   chunkUrl?: string;
   mergeUrl?: string;
@@ -25,6 +27,7 @@ export const createDefaultAdapter = (
 ): UploadAdapter => {
   const {
     action,
+    checkUrl,
     initUrl,
     chunkUrl,
     mergeUrl,
@@ -35,6 +38,37 @@ export const createDefaultAdapter = (
   } = config;
 
   return {
+    // 秒传检查（可选）
+    checkFileExists: checkUrl
+      ? async params => {
+          try {
+            const response = await axios.post(
+              checkUrl,
+              {
+                fileHash: params.fileHash,
+                fileName: params.fileName,
+                fileSize: params.fileSize,
+                ...data,
+              },
+              { headers, withCredentials }
+            );
+
+            return {
+              exists: !!response.data.exists,
+              fileUrl: response.data.fileUrl || response.data.file_url,
+              fileId: response.data.fileId || response.data.file_id,
+              uploadedChunks:
+                response.data.uploadedChunks ||
+                response.data.uploaded_chunks ||
+                [],
+            };
+          } catch {
+            // 检查失败时视为文件不存在，继续正常上传
+            return { exists: false };
+          }
+        }
+      : undefined,
+
     // 初始化上传（可选）
     initUpload: initUrl
       ? async fileInfo => {
@@ -96,9 +130,10 @@ export const createDefaultAdapter = (
         {
           headers: {
             ...headers,
-            // 不设置 Content-Type，让浏览器自动设置 multipart/form-data
           },
           withCredentials,
+          // 传递 AbortSignal（axios >= 0.22 支持）
+          signal: params.signal,
           onUploadProgress: e => {
             if (params.onProgress && e.total) {
               const progress = Math.round((e.loaded * 100) / e.total);

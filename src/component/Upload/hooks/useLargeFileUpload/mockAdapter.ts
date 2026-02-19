@@ -16,6 +16,8 @@ export interface MockAdapterConfig {
   failProbability?: number;
   // 是否启用进度模拟
   enableProgress?: boolean;
+  // 模拟秒传（指定 Hash 列表视为已存在）
+  instantUploadHashes?: string[];
   // 初始化上传
   initUpload?: (fileInfo: {
     fileName: string;
@@ -52,6 +54,7 @@ export const createMockAdapter = (
     failChunks = [], // 默认不失败
     failProbability = 0, // 默认失败概率 0%
     enableProgress = true, // 默认启用进度模拟
+    instantUploadHashes = [], // 默认不模拟秒传
   } = config;
 
   // 存储上传任务信息（模拟服务端）
@@ -66,6 +69,31 @@ export const createMockAdapter = (
   >();
 
   return {
+    /**
+     * 秒传检查（可选）
+     * 如果文件 Hash 在 instantUploadHashes 列表中，模拟秒传成功
+     */
+    checkFileExists: async (params: {
+      fileHash: string;
+      fileName: string;
+      fileSize: number;
+    }) => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      if (instantUploadHashes.includes(params.fileHash)) {
+        console.log(
+          `[Mock] 秒传命中: ${params.fileName} (hash: ${params.fileHash})`
+        );
+        return {
+          exists: true,
+          fileUrl: `https://mock-storage.example.com/files/${params.fileName}`,
+          fileId: `instant-${params.fileHash.slice(0, 8)}`,
+        };
+      }
+
+      return { exists: false };
+    },
+
     /**
      * 初始化上传（可选）
      */
@@ -105,9 +133,15 @@ export const createMockAdapter = (
       totalChunks: number;
       fileHash?: string;
       onProgress?: (progress: number) => void;
+      signal?: AbortSignal;
     }) => {
       const uploadId = params.uploadId || `mock-${params.fileName}`;
       const task = uploadTasks.get(uploadId);
+
+      // 检查取消
+      if (params.signal?.aborted) {
+        throw new DOMException('上传已取消', 'AbortError');
+      }
 
       if (!task) {
         throw new Error(`上传任务不存在: ${uploadId}`);
@@ -123,10 +157,13 @@ export const createMockAdapter = (
         throw new Error(`分片 ${params.chunkIndex} 上传失败（模拟错误）`);
       }
 
-      // 模拟上传进度
+      // 模拟上传进度（支持取消）
       if (enableProgress && params.onProgress) {
-        const steps = 5; // 分 5 步模拟进度
+        const steps = 5;
         for (let i = 1; i <= steps; i++) {
+          if (params.signal?.aborted) {
+            throw new DOMException('上传已取消', 'AbortError');
+          }
           await new Promise(resolve =>
             setTimeout(resolve, uploadDelay / steps)
           );
