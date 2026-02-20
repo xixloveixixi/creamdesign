@@ -5,6 +5,7 @@ import Table from './index';
 import { ColumnType } from './TableContainer';
 
 // ==================== 全局 Mock ====================
+// jsdom 不支持 ResizeObserver，需要 Mock
 class MockResizeObserver {
   observe = jest.fn();
   unobserve = jest.fn();
@@ -12,6 +13,7 @@ class MockResizeObserver {
 }
 global.ResizeObserver = MockResizeObserver as any;
 
+// 控制 requestAnimationFrame 同步执行（虚拟滚动使用）
 global.requestAnimationFrame = (cb: FrameRequestCallback) => {
   cb(0);
   return 0;
@@ -291,10 +293,12 @@ describe('Table - 行选择（checkbox）', () => {
         rowSelection={{ type: 'checkbox', onChange }}
       />
     );
+
     const firstRowSelection = container.querySelector(
       'tbody .cream-table-selection-column'
     ) as HTMLElement;
     fireEvent.click(firstRowSelection);
+
     await waitFor(() => {
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(['1'], [testData[0]]);
@@ -310,10 +314,12 @@ describe('Table - 行选择（checkbox）', () => {
         rowSelection={{ type: 'checkbox' }}
       />
     );
+
     const firstRowSelection = container.querySelector(
       'tbody .cream-table-selection-column'
     ) as HTMLElement;
     fireEvent.click(firstRowSelection);
+
     await waitFor(() => {
       const firstRow = container.querySelector('tbody tr') as HTMLElement;
       expect(firstRow).toHaveClass('selected');
@@ -330,13 +336,18 @@ describe('Table - 行选择（checkbox）', () => {
         rowSelection={{ type: 'checkbox', onChange }}
       />
     );
+
     const firstRowSelection = container.querySelector(
       'tbody .cream-table-selection-column'
     ) as HTMLElement;
+
+    // 选中
     fireEvent.click(firstRowSelection);
     await waitFor(() => {
       expect(onChange).toHaveBeenLastCalledWith(['1'], [testData[0]]);
     });
+
+    // 取消选中
     fireEvent.click(firstRowSelection);
     await waitFor(() => {
       expect(onChange).toHaveBeenLastCalledWith([], []);
@@ -353,10 +364,12 @@ describe('Table - 行选择（checkbox）', () => {
         rowSelection={{ type: 'checkbox', onChange }}
       />
     );
+
     const headerSelection = container.querySelector(
       'thead .cream-table-selection-column div'
     ) as HTMLElement;
     fireEvent.click(headerSelection);
+
     await waitFor(() => {
       expect(onChange).toHaveBeenCalledWith(['1', '2', '3'], testData);
     });
@@ -368,12 +381,16 @@ describe('Table - 行选择（checkbox）', () => {
         columns={columns}
         dataSource={testData}
         pagination={false}
-        rowSelection={{ type: 'checkbox', selectedRowKeys: ['2'] }}
+        rowSelection={{
+          type: 'checkbox',
+          selectedRowKeys: ['2'],
+        }}
       />
     );
+
     const rows = container.querySelectorAll('tbody tr');
     expect(rows[0]).not.toHaveClass('selected');
-    expect(rows[1]).toHaveClass('selected');
+    expect(rows[1]).toHaveClass('selected'); // key='2'
     expect(rows[2]).not.toHaveClass('selected');
   });
 
@@ -387,14 +404,19 @@ describe('Table - 行选择（checkbox）', () => {
         rowSelection={{
           type: 'checkbox',
           onChange,
-          getCheckboxProps: record => ({ disabled: record.key === '1' }),
+          getCheckboxProps: record => ({
+            disabled: record.key === '1',
+          }),
         }}
       />
     );
+
+    // 点击第一行（已禁用）
     const firstRowSelection = container.querySelector(
       'tbody .cream-table-selection-column'
     ) as HTMLElement;
     fireEvent.click(firstRowSelection);
+
     await waitFor(() => {
       expect(onChange).not.toHaveBeenCalled();
     });
@@ -409,6 +431,7 @@ describe('Table - 行选择（checkbox）', () => {
         rowSelection={{ type: 'checkbox', hideSelectAll: true }}
       />
     );
+    // 表头选择列存在，但没有 div（全选 div 被隐藏）
     const headerSelectionTh = container.querySelector(
       'thead .cream-table-selection-column'
     );
@@ -428,13 +451,18 @@ describe('Table - 行选择（radio）', () => {
         rowSelection={{ type: 'radio', onChange }}
       />
     );
+
     const selectionCells = container.querySelectorAll(
       'tbody .cream-table-selection-column'
     );
+
+    // 点击第一行
     fireEvent.click(selectionCells[0]);
     await waitFor(() => {
       expect(onChange).toHaveBeenLastCalledWith(['1'], [testData[0]]);
     });
+
+    // 点击第二行，第一行应被取消
     fireEvent.click(selectionCells[1]);
     await waitFor(() => {
       expect(onChange).toHaveBeenLastCalledWith(['2'], [testData[1]]);
@@ -450,6 +478,7 @@ describe('Table - 行选择（radio）', () => {
         rowSelection={{ type: 'radio' }}
       />
     );
+    // radio 类型的选择列表头显示 faCircle 而不是全选 div
     const headerSelection = container.querySelector(
       'thead .cream-table-selection-column'
     );

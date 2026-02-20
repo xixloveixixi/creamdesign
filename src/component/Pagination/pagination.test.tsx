@@ -218,7 +218,7 @@ describe('Pagination Component', () => {
     expect(getByLabelText('每页显示条数')).toBeDisabled();
   });
 
-  // ==================== 省略号 ====================
+  // ==================== 省略号（大量页数） ====================
   test('总页数超过 7 时显示省略号', () => {
     const { container } = render(
       <Pagination total={200} pageSize={10} current={1} />
@@ -255,7 +255,7 @@ describe('Pagination Component', () => {
     );
   });
 
-  // ==================== 非受控模式 ====================
+  // ==================== 非受控模式（internal state） ====================
   test('非受控模式下点击页码更新激活状态', () => {
     const { getByLabelText } = render(<Pagination total={50} pageSize={10} />);
     fireEvent.click(getByLabelText('第 3 页'));

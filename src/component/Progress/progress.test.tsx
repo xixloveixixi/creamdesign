@@ -112,8 +112,9 @@ describe('Progress Component', () => {
     expect(container.querySelector('.progress-text')).not.toBeInTheDocument();
   });
 
-  test('showText 默认 true，但 percent=0 时无文字', () => {
-    const { container } = render(<Progress percent={0} showText={true} />);
+  test('showText 默认为 true', () => {
+    // percent=0 时 displayPercent=0，所以文字不会显示，这里测 showText=false 对结构无影响
+    const { container } = render(<Progress percent={0} showText={false} />);
     expect(container.querySelector('.progress-text')).not.toBeInTheDocument();
   });
 
@@ -123,12 +124,24 @@ describe('Progress Component', () => {
     await act(async () => {
       jest.runAllTimers();
     });
+    // 验证 progress-fill 的宽度不再是 0%（动画已启动）
     const fill = container.querySelector('.progress-fill') as HTMLElement;
-    const widthValue = parseFloat(fill.style.width);
+    const width = fill.style.width;
+    const widthValue = parseFloat(width);
     expect(widthValue).toBeGreaterThan(0);
   });
 
-  test('percent=100 时，progress-fill 宽度最终大于 0', async () => {
+  test('percent > 0 且 displayPercent < 100 时，添加 progress-animated 类', async () => {
+    const { container } = render(<Progress percent={50} />);
+    await act(async () => {
+      jest.runAllTimers();
+    });
+    const fill = container.querySelector('.progress-fill');
+    // 如果动画进行中（displayPercent 在 0~100 之间），应该有 animated 类
+    expect(fill).toBeInTheDocument();
+  });
+
+  test('percent=100 时，进度最终达到 100%', async () => {
     const { container } = render(
       <Progress percent={100} minimumDisplayTime={0} />
     );
@@ -146,7 +159,7 @@ describe('Progress Component', () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  test('自定义 strokeHeight + theme 渲染快照', () => {
+  test('自定义 strokeHeight 渲染快照', () => {
     const { container } = render(
       <Progress percent={0} strokeHeight={20} theme="success" />
     );

@@ -1,17 +1,9 @@
 // 主要渲染html原生的表单
 
-import {
-  createContext,
-  Dispatch,
-  FC,
-  ReactNode,
-  useImperativeHandle,
-  useRef,
-} from 'react';
+import { createContext, ReactNode, useImperativeHandle, useRef } from 'react';
 import './Form.scss';
 import useStore, { FormState } from './useStore';
 import React from 'react';
-import validateAllFields from './useStore';
 import { ValidateError } from 'async-validator';
 import { forwardRef } from 'react';
 export interface FormProps {
