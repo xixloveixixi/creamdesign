@@ -75,10 +75,6 @@ export const Form = forwardRef<FormRefType, FormProps>((props, ref) => {
     e.stopPropagation();
     // 执行表单验证
     const { isValid, errors, values } = await validateAllFields();
-    // 添加调试信息
-    console.log('onFormSubmit - isValid:', isValid);
-    console.log('onFormSubmit - errors:', errors);
-    console.log('onFormSubmit - values:', values);
     // 根据验证结果调用相应的回调
     if (isValid) {
       if (onFinish) {
@@ -97,21 +93,15 @@ export const Form = forwardRef<FormRefType, FormProps>((props, ref) => {
     childrenNode = children;
   }
   return (
-    <div>
-      <form
-        className="cream-form"
-        style={style}
-        onSubmit={onFormSubmit}
-        ref={formRef}
-      >
-        <FormContext.Provider value={contextValue}>
-          {childrenNode}
-        </FormContext.Provider>
-      </form>
-      <div>
-        <pre>{JSON.stringify(fields, null, 2)}</pre>
-        <pre>{JSON.stringify(form, null, 2)}</pre>
-      </div>
-    </div>
+    <form
+      className="cream-form"
+      style={style}
+      onSubmit={onFormSubmit}
+      ref={formRef}
+    >
+      <FormContext.Provider value={contextValue}>
+        {childrenNode}
+      </FormContext.Provider>
+    </form>
   );
 });
