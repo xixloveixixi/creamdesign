@@ -14,6 +14,7 @@
 
 # Yalc 测试目录
 .yalc/
+yalc.lock
 
 # misc
 .DS_Store

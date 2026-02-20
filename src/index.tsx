@@ -49,7 +49,6 @@ export type { CardProps, CardSize } from './component/Card';
 
 // Timeline 组件
 export { default as Timeline } from './component/Timeline';
-export { Timeline as TimelineComponent } from './component/Timeline';
 export type {
   TimelineProps,
   TimelineItemProps,
