@@ -16,10 +16,10 @@ const { upload } = useLargeFileUpload({
   adapter: defaultMockAdapter,
   chunkSize: 2 * 1024 * 1024, // 2MB
   concurrent: 3,
-  onProgress: (progress) => {
+  onProgress: progress => {
     console.log('上传进度:', progress.percent);
   },
-  onSuccess: (result) => {
+  onSuccess: result => {
     console.log('上传成功:', result);
   },
 });
@@ -62,11 +62,11 @@ import { errorMockAdapter } from './hooks/useLargeFileUpload/mockAdapter';
 import { createMockAdapter } from './hooks/useLargeFileUpload/mockAdapter';
 
 const customAdapter = createMockAdapter({
-  uploadDelay: 1000,        // 每个分片延迟 1s
-  mergeDelay: 2000,          // 合并延迟 2s
-  failChunks: [2, 5],        // 第 3 和第 6 个分片会失败
-  failProbability: 0.1,     // 10% 的随机失败率
-  enableProgress: true,      // 启用进度模拟
+  uploadDelay: 1000, // 每个分片延迟 1s
+  mergeDelay: 2000, // 合并延迟 2s
+  failChunks: [2, 5], // 第 3 和第 6 个分片会失败
+  failProbability: 0.1, // 10% 的随机失败率
+  enableProgress: true, // 启用进度模拟
 });
 ```
 
@@ -74,11 +74,11 @@ const customAdapter = createMockAdapter({
 
 ```typescript
 interface MockAdapterConfig {
-  uploadDelay?: number;      // 模拟上传延迟（ms），默认 500
-  mergeDelay?: number;       // 模拟合并延迟（ms），默认 1000
-  failChunks?: number[];     // 模拟失败的分片索引
+  uploadDelay?: number; // 模拟上传延迟（ms），默认 500
+  mergeDelay?: number; // 模拟合并延迟（ms），默认 1000
+  failChunks?: number[]; // 模拟失败的分片索引
   failProbability?: number; // 模拟失败概率（0-1）
-  enableProgress?: boolean;  // 是否启用进度模拟，默认 true
+  enableProgress?: boolean; // 是否启用进度模拟，默认 true
 }
 ```
 
@@ -128,4 +128,3 @@ Mock 适配器会在浏览器控制台输出以下日志：
 - `[Mock] 合并完成`: 合并完成，返回文件信息
 
 打开浏览器开发者工具的控制台即可查看。
-

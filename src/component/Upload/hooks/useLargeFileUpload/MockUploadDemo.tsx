@@ -3,7 +3,12 @@
  * 用于在 Storybook 中展示大文件上传的 Mock 功能
  */
 import React, { useState } from 'react';
-import { defaultMockAdapter, slowMockAdapter, errorMockAdapter, createMockAdapter } from './mockAdapter';
+import {
+  defaultMockAdapter,
+  slowMockAdapter,
+  errorMockAdapter,
+  createMockAdapter,
+} from './mockAdapter';
 
 interface UploadProgress {
   loaded: number;
@@ -21,7 +26,7 @@ const mockUpload = async (
 ) => {
   const chunkSize = 2 * 1024 * 1024; // 2MB
   const totalChunks = Math.ceil(file.size / chunkSize);
-  
+
   // 初始化
   const uploadId = await adapter.initUpload!({
     fileName: file.name,
@@ -47,7 +52,7 @@ const mockUpload = async (
         fileName: file.name,
         fileSize: file.size,
         totalChunks,
-        onProgress: (chunkProgress) => {
+        onProgress: chunkProgress => {
           // 计算总体进度
           const chunkUploaded = (chunkProgress / 100) * chunk.size;
           const currentUploaded = uploadedSize + chunkUploaded;
@@ -129,7 +134,7 @@ export const MockUploadDemo: React.FC<{
 
     try {
       const adapter = getAdapter();
-      const result = await mockUpload(file, adapter, (progress) => {
+      const result = await mockUpload(file, adapter, progress => {
         setProgress(progress);
       });
       setResult(result);
@@ -145,7 +150,7 @@ export const MockUploadDemo: React.FC<{
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
   };
 
   const formatSpeed = (bytesPerSecond: number) => {
@@ -155,7 +160,7 @@ export const MockUploadDemo: React.FC<{
   return (
     <div style={{ padding: '20px', maxWidth: '600px' }}>
       <h3 style={{ marginTop: 0 }}>Mock 适配器演示</h3>
-      
+
       <div style={{ marginBottom: '20px' }}>
         <label style={{ display: 'block', marginBottom: '8px' }}>
           选择文件：
@@ -213,9 +218,9 @@ export const MockUploadDemo: React.FC<{
             />
           </div>
           <div style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
-            {formatBytes(progress.loaded)} / {formatBytes(progress.total)} · 
-            速度: {formatSpeed(progress.speed)} · 
-            剩余: {Math.round(progress.remainingTime)}s
+            {formatBytes(progress.loaded)} / {formatBytes(progress.total)} ·
+            速度: {formatSpeed(progress.speed)} · 剩余:{' '}
+            {Math.round(progress.remainingTime)}s
           </div>
         </div>
       )}
@@ -257,4 +262,3 @@ export const MockUploadDemo: React.FC<{
     </div>
   );
 };
-

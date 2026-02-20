@@ -16,7 +16,7 @@ exports[`Progress Component percent=0 时渲染结构快照 1`] = `
 </div>
 `;
 
-exports[`Progress Component 自定义 strokeHeight + theme 渲染快照 1`] = `
+exports[`Progress Component 自定义 strokeHeight 渲染快照 1`] = `
 <div
   class="progress-container"
 >

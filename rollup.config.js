@@ -4,7 +4,16 @@ import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import postcss from 'rollup-plugin-postcss';
 import excludeDependenciesFromBundle from 'rollup-plugin-exclude-dependencies-from-bundle';
-import copy from 'rollup-plugin-copy'; // 可选：复制额外文件
+
+// 类型声明构建专用：忽略 CSS/SCSS 文件
+const ignoreStylesPlugin = () => ({
+  name: 'ignore-styles',
+  load(id) {
+    if (/\.(css|scss|sass|less)$/.test(id)) {
+      return '';
+    }
+  },
+});
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -155,6 +164,7 @@ export default [
       entryFileNames: '[name]/index.d.ts',
     },
     plugins: [
+      ignoreStylesPlugin(),
       typescript({
         compilerOptions: {
           declaration: true,
