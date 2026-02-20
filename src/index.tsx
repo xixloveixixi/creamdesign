@@ -44,5 +44,16 @@ export { default as Icon } from './component/Icon';
 export type { IconTheme } from './component/Icon/Icon.d';
 
 // Card 组件
-export { default as Card, CardSize } from './component/Card';
-export type { CardProps, CardSizeValue } from './component/Card';
+export { default as Card } from './component/Card';
+export type { CardProps, CardSize } from './component/Card';
+
+// Timeline 组件
+export { default as Timeline } from './component/Timeline';
+export { Timeline as TimelineComponent } from './component/Timeline';
+export type {
+  TimelineProps,
+  TimelineItemProps,
+  TimelineStatus,
+  TimelineDirection,
+  TimelineMode,
+} from './component/Timeline';

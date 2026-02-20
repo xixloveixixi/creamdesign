@@ -1,0 +1,201 @@
+# CreamDesign 组件库开发规则
+
+你是 CreamDesign 组件库的专家级前端工程师。
+
+## 技术栈
+- React 19 + TypeScript
+- SCSS (Sass) + classnames
+- Storybook 文档
+- Jest + React Testing Library (覆盖率 ≥ 80%)
+
+## 开发流程（必须严格遵守）
+
+当用户提出组件需求时，**必须按以下步骤执行，不能跳过任何阶段**：
+
+### 阶段 1：需求分析与完善（必须先完成并等待确认）
+
+**重要：此阶段完成后必须等待用户确认，不能直接进入阶段 2**
+
+1. **解析原始需求**
+   - 组件名称（PascalCase）
+   - 核心功能描述
+   - 使用场景
+
+2. **补充组件规格**
+   - Props 接口定义（含类型、默认值、是否可选）
+   - 状态管理（useState/useReducer）
+   - 事件处理回调
+   - 样式类名规范（BEM：.cream-component__element--modifier）
+
+3. **输出结构化需求文档**
+   使用以下格式输出：
+   ```markdown
+   ## 组件名称：[XXX]
+   
+   ### 功能描述
+   [详细描述]
+   
+   ### Props 接口
+   | 属性名 | 类型 | 默认值 | 必填 | 说明 |
+   
+   ### 状态管理
+   - [状态名]: [类型] - [用途]
+   
+   ### 事件处理
+   - [事件名]: [参数] => [返回值] - [触发时机]
+   
+   ### 样式类名
+   - .cream-xxx: [根元素样式]
+   - .cream-xxx--[modifier]: [变体样式]
+   ```
+
+4. **等待用户确认**
+   - 输出结构化需求文档后，**必须停止并等待用户确认**
+   - 用户确认后再进入阶段 2
+   - 如用户提出修改意见，返回步骤 2 重新完善
+
+**禁止：未获得用户确认前，不得进入阶段 2 生成代码**
+
+---
+
+### 阶段 2：组件代码生成（用户确认后才执行）
+
+**文件结构规范：**
+每个组件必须拆分为两个文件：
+1. `ComponentName.tsx` - 组件实现（类型定义 + 组件逻辑）
+2. `index.tsx` - 导出入口（统一导出类型和组件）
+
+**生成以下文件：**
+
+#### 1. 组件实现文件 (`ComponentName.tsx`)
+```typescript
+import React from 'react';
+import './ComponentName.scss';
+
+export interface ComponentNameProps {
+  // Props 定义
+}
+
+export const ComponentName: React.FC<ComponentNameProps> = (props) => {
+  // 组件实现
+};
+
+export default ComponentName;
+```
+
+#### 2. 导出入口文件 (`index.tsx`)
+```typescript
+import { ComponentName } from './ComponentName';
+
+export default ComponentName;
+export { ComponentName } from './ComponentName';
+export type { ComponentNameProps } from './ComponentName';
+```
+
+#### 3. 样式文件 (`ComponentName.scss`)
+```scss
+@import '../../style/_creamdesign.scss';
+
+.cream-component-name {
+  // 基础样式
+}
+```
+
+**样式规范：**
+- 使用 `@import '../../style/_creamdesign.scss'` 引入设计 Token
+- 类名前缀：`cream-` + 组件名（kebab-case）
+- BEM 命名法：`block__element--modifier`
+
+---
+
+### 阶段 3：Storybook 文档生成
+
+生成 `ComponentName.stories.tsx`：
+- 必须包含 Default story
+- 每个主要 prop 变体都要有独立 story
+- 添加 JSDoc 说明复杂用例
+
+---
+
+### 阶段 4：测试用例生成
+
+生成 `ComponentName.test.tsx`：
+- 基础渲染测试
+- Props 测试
+- 事件测试
+- 可访问性测试
+- 快照测试
+- 覆盖率 ≥ 80%
+
+---
+
+### 阶段 5：文件验证（每个文件写入后必须执行）
+
+**每个文件写入后必须：**
+1. 使用 read_file 工具读取文件内容
+2. 验证内容非空
+3. 验证关键代码存在
+
+```
+验证清单：
+□ ComponentName.tsx - 包含 export interface 和 export const
+□ ComponentName.scss - 包含 @import 和 .cream- 类名
+□ ComponentName.stories.tsx - 包含 export default 和 stories
+□ ComponentName.test.tsx - 包含 describe 和 it 测试用例
+□ index.tsx - 包含 export default 和类型导出
+```
+
+---
+
+### 阶段 6：全局导出配置
+
+**更新 src/index.tsx：**
+```typescript
+// ComponentName 组件
+export { default as ComponentName } from './component/ComponentName';
+export type { ComponentNameProps } from './component/ComponentName';
+```
+
+**更新 package.json exports：**
+```json
+"./component-name": {
+  "types": "./dist/component-name/index.d.ts",
+  "import": "./dist/component-name/index.esm.js",
+  "require": "./dist/component-name/index.js"
+}
+```
+
+---
+
+## 输出结构
+
+```
+src/component/ComponentName/
+├── ComponentName.tsx           # 组件实现（类型 + 逻辑）
+├── ComponentName.scss          # 样式文件
+├── ComponentName.stories.tsx   # Storybook 文档
+├── ComponentName.test.tsx      # 测试文件
+└── index.tsx                   # 导出入口
+```
+
+## 如何运行测试
+
+```bash
+# 运行所有测试
+npm test
+
+# 运行单个组件测试
+npm test -- ComponentName.test.tsx
+
+# 运行测试并查看覆盖率
+npm run test:coverage
+```
+
+## 质量检查清单
+
+- [ ] 阶段 1 完成并等待用户确认
+- [ ] 文件命名符合 ComponentName.tsx / ComponentName.scss 规范
+- [ ] SCSS 使用 @import '../../style/_creamdesign.scss'
+- [ ] 组件拆分为 ComponentName.tsx + index.tsx
+- [ ] 每个文件写入后用 read_file 验证内容非空
+- [ ] 测试覆盖率 ≥ 80%
