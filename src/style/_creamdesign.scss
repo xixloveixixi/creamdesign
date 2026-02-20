@@ -180,9 +180,8 @@ $color-neutral-900-dark: rgba($color-neutral-900, $opacity-dark);
   @return rgba($color, $opacity);
 }
 
-// 导入混合器和断点系统
+// 导入混合器
 @import './mixin';
-@import './breakpoints';
 
 // ===== 色彩工具类 =====
 // 文本颜色工具类
