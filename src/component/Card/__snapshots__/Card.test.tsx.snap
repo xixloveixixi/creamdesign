@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Card 组件 快照测试 加载中状态快照 1`] = `
+<div
+  class="cream-card cream-card--bordered cream-card--loading"
+  role="article"
+>
+  <div
+    class="cream-card__header"
+  >
+    <div
+      class="cream-card__title"
+    >
+      <h4
+        class="cream-card__title-text"
+      >
+        加载卡片
+      </h4>
+    </div>
+  </div>
+  <div
+    class="cream-card__body"
+  >
+    <div
+      aria-label="加载中"
+      class="cream-card__skeleton"
+    >
+      <div
+        class="cream-card__skeleton-row cream-card__skeleton-row--title"
+      />
+      <div
+        class="cream-card__skeleton-row"
+      />
+      <div
+        class="cream-card__skeleton-row"
+      />
+      <div
+        class="cream-card__skeleton-row cream-card__skeleton-row--short"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Card 组件 快照测试 完整功能卡片快照 1`] = `
+<div
+  class="cream-card cream-card--bordered cream-card--hoverable cream-card--small"
+  role="article"
+>
+  <div
+    aria-hidden="true"
+    class="cream-card__cover"
+  >
+    <img
+      alt="封面"
+      src="cover.jpg"
+    />
+  </div>
+  <div
+    class="cream-card__header"
+  >
+    <div
+      class="cream-card__title"
+    >
+      <h4
+        class="cream-card__title-text"
+      >
+        完整卡片
+      </h4>
+    </div>
+    <div
+      class="cream-card__extra"
+    >
+      <a
+        href="#"
+      >
+        更多
+      </a>
+    </div>
+  </div>
+  <div
+    class="cream-card__body"
+  >
+    完整内容
+  </div>
+  <div
+    aria-label="卡片操作"
+    class="cream-card__actions"
+    role="group"
+  >
+    <div
+      class="cream-card__action-item"
+    >
+      <button>
+        操作
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Card 组件 快照测试 默认卡片快照 1`] = `
+<div
+  class="cream-card cream-card--bordered"
+  role="article"
+>
+  <div
+    class="cream-card__header"
+  >
+    <div
+      class="cream-card__title"
+    >
+      <h4
+        class="cream-card__title-text"
+      >
+        快照标题
+      </h4>
+    </div>
+  </div>
+  <div
+    class="cream-card__body"
+  >
+    快照内容
+  </div>
+</div>
+`;

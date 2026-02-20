@@ -1,0 +1,54 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.cream-{{component-name}} {
+  // 基础样式
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: $spacing-base;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  background-color: $color-white;
+  border: 1px solid $color-border;
+  border-radius: $border-radius-base;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover:not(&--disabled) {
+    border-color: $color-primary;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+
+  // 禁用状态
+  &--disabled {
+    color: $color-disabled;
+    background-color: $color-bg-disabled;
+    border-color: $color-border-disabled;
+    cursor: not-allowed;
+  }
+
+  // 激活状态
+  &--active {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 2px rgba($color-primary, 0.2);
+  }
+
+  // 子元素
+  &__content {
+    display: flex;
+    align-items: center;
+  }
+
+  &__icon {
+    margin-right: $spacing-xs;
+    font-size: $font-size-lg;
+  }
+}

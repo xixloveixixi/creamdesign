@@ -42,3 +42,7 @@ export { default as Upload } from './component/Upload';
 // Icon 组件
 export { default as Icon } from './component/Icon';
 export type { IconTheme } from './component/Icon/Icon.d';
+
+// Card 组件
+export { default as Card, CardSize } from './component/Card';
+export type { CardProps, CardSizeValue } from './component/Card';
