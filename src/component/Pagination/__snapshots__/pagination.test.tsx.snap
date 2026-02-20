@@ -1,0 +1,168 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Pagination Component 含 showTotal + showSizeChanger 分页器快照 1`] = `
+<div
+  aria-label="分页导航"
+  class="cream-pagination"
+  role="navigation"
+>
+  <div
+    class="cream-pagination-total"
+  >
+    共 
+    <strong>
+      100
+    </strong>
+     条
+  </div>
+  <div
+    class="cream-pagination-pages"
+  >
+    <button
+      aria-label="上一页"
+      class="cream-pagination-item cream-pagination-prev"
+      disabled=""
+    >
+      ←
+    </button>
+    <button
+      aria-current="page"
+      aria-label="第 1 页"
+      class="cream-pagination-item cream-pagination-item-active"
+    >
+      1
+    </button>
+    <button
+      aria-label="第 2 页"
+      class="cream-pagination-item"
+    >
+      2
+    </button>
+    <button
+      aria-label="第 3 页"
+      class="cream-pagination-item"
+    >
+      3
+    </button>
+    <button
+      aria-label="第 4 页"
+      class="cream-pagination-item"
+    >
+      4
+    </button>
+    <button
+      aria-label="第 5 页"
+      class="cream-pagination-item"
+    >
+      5
+    </button>
+    <span
+      class="cream-pagination-ellipsis"
+    >
+      ...
+    </span>
+    <button
+      aria-label="第 10 页"
+      class="cream-pagination-item"
+    >
+      10
+    </button>
+    <button
+      aria-label="下一页"
+      class="cream-pagination-item cream-pagination-next"
+    >
+      →
+    </button>
+  </div>
+  <div
+    class="cream-pagination-options"
+  >
+    <select
+      aria-label="每页显示条数"
+      class="cream-pagination-size-selector"
+    >
+      <option
+        value="10"
+      >
+        10
+         条/页
+      </option>
+      <option
+        value="20"
+      >
+        20
+         条/页
+      </option>
+      <option
+        value="50"
+      >
+        50
+         条/页
+      </option>
+      <option
+        value="100"
+      >
+        100
+         条/页
+      </option>
+    </select>
+  </div>
+</div>
+`;
+
+exports[`Pagination Component 基础分页器快照 1`] = `
+<div
+  aria-label="分页导航"
+  class="cream-pagination"
+  role="navigation"
+>
+  <div
+    class="cream-pagination-pages"
+  >
+    <button
+      aria-label="上一页"
+      class="cream-pagination-item cream-pagination-prev"
+      disabled=""
+    >
+      ←
+    </button>
+    <button
+      aria-current="page"
+      aria-label="第 1 页"
+      class="cream-pagination-item cream-pagination-item-active"
+    >
+      1
+    </button>
+    <button
+      aria-label="第 2 页"
+      class="cream-pagination-item"
+    >
+      2
+    </button>
+    <button
+      aria-label="第 3 页"
+      class="cream-pagination-item"
+    >
+      3
+    </button>
+    <button
+      aria-label="第 4 页"
+      class="cream-pagination-item"
+    >
+      4
+    </button>
+    <button
+      aria-label="第 5 页"
+      class="cream-pagination-item"
+    >
+      5
+    </button>
+    <button
+      aria-label="下一页"
+      class="cream-pagination-item cream-pagination-next"
+    >
+      →
+    </button>
+  </div>
+</div>
+`;

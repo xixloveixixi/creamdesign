@@ -1,0 +1,115 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Table - 快照 基础表格渲染快照 1`] = `
+<div
+  class="cream-table-container"
+>
+  <table
+    class="cream-table"
+  >
+    <thead>
+      <tr>
+        <th
+          class="text-left"
+        >
+          Name
+        </th>
+        <th
+          class="text-left"
+        >
+          Age
+        </th>
+        <th
+          class="text-left"
+        >
+          Address
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td
+          class="text-left"
+        >
+          Alice
+        </td>
+        <td
+          class="text-left"
+        >
+          30
+        </td>
+        <td
+          class="text-left"
+        >
+          New York
+        </td>
+      </tr>
+      <tr>
+        <td
+          class="text-left"
+        >
+          Bob
+        </td>
+        <td
+          class="text-left"
+        >
+          25
+        </td>
+        <td
+          class="text-left"
+        >
+          London
+        </td>
+      </tr>
+      <tr>
+        <td
+          class="text-left"
+        >
+          Charlie
+        </td>
+        <td
+          class="text-left"
+        >
+          35
+        </td>
+        <td
+          class="text-left"
+        >
+          Tokyo
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+`;
+
+exports[`Table - 快照 空数据表格快照 1`] = `
+<div
+  class="cream-table-container"
+>
+  <table
+    class="cream-table"
+  >
+    <thead>
+      <tr>
+        <th
+          class="text-left"
+        >
+          Name
+        </th>
+        <th
+          class="text-left"
+        >
+          Age
+        </th>
+        <th
+          class="text-left"
+        >
+          Address
+        </th>
+      </tr>
+    </thead>
+    <tbody />
+  </table>
+</div>
+`;
