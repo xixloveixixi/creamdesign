@@ -1,0 +1,10 @@
+{
+  "name": "@creamdesign/styles",
+  "version": "0.1.0",
+  "private": false,
+  "main": "index.scss",
+  "style": "index.scss",
+  "peerDependencies": {
+    "sass": "^1.94.2"
+  }
+}

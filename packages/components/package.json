@@ -1,0 +1,130 @@
+{
+  "name": "@creamdesign/components",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "style": "./dist/index.css"
+    },
+    "./button": {
+      "types": "./dist/button/index.d.ts",
+      "import": "./dist/button/index.esm.js",
+      "require": "./dist/button/index.js"
+    },
+    "./menu": {
+      "types": "./dist/menu/index.d.ts",
+      "import": "./dist/menu/index.esm.js",
+      "require": "./dist/menu/index.js"
+    },
+    "./table": {
+      "types": "./dist/table/index.d.ts",
+      "import": "./dist/table/index.esm.js",
+      "require": "./dist/table/index.js"
+    },
+    "./form": {
+      "types": "./dist/form/index.d.ts",
+      "import": "./dist/form/index.esm.js",
+      "require": "./dist/form/index.js"
+    },
+    "./input": {
+      "types": "./dist/input/index.d.ts",
+      "import": "./dist/input/index.esm.js",
+      "require": "./dist/input/index.js"
+    },
+    "./progress": {
+      "types": "./dist/progress/index.d.ts",
+      "import": "./dist/progress/index.esm.js",
+      "require": "./dist/progress/index.js"
+    },
+    "./pagination": {
+      "types": "./dist/pagination/index.d.ts",
+      "import": "./dist/pagination/index.esm.js",
+      "require": "./dist/pagination/index.js"
+    },
+    "./upload": {
+      "types": "./dist/upload/index.d.ts",
+      "import": "./dist/upload/index.esm.js",
+      "require": "./dist/upload/index.js"
+    },
+    "./icon": {
+      "types": "./dist/icon/index.d.ts",
+      "import": "./dist/icon/index.esm.js",
+      "require": "./dist/icon/index.js"
+    },
+    "./card": {
+      "types": "./dist/card/index.d.ts",
+      "import": "./dist/card/index.esm.js",
+      "require": "./dist/card/index.js"
+    },
+    "./style": "./dist/index.css"
+  },
+  "style": "dist/index.css",
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
+  "peerDependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.1.0",
+    "@fortawesome/free-solid-svg-icons": "^7.1.0",
+    "@fortawesome/react-fontawesome": "^3.1.1",
+    "@tanstack/react-virtual": "^3.13.18",
+    "async-validator": "^4.2.5",
+    "axios": "^1.13.2",
+    "classnames": "^2.5.1",
+    "lodash-es": "^4.17.22",
+    "spark-md5": "^3.0.2"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^1.9.0",
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-typescript": "^12.1.1",
+    "@storybook/addon-essentials": "^8.2.10",
+    "@storybook/addon-interactions": "^8.2.10",
+    "@storybook/addon-links": "^8.2.10",
+    "@storybook/addon-onboarding": "^8.2.10",
+    "@storybook/blocks": "^8.2.10",
+    "@storybook/preset-create-react-app": "^8.2.10",
+    "@storybook/react": "^8.2.10",
+    "@storybook/react-webpack5": "^8.2.10",
+    "@storybook/test": "^8.2.10",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^30.0.0",
+    "@types/lodash-es": "^4.17.12",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.3",
+    "@types/spark-md5": "^3.0.5",
+    "eslint-plugin-storybook": "^9.0.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "rollup": "^4.28.0",
+    "rollup-plugin-exclude-dependencies-from-bundle": "^1.1.24",
+    "rollup-plugin-postcss": "^4.0.2",
+    "sass": "^1.94.2",
+    "storybook": "^8.2.10",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "build": "rollup --config rollup.config.js && node scripts/copy-types.js",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  }
+}

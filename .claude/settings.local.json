@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm build:*)",
+      "Bash(rm:*)",
+      "Bash(mkdir:*)",
+      "Bash(pnpm storybook:*)",
+      "Bash(netstat:*)",
+      "Bash(CI=true pnpm storybook:*)",
+      "Bash(CI=true pnpm build-storybook:*)",
+      "Bash(pnpm list:*)",
+      "Bash(DISABLE_ESLINT_PLUGIN=true pnpm storybook:*)",
+      "Bash(pnpm run:*)",
+      "Bash(npx storybook:*)",
+      "Bash(set NODE_OPTIONS=--max_old_space_size=4096:*)",
+      "Bash(cmd //c \"taskkill /PID 28580 /F\")"
+    ]
+  }
+}

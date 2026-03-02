@@ -1,0 +1,30 @@
+{
+  "name": "@creamdesign/docs-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "storybook dev --framework storybook-vite",
+    "build": "storybook build --framework storybook-vite",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@creamdesign/components": "workspace:*"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^8.2.10",
+    "@storybook/addon-interactions": "^8.2.10",
+    "@storybook/addon-links": "^8.2.10",
+    "@storybook/addon-onboarding": "^8.2.10",
+    "@storybook/blocks": "^8.2.10",
+    "@storybook/react": "^8.2.10",
+    "@storybook/react-vite": "^8.2.10",
+    "@storybook/test": "^8.2.10",
+    "@vitejs/plugin-react": "^4.3.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "storybook": "^8.2.10",
+    "typescript": "^5.9.3",
+    "vite": "^6.3.5"
+  }
+}

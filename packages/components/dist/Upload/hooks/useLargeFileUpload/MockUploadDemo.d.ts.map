@@ -1,0 +1,1 @@
+{"version":3,"file":"MockUploadDemo.d.ts","sourceRoot":"","sources":["../../../../src/Upload/hooks/useLargeFileUpload/MockUploadDemo.tsx"],"names":[],"mappings":"AAAA;;;GAGG;AACH,OAAO,KAAmB,MAAM,OAAO,CAAC;AAsFxC,eAAO,MAAM,cAAc,EAAE,KAAK,CAAC,EAAE,CAAC;IACpC,WAAW,CAAC,EAAE,SAAS,GAAG,MAAM,GAAG,OAAO,GAAG,QAAQ,CAAC;CACvD,CA2KA,CAAC"}

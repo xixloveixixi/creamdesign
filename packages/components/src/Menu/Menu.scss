@@ -1,0 +1,234 @@
+// Menu组件样式文件
+
+// 导入全局样式变量
+@import '../style/_creamdesign';
+
+// 菜单变量定义
+$menu-border-color: $color-border;
+$menu-shadow: 0 1px 6px rgba($color-neutral-900, 0.15);
+$menu-transition: all 0.3s ease;
+
+// 菜单项变量定义
+$menu-item-padding-x: 16px;
+$menu-item-padding-y: 12px;
+$menu-item-active-border-width: 2px;
+$menu-item-active-color: $color-primary-600;
+$menu-item-disabled-color: $color-disabled;
+
+// 基础菜单样式
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: $color-primary-100;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+// 横向菜单样式
+.menu-horizontal {
+  border-bottom: 1px solid $menu-border-color;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+// 纵向菜单样式
+.menu-vertical {
+  flex-direction: column;
+  border-right: 1px solid $menu-border-color;
+  width: 200px;
+  height: 100%;
+}
+
+// 菜单项基础样式
+.menu-item {
+  position: relative;
+  padding: $menu-item-padding-y $menu-item-padding-x;
+  cursor: pointer;
+  transition: $menu-transition;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  white-space: nowrap; // 防止文本换行，确保中文和英文都能横向显示
+}
+
+// 菜单项文本样式
+.menu-item a,
+.menu-item span {
+  text-decoration: none;
+  color: $color-text-secondary;
+  transition: $menu-transition;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+// 菜单项交互状态
+.menu-item:hover,
+.menu-item:focus {
+  background-color: rgba($color-primary-500, $opacity-hover);
+}
+
+.menu-item:hover a,
+.menu-item:focus a,
+.menu-item:hover span,
+.menu-item:focus span {
+  color: $menu-item-active-color;
+  text-decoration: none;
+}
+
+// 菜单项激活状态
+.menu-item-active {
+  color: $menu-item-active-color;
+}
+
+// 横向菜单激活状态样式
+.menu-horizontal .menu-item-active {
+  border-bottom: $menu-item-active-border-width solid $menu-item-active-color;
+}
+
+// 纵向菜单激活状态样式
+.menu-vertical .menu-item-active {
+  border-left: $menu-item-active-border-width solid $menu-item-active-color;
+  background-color: rgba($color-primary-500, $opacity-hover);
+}
+
+.menu-item-active a,
+.menu-item-active span {
+  color: $menu-item-active-color;
+  font-weight: 500;
+}
+
+// 菜单项禁用状态
+.menu-item-disabled {
+  color: $menu-item-disabled-color;
+  pointer-events: none;
+  cursor: default;
+}
+
+.menu-item-disabled a,
+.menu-item-disabled span {
+  color: $menu-item-disabled-color;
+  cursor: default;
+}
+
+// 垂直菜单悬停效果
+.menu-vertical .menu-item {
+  justify-content: flex-start;
+  padding-left: 20px;
+  border-left: $menu-item-active-border-width solid transparent;
+}
+
+// 垂直菜单悬停效果
+.menu-vertical .menu-item:hover,
+.menu-vertical .menu-item:focus {
+  border-left: $menu-item-active-border-width solid $menu-item-active-color;
+  background-color: rgba($color-primary-500, $opacity-hover);
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .menu-horizontal {
+    flex-direction: column;
+    border-bottom: none;
+    border-right: 1px solid $menu-border-color;
+  }
+
+  .menu-horizontal .menu-item {
+    justify-content: flex-start;
+    padding-left: 20px;
+    border-left: $menu-item-active-border-width solid transparent;
+    border-bottom: none;
+  }
+
+  .menu-horizontal .menu-item-active {
+    border-left: $menu-item-active-border-width solid $menu-item-active-color;
+    border-bottom: none;
+  }
+}
+
+// 子菜单样式
+.submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: $color-primary-100;
+  border: 1px solid $menu-border-color;
+  border-radius: 2px;
+  box-shadow: $menu-shadow;
+  padding: 4px 0;
+  margin: 0;
+  list-style: none;
+  min-width: 160px;
+  z-index: 100;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: $menu-transition;
+}
+
+// 子菜单展开状态
+.submenu-expanded {
+  max-height: 500px;
+  opacity: 1;
+}
+
+// 横向菜单中的子菜单
+.menu-horizontal .menu-item {
+  position: relative;
+}
+
+// 纵向菜单中的子菜单
+.menu-vertical .submenu {
+  top: 0;
+  left: 100%;
+  margin-left: 2px;
+}
+
+// 子菜单标题样式
+.menu-item-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+// 子菜单箭头样式
+.submenu-arrow {
+  margin-left: 8px;
+  font-size: 12px;
+}
+
+.submenu-expanded .submenu-arrow {
+  transform: rotate(90deg);
+}
+
+.submenu .menu-item:hover,
+.submenu .menu-item:focus {
+  background-color: rgba($color-primary-500, $opacity-hover);
+  border-left: none;
+}
+
+.submenu .menu-item-active {
+  border-left: none;
+  border-bottom: none;
+  background-color: rgba($color-primary-500, $opacity-hover);
+}
+
+// 横向子菜单中的激活项
+.menu-horizontal .submenu .menu-item-active {
+  border-left: none;
+  border-bottom: none;
+}
