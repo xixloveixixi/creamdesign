@@ -57,7 +57,7 @@ jobs:
         run: pnpm install --frozen-lockfile || pnpm install
 
       - name: Run tests
-        run: cd packages/components && CI=true pnpm test
+        run: CI=true pnpm test
 
       - name: Upload coverage
         uses: actions/upload-artifact@v4
