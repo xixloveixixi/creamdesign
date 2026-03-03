@@ -9,7 +9,10 @@ export default defineConfig({
   },
   resolve: {
     alias: [
-      { find: 'creamdesign-lib', replacement: path.resolve(__dirname, '../components/src') },
+      {
+        find: 'creamdesign-lib',
+        replacement: path.resolve(__dirname, '../components/src'),
+      },
     ],
   },
 });

@@ -41,12 +41,7 @@ const getBasePlugins = (options = {}) => [
   }),
 ];
 
-const external = [
-  'react',
-  'react-dom',
-  'react/jsx-runtime',
-  /@company\//,
-];
+const external = ['react', 'react-dom', 'react/jsx-runtime', /@company\//];
 
 const componentEntries = {
   button: 'src/Button/index.tsx',

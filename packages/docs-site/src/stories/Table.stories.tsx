@@ -1,5 +1,11 @@
 import { Meta } from '@storybook/react';
-import { Table, TableProps, Button, ButtonType, ButtonSize } from 'creamdesign-lib';
+import {
+  Table,
+  TableProps,
+  Button,
+  ButtonType,
+  ButtonSize,
+} from 'creamdesign-lib';
 import React from 'react';
 
 const meta: Meta<typeof Table> = {
@@ -17,9 +23,42 @@ interface DataType {
 }
 
 function generateData(count: number): DataType[] {
-  const firstNames = ['John', 'Jim', 'Joe', 'Jane', 'Jack', 'Jill', 'James', 'Julia', 'Jason', 'Jessica'];
-  const lastNames = ['Brown', 'Green', 'Black', 'White', 'Gray', 'Red', 'Blue', 'Smith', 'Johnson', 'Williams'];
-  const cities = ['New York', 'London', 'Sydney', 'Tokyo', 'Paris', 'Berlin', 'Beijing', 'Shanghai', 'Moscow', 'Dubai'];
+  const firstNames = [
+    'John',
+    'Jim',
+    'Joe',
+    'Jane',
+    'Jack',
+    'Jill',
+    'James',
+    'Julia',
+    'Jason',
+    'Jessica',
+  ];
+  const lastNames = [
+    'Brown',
+    'Green',
+    'Black',
+    'White',
+    'Gray',
+    'Red',
+    'Blue',
+    'Smith',
+    'Johnson',
+    'Williams',
+  ];
+  const cities = [
+    'New York',
+    'London',
+    'Sydney',
+    'Tokyo',
+    'Paris',
+    'Berlin',
+    'Beijing',
+    'Shanghai',
+    'Moscow',
+    'Dubai',
+  ];
   const tagOptions = [
     ['nice', 'developer'],
     ['loser'],
@@ -33,7 +72,8 @@ function generateData(count: number): DataType[] {
 
   return Array.from({ length: count }, (_, i) => {
     const firstName = firstNames[i % firstNames.length];
-    const lastName = lastNames[Math.floor(i / firstNames.length) % lastNames.length];
+    const lastName =
+      lastNames[Math.floor(i / firstNames.length) % lastNames.length];
     const city = cities[i % cities.length];
     const tags = tagOptions[i % tagOptions.length];
 
@@ -101,7 +141,14 @@ export const BasicTable = {
     ];
 
     return (
-      <div style={{ width: '100%', maxWidth: '1000px', height: '400px', padding: '20px' }}>
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '1000px',
+          height: '400px',
+          padding: '20px',
+        }}
+      >
         <Table<DataType> columns={columns} dataSource={data} />
       </div>
     );
@@ -133,7 +180,14 @@ export const AlignedTable = {
     ];
 
     return (
-      <div style={{ width: '100%', maxWidth: '800px', height: '400px', padding: '20px' }}>
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '800px',
+          height: '400px',
+          padding: '20px',
+        }}
+      >
         <Table<DataType> columns={alignedColumns} dataSource={data} />
       </div>
     );
@@ -177,7 +231,14 @@ export const CustomRenderTable = {
     ];
 
     return (
-      <div style={{ width: '100%', maxWidth: '1000px', height: '400px', padding: '20px' }}>
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '1000px',
+          height: '400px',
+          padding: '20px',
+        }}
+      >
         <Table<DataType> columns={customColumns} dataSource={data} />
       </div>
     );
@@ -215,8 +276,19 @@ export const VirtualScrollTable = {
     ];
 
     return (
-      <div style={{ width: '100%', maxWidth: '1000px', height: '500px', padding: '20px' }}>
-        <Table<DataType> columns={columns} dataSource={largeData} virtual={true} />
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '1000px',
+          height: '500px',
+          padding: '20px',
+        }}
+      >
+        <Table<DataType>
+          columns={columns}
+          dataSource={largeData}
+          virtual={true}
+        />
       </div>
     );
   },

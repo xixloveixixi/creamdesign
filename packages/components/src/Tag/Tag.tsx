@@ -17,7 +17,14 @@ export enum TagSize {
   Large = 'large',
 }
 
-export type TagColorValue = TagColor | 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info';
+export type TagColorValue =
+  | TagColor
+  | 'default'
+  | 'primary'
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'info';
 export type TagSizeValue = TagSize | 'small' | 'medium' | 'large';
 
 export interface TagProps {

@@ -40,7 +40,9 @@ export const Default: Story = {
 
 export const VariousColors: Story = {
   render: () => (
-    <div style={{ width: 300, display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div
+      style={{ width: 300, display: 'flex', flexDirection: 'column', gap: 16 }}
+    >
       <Progress percent={25} theme="primary" />
       <Progress percent={50} theme="success" />
       <Progress percent={75} theme="warning" />
@@ -68,7 +70,9 @@ CustomHeight.storyName = '自定义高度';
 
 export const Animated: Story = {
   render: () => (
-    <div style={{ width: 300, display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div
+      style={{ width: 300, display: 'flex', flexDirection: 'column', gap: 16 }}
+    >
       <Progress percent={30} />
       <Progress percent={60} />
       <Progress percent={90} />

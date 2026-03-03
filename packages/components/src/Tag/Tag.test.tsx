@@ -10,7 +10,11 @@ describe('Tag', () => {
 
   it('should call onClick when clickable and clicked', () => {
     const handleClick = vi.fn();
-    render(<Tag clickable onClick={handleClick}>可点击</Tag>);
+    render(
+      <Tag clickable onClick={handleClick}>
+        可点击
+      </Tag>
+    );
     fireEvent.click(screen.getByText('可点击'));
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
@@ -24,7 +28,11 @@ describe('Tag', () => {
 
   it('should call onClose when closable and close button clicked', () => {
     const handleClose = vi.fn();
-    render(<Tag closable onClose={handleClose}>可关闭</Tag>);
+    render(
+      <Tag closable onClose={handleClose}>
+        可关闭
+      </Tag>
+    );
     fireEvent.click(screen.getByRole('button', { name: /关闭/i }));
     expect(handleClose).toHaveBeenCalledTimes(1);
   });

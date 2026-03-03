@@ -20,7 +20,9 @@ const menuMeta: Meta<MenuProps> = {
   },
   decorators: [
     Story => (
-      <div style={{ margin: '20px', padding: '10px', border: '1px solid #ccc' }}>
+      <div
+        style={{ margin: '20px', padding: '10px', border: '1px solid #ccc' }}
+      >
         <h3 style={{ marginBottom: '15px' }}>Menu组件示例</h3>
         <Story />
       </div>
