@@ -59,3 +59,13 @@ export type {
 
 // Tag 组件
 export { Tag } from './Tag';
+
+// Message 组件
+export { Message } from './Message';
+export type {
+  MessageProps,
+  MessageType,
+  MessagePosition,
+  MessageOptions,
+  MessageConfigOptions,
+} from './Message';
