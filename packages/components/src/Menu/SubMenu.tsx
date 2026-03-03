@@ -128,6 +128,7 @@ const SubMenu: React.FC<SubMenuProps> = (props: SubMenuProps) => {
 
 SubMenu.displayName = 'SubMenu';
 
+export { SubMenu };
 export default SubMenu;
 // 总结一下：
 // SubMenu组件的主要功能是创建一个子菜单组件，支持自定义索引、禁用状态和自定义样式类名。

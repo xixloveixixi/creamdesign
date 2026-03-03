@@ -48,6 +48,7 @@ const MenuItem: React.FC<MenuItemProps> = (props: MenuItemProps) => {
 };
 
 MenuItem.displayName = 'MenuItem'; //在判断是否是MenuItem时需要使用displayName
+export { MenuItem };
 export default MenuItem;
 // 总结一下：
 // MenuItem组件的主要功能是创建一个菜单项组件，支持自定义索引、禁用状态和自定义样式类名。
