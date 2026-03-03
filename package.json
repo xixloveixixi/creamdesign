@@ -9,6 +9,7 @@
     "build-storybook": "cd packages/docs-site && pnpm build",
     "build:all": "pnpm -r build",
     "build:components": "cd packages/components && pnpm build",
+    "test": "cd packages/components && pnpm test",
     "prepare": "husky install",
     "lint": "eslint packages --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint packages --ext .ts,.tsx,.js,.jsx --fix",
