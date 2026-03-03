@@ -15,7 +15,8 @@
       "Bash(pnpm run:*)",
       "Bash(npx storybook:*)",
       "Bash(set NODE_OPTIONS=--max_old_space_size=4096:*)",
-      "Bash(cmd //c \"taskkill /PID 28580 /F\")"
+      "Bash(cmd //c \"taskkill /PID 28580 /F\")",
+      "Bash(pnpm dev)"
     ]
   }
 }

@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/react';
-import '@creamdesign/components/style';
+// 导入组件样式 - 使用源代码目录
+import '../../components/src/style/index.scss';
 
 const preview: Preview = {
   parameters: {

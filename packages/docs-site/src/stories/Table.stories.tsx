@@ -1,0 +1,224 @@
+import { Meta } from '@storybook/react';
+import { Table, TableProps, Button, ButtonType, ButtonSize } from 'creamdesign-lib';
+import React from 'react';
+
+const meta: Meta<typeof Table> = {
+  title: 'Table',
+  component: Table,
+};
+export default meta;
+
+interface DataType {
+  key: string;
+  name: string;
+  age: number;
+  address: string;
+  tags: string[];
+}
+
+function generateData(count: number): DataType[] {
+  const firstNames = ['John', 'Jim', 'Joe', 'Jane', 'Jack', 'Jill', 'James', 'Julia', 'Jason', 'Jessica'];
+  const lastNames = ['Brown', 'Green', 'Black', 'White', 'Gray', 'Red', 'Blue', 'Smith', 'Johnson', 'Williams'];
+  const cities = ['New York', 'London', 'Sydney', 'Tokyo', 'Paris', 'Berlin', 'Beijing', 'Shanghai', 'Moscow', 'Dubai'];
+  const tagOptions = [
+    ['nice', 'developer'],
+    ['loser'],
+    ['cool', 'teacher'],
+    ['handsome'],
+    ['cool'],
+    ['smart'],
+    ['friendly'],
+    ['professional'],
+  ];
+
+  return Array.from({ length: count }, (_, i) => {
+    const firstName = firstNames[i % firstNames.length];
+    const lastName = lastNames[Math.floor(i / firstNames.length) % lastNames.length];
+    const city = cities[i % cities.length];
+    const tags = tagOptions[i % tagOptions.length];
+
+    return {
+      key: String(i + 1),
+      name: `${firstName} ${lastName}`,
+      age: 20 + (i % 50),
+      address: `${city} No. ${i + 1} Lake Park`,
+      tags,
+    };
+  });
+}
+
+const data: DataType[] = generateData(100);
+
+export const BasicTable = {
+  render: () => {
+    const columns: TableProps<DataType>['columns'] = [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+        render: text => <a href="#">{text}</a>,
+      },
+      {
+        title: 'Age',
+        dataIndex: 'age',
+        key: 'age',
+      },
+      {
+        title: 'Address',
+        dataIndex: 'address',
+        key: 'address',
+      },
+      {
+        title: 'Tags',
+        key: 'tags',
+        dataIndex: 'tags',
+        render: (_, { tags }) => (
+          <div>{Array.isArray(tags) ? tags.join(', ') : tags}</div>
+        ),
+      },
+      {
+        title: 'Action',
+        key: 'action',
+        render: (_, record) => (
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <Button
+              btnType={ButtonType.Primary}
+              size={ButtonSize.Small}
+              onClick={() => console.log('编辑', record.name)}
+            >
+              编辑
+            </Button>
+            <Button
+              btnType={ButtonType.Danger}
+              size={ButtonSize.Small}
+              onClick={() => console.log('删除', record.name)}
+            >
+              删除
+            </Button>
+          </div>
+        ),
+      },
+    ];
+
+    return (
+      <div style={{ width: '100%', maxWidth: '1000px', height: '400px', padding: '20px' }}>
+        <Table<DataType> columns={columns} dataSource={data} />
+      </div>
+    );
+  },
+};
+BasicTable.storyName = '基础表格';
+
+export const AlignedTable = {
+  render: () => {
+    const alignedColumns: TableProps<DataType>['columns'] = [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+        align: 'left',
+      },
+      {
+        title: 'Age',
+        dataIndex: 'age',
+        key: 'age',
+        align: 'center',
+      },
+      {
+        title: 'Address',
+        dataIndex: 'address',
+        key: 'address',
+        align: 'right',
+      },
+    ];
+
+    return (
+      <div style={{ width: '100%', maxWidth: '800px', height: '400px', padding: '20px' }}>
+        <Table<DataType> columns={alignedColumns} dataSource={data} />
+      </div>
+    );
+  },
+};
+AlignedTable.storyName = '对齐方式';
+
+export const CustomRenderTable = {
+  render: () => {
+    const customColumns: TableProps<DataType>['columns'] = [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+        render: text => <strong>{text}</strong>,
+      },
+      {
+        title: 'Age',
+        dataIndex: 'age',
+        key: 'age',
+        align: 'center',
+        render: value => (
+          <span style={{ color: value > 40 ? '#4caf50' : '#f44336' }}>
+            {value}
+          </span>
+        ),
+      },
+      {
+        title: 'Address',
+        dataIndex: 'address',
+        key: 'address',
+      },
+      {
+        title: 'Tags',
+        dataIndex: 'tags',
+        key: 'tags',
+        render: (_, { tags }) => (
+          <div>{Array.isArray(tags) ? tags.join(', ') : tags}</div>
+        ),
+      },
+    ];
+
+    return (
+      <div style={{ width: '100%', maxWidth: '1000px', height: '400px', padding: '20px' }}>
+        <Table<DataType> columns={customColumns} dataSource={data} />
+      </div>
+    );
+  },
+};
+CustomRenderTable.storyName = '自定义渲染';
+
+export const VirtualScrollTable = {
+  render: () => {
+    const largeData = generateData(10000);
+    const columns: TableProps<DataType>['columns'] = [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+      },
+      {
+        title: 'Age',
+        dataIndex: 'age',
+        key: 'age',
+      },
+      {
+        title: 'Address',
+        dataIndex: 'address',
+        key: 'address',
+      },
+      {
+        title: 'Tags',
+        key: 'tags',
+        dataIndex: 'tags',
+        render: (_, { tags }) => (
+          <div>{Array.isArray(tags) ? tags.join(', ') : tags}</div>
+        ),
+      },
+    ];
+
+    return (
+      <div style={{ width: '100%', maxWidth: '1000px', height: '500px', padding: '20px' }}>
+        <Table<DataType> columns={columns} dataSource={largeData} virtual={true} />
+      </div>
+    );
+  },
+};
+VirtualScrollTable.storyName = '虚拟滚动 (大数据)';
