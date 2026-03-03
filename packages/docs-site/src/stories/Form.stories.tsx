@@ -1,9 +1,9 @@
-import { Meta } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 import { Form, FormRefType } from 'creamdesign-lib';
 import { FormItem } from 'creamdesign-lib/Form/FormItem';
 import { Button, ButtonType } from 'creamdesign-lib';
 import { CustomRule } from 'creamdesign-lib/Form/useStore';
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 
 const meta: Meta<typeof Form> = {
   title: 'Form',
@@ -16,7 +16,7 @@ const meta: Meta<typeof Form> = {
       </div>
     ),
   ],
-} as Meta;
+};
 
 export default meta;
 
@@ -47,110 +47,112 @@ const customRule: CustomRule[] = [
   },
 ];
 
-export const BasicForm = {
-  render: () => {
-    const ref = useRef<FormRefType>(null);
-    return (
-      <Form
-        style={{ width: '400px' }}
-        ref={ref}
-        initialValues={{
-          username: '',
-          password: '',
-          passwordConfirm: '',
-          email: '',
-        }}
-        onFinish={values => {
-          console.log('表单提交成功:', values);
-        }}
-        onFinishFailed={(values, errors) => {
-          console.log('表单提交失败:', values, errors);
-        }}
-      >
-        {formState => {
-          return (
-            <>
-              <FormItem
-                name="username"
-                label="用户名"
-                rules={[
-                  { required: true, message: '请输入用户名' },
-                  { min: 3, message: '用户名长度不能小于3位' },
-                  { max: 10, message: '用户名长度不能大于10位' },
-                ]}
-                validateTrigger="onBlur"
-                valuePropsName="value"
-                trigger="onChange"
-                getValueFormEvent={(e: any) => e.target.value}
+const BasicFormComponent: React.FC = () => {
+  const ref = useRef<FormRefType>(null);
+  return (
+    <Form
+      style={{ width: '400px' }}
+      ref={ref}
+      initialValues={{
+        username: '',
+        password: '',
+        passwordConfirm: '',
+        email: '',
+      }}
+      onFinish={values => {
+        console.log('表单提交成功:', values);
+      }}
+      onFinishFailed={(values, errors) => {
+        console.log('表单提交失败:', values, errors);
+      }}
+    >
+      {formState => {
+        return (
+          <>
+            <FormItem
+              name="username"
+              label="用户名"
+              rules={[
+                { required: true, message: '请输入用户名' },
+                { min: 3, message: '用户名长度不能小于3位' },
+                { max: 10, message: '用户名长度不能大于10位' },
+              ]}
+              validateTrigger="onBlur"
+              valuePropsName="value"
+              trigger="onChange"
+              getValueFormEvent={(e: any) => e.target.value}
+            >
+              <input type="text" />
+            </FormItem>
+            <FormItem
+              name="password"
+              label="密码"
+              valuePropsName="value"
+              trigger="onChange"
+              getValueFormEvent={(e: any) => e.target.value}
+              rules={[
+                { required: true, message: '请输入密码' },
+                { min: 8, message: '密码长度不能小于8位' },
+                { max: 16, message: '密码长度不能大于16位' },
+              ]}
+              validateTrigger="onBlur"
+            >
+              <input type="password" />
+            </FormItem>
+            <FormItem
+              name="passwordConfirm"
+              label="确认密码"
+              valuePropsName="value"
+              trigger="onChange"
+              getValueFormEvent={(e: any) => e.target.value}
+              rules={customRule}
+              validateTrigger="onBlur"
+            >
+              <input type="password" />
+            </FormItem>
+            <FormItem
+              name="email"
+              valuePropsName="value"
+              trigger="onChange"
+              getValueFormEvent={(e: any) => e.target.value}
+            >
+              <input type="email" />
+            </FormItem>
+            <FormItem
+              valuePropsName="value"
+              trigger="onChange"
+              getValueFormEvent={(e: any) => e.target.value}
+            >
+              <Button btnType={ButtonType.Primary} type="submit">
+                {formState.isValid ? '提交' : '提交失败'}
+              </Button>
+            </FormItem>
+            <div>
+              <Button
+                btnType={ButtonType.Primary}
+                type="button"
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  ref.current?.resetFields();
+                }}
               >
-                <input type="text" />
-              </FormItem>
-              <FormItem
-                name="password"
-                label="密码"
-                valuePropsName="value"
-                trigger="onChange"
-                getValueFormEvent={(e: any) => e.target.value}
-                rules={[
-                  { required: true, message: '请输入密码' },
-                  { min: 8, message: '密码长度不能小于8位' },
-                  { max: 16, message: '密码长度不能大于16位' },
-                ]}
-                validateTrigger="onBlur"
-              >
-                <input type="password" />
-              </FormItem>
-              <FormItem
-                name="passwordConfirm"
-                label="确认密码"
-                valuePropsName="value"
-                trigger="onChange"
-                getValueFormEvent={(e: any) => e.target.value}
-                rules={customRule}
-                validateTrigger="onBlur"
-              >
-                <input type="password" />
-              </FormItem>
-              <FormItem
-                name="email"
-                valuePropsName="value"
-                trigger="onChange"
-                getValueFormEvent={(e: any) => e.target.value}
-              >
-                <input type="email" />
-              </FormItem>
-              <FormItem
-                valuePropsName="value"
-                trigger="onChange"
-                getValueFormEvent={(e: any) => e.target.value}
-              >
-                <Button btnType={ButtonType.Primary} type="submit">
-                  {formState.isValid ? '提交' : '提交失败'}
-                </Button>
-              </FormItem>
-              <div>
-                <Button
-                  btnType={ButtonType.Primary}
-                  type="button"
-                  onClick={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    ref.current?.resetFields();
-                  }}
-                >
-                  重置
-                </Button>
-              </div>
-            </>
-          );
-        }}
-      </Form>
-    );
-  },
+                重置
+              </Button>
+            </div>
+          </>
+        );
+      }}
+    </Form>
+  );
+};
+
+export const BasicForm: StoryObj<typeof Form> = {
+  render: () => <BasicFormComponent />,
 };
 BasicForm.storyName = '基础表单';
 
-export const RequiredForm = {
+export const RequiredForm: StoryObj<typeof Form> = {
   render: () => (
     <Form
       style={{ width: '400px' }}
@@ -205,7 +207,7 @@ export const RequiredForm = {
 };
 RequiredForm.storyName = '必填字段表单';
 
-export const ErrorForm = {
+export const ErrorForm: StoryObj<typeof Form> = {
   render: () => (
     <Form
       style={{ width: '400px' }}
@@ -245,65 +247,67 @@ export const ErrorForm = {
 };
 ErrorForm.storyName = '带错误提示';
 
-export const FormWithRef = {
-  render: () => {
-    const formRef = useRef<FormRefType>(null);
-    return (
-      <Form
-        style={{ width: '400px' }}
-        ref={formRef}
-        initialValues={{
-          username: 'test',
-          password: '',
-        }}
+const FormWithRefComponent: React.FC = () => {
+  const formRef = useRef<FormRefType>(null);
+  return (
+    <Form
+      style={{ width: '400px' }}
+      ref={formRef}
+      initialValues={{
+        username: 'test',
+        password: '',
+      }}
+    >
+      <FormItem
+        name="username"
+        label="用户名"
+        valuePropsName="value"
+        trigger="onChange"
+        getValueFormEvent={(e: any) => e.target.value}
+        rules={[{ required: true, message: '请输入用户名' }]}
+        validateTrigger="onBlur"
       >
-        <FormItem
-          name="username"
-          label="用户名"
-          valuePropsName="value"
-          trigger="onChange"
-          getValueFormEvent={(e: any) => e.target.value}
-          rules={[{ required: true, message: '请输入用户名' }]}
-          validateTrigger="onBlur"
+        <input type="text" />
+      </FormItem>
+      <FormItem
+        name="password"
+        label="密码"
+        valuePropsName="value"
+        trigger="onChange"
+        getValueFormEvent={(e: any) => e.target.value}
+        rules={[{ required: true, message: '请输入密码' }]}
+        validateTrigger="onBlur"
+      >
+        <input type="password" />
+      </FormItem>
+      <div style={{ display: 'flex', gap: '8px' }}>
+        <Button btnType={ButtonType.Primary} type="submit">
+          提交
+        </Button>
+        <Button
+          btnType={ButtonType.Secondary}
+          type="button"
+          onClick={() => {
+            formRef.current?.resetFields();
+          }}
         >
-          <input type="text" />
-        </FormItem>
-        <FormItem
-          name="password"
-          label="密码"
-          valuePropsName="value"
-          trigger="onChange"
-          getValueFormEvent={(e: any) => e.target.value}
-          rules={[{ required: true, message: '请输入密码' }]}
-          validateTrigger="onBlur"
+          重置
+        </Button>
+        <Button
+          btnType={ButtonType.Secondary}
+          type="button"
+          onClick={async () => {
+            await formRef.current?.validateAllFields();
+          }}
         >
-          <input type="password" />
-        </FormItem>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <Button btnType={ButtonType.Primary} type="submit">
-            提交
-          </Button>
-          <Button
-            btnType={ButtonType.Secondary}
-            type="button"
-            onClick={() => {
-              formRef.current?.resetFields();
-            }}
-          >
-            重置
-          </Button>
-          <Button
-            btnType={ButtonType.Secondary}
-            type="button"
-            onClick={async () => {
-              await formRef.current?.validateAllFields();
-            }}
-          >
-            验证全部
-          </Button>
-        </div>
-      </Form>
-    );
-  },
+          验证全部
+        </Button>
+      </div>
+    </Form>
+  );
+};
+
+export const FormWithRef: StoryObj<typeof Form> = {
+  render: () => <FormWithRefComponent />,
 };
 FormWithRef.storyName = '使用 Ref 控制';
