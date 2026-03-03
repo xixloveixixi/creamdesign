@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { Tag, TagColor, TagSize } from './Tag';
 
 describe('Tag', () => {
@@ -9,7 +10,7 @@ describe('Tag', () => {
   });
 
   it('should call onClick when clickable and clicked', () => {
-    const handleClick = vi.fn();
+    const handleClick = jest.fn();
     render(
       <Tag clickable onClick={handleClick}>
         可点击
@@ -20,14 +21,14 @@ describe('Tag', () => {
   });
 
   it('should not call onClick when not clickable', () => {
-    const handleClick = vi.fn();
+    const handleClick = jest.fn();
     render(<Tag onClick={handleClick}>不可点击</Tag>);
     fireEvent.click(screen.getByText('不可点击'));
     expect(handleClick).not.toHaveBeenCalled();
   });
 
   it('should call onClose when closable and close button clicked', () => {
-    const handleClose = vi.fn();
+    const handleClose = jest.fn();
     render(
       <Tag closable onClose={handleClose}>
         可关闭
