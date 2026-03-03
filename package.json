@@ -5,10 +5,6 @@
   "type": "module",
   "description": "React Component Library",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
     "storybook": "cd packages/docs-site && pnpm dev",
     "build-storybook": "cd packages/docs-site && pnpm build",
     "build:all": "pnpm -r build",
@@ -18,8 +14,7 @@
     "lint:fix": "eslint packages --ext .ts,.tsx,.js,.jsx --fix",
     "format": "prettier --write \"packages/**/*.{ts,tsx,js,jsx,json,scss,css,md}\"",
     "commit": "git-cz",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "test:coverage": "react-scripts test --coverage --watchAll=false"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "config": {
     "commitizen": {
