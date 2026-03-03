@@ -125,6 +125,7 @@
     "typescript": "^5.9.3"
   },
   "scripts": {
+    "test": "react-scripts test",
     "build": "rollup --config rollup.config.js && node scripts/copy-types.js",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
