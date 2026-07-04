@@ -3,6 +3,8 @@
  * 基于柔和奶油色调的现代化设计系统
  */
 
+@use 'sass:color';
+
 // ===== 颜色系统 - 首先定义所有颜色变量 =====
 // 中性色系统（必须最先定义，因为其他变量会引用）
 $color-neutral-50: #ffffff;
@@ -169,19 +171,16 @@ $color-neutral-900-dark: rgba($color-neutral-900, $opacity-dark);
 // ===== 色彩工具函数 =====
 // 用于动态调整色彩
 @function lighten-color($color, $amount) {
-  @return mix(white, $color, $amount);
+  @return color.mix(white, $color, $amount);
 }
 
 @function darken-color($color, $amount) {
-  @return mix(black, $color, $amount);
+  @return color.mix(black, $color, $amount);
 }
 
 @function rgba-with-opacity($color, $opacity) {
   @return rgba($color, $opacity);
 }
-
-// 导入混合器
-@import './mixin';
 
 // ===== 色彩工具类 =====
 // 文本颜色工具类

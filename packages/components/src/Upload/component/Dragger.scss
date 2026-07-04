@@ -1,6 +1,6 @@
 /* Dragger 组件样式 - 基于 CreamDesign 设计系统 */
-@import '../../style/creamdesign'; // 颜色和变量
-@import '../../style/mixin'; // Mixins
+@use '../../style/creamdesign' as *; // 颜色和变量
+@use '../../style/mixin' as *; // Mixins
 
 /* 拖拽上传区域 */
 .upload-dragger {
@@ -17,14 +17,14 @@
   /* 悬停状态 */
   &:hover {
     border-color: $color-primary-400;
-    background-color: lighten($color-primary-100, 2%);
+    background-color: lighten-color($color-primary-100, 2%);
     box-shadow: 0 2px 8px rgba($color-primary-200, 0.2);
   }
 
   /* 拖拽悬停状态 */
   &.is-dragover {
     border-color: $color-primary-500;
-    background-color: lighten($color-primary-100, 3%);
+    background-color: lighten-color($color-primary-100, 3%);
     box-shadow: 0 4px 12px rgba($color-primary-300, 0.3);
     transform: scale(1.02);
 

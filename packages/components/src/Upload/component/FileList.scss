@@ -1,6 +1,6 @@
 /* FileList 组件样式 - 基于 CreamDesign 设计系统 */
-@import '../../style/_creamdesign.scss'; // 颜色和变量
-@import '../../style/_mixin.scss'; // Mixins
+@use '../../style/creamdesign' as *; // 颜色和变量
+@use '../../style/mixin' as *; // Mixins
 
 /* 文件列表容器 */
 .file-list-container {

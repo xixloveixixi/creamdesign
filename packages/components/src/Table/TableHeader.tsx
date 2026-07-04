@@ -1,5 +1,5 @@
 import { useContext, useCallback } from 'react';
-import { TableContext } from './TableContainer';
+import { TableContext } from './TableContext';
 import Icon from '../Icon';
 import {
   faSquare,

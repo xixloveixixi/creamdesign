@@ -4,22 +4,49 @@ import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import postcss from 'rollup-plugin-postcss';
 import excludeDependenciesFromBundle from 'rollup-plugin-exclude-dependencies-from-bundle';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// 类型声明构建专用：忽略 CSS/SCSS 文件
-const ignoreStylesPlugin = () => ({
-  name: 'ignore-styles',
-  load(id) {
-    if (/\.(css|scss|sass|less)$/.test(id)) {
-      return '';
-    }
-  },
-});
+import * as sass from 'sass';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const isProd = process.env.NODE_ENV === 'production';
+
+const modernSassLoader = {
+  name: 'sass',
+  test: /\.(sass|scss)$/,
+  async process({ code }) {
+    const options = {
+      url: pathToFileURL(this.id),
+      syntax: /\.sass$/.test(this.id) ? 'indented' : 'scss',
+      sourceMap: Boolean(this.sourceMap),
+      loadPaths: this.options.loadPaths ?? this.options.includePaths ?? [],
+    };
+
+    if (this.options.style) {
+      options.style = this.options.style;
+    }
+    if (this.options.importers) {
+      options.importers = this.options.importers;
+    }
+    if (this.options.quietDeps !== undefined) {
+      options.quietDeps = this.options.quietDeps;
+    }
+    if (this.options.silenceDeprecations) {
+      options.silenceDeprecations = this.options.silenceDeprecations;
+    }
+
+    const result = sass.compileString(code, options);
+
+    for (const loadedUrl of result.loadedUrls) {
+      if (loadedUrl.protocol === 'file:') {
+        this.dependencies.add(fileURLToPath(loadedUrl));
+      }
+    }
+
+    return {
+      code: result.css,
+      map: result.sourceMap,
+    };
+  },
+};
 
 const getBasePlugins = (options = {}) => [
   nodeResolve({
@@ -31,13 +58,11 @@ const getBasePlugins = (options = {}) => [
   postcss({
     extract: options.extractCSS ?? false,
     modules: false,
-    use: ['sass'],
+    use: [['sass', { loadPaths: ['src'] }]],
+    loaders: [modernSassLoader],
     minimize: isProd,
     inject: options.injectCSS ?? true,
     sourceMap: !isProd,
-    sassOptions: {
-      includePaths: ['src'],
-    },
   }),
 ];
 
@@ -45,6 +70,7 @@ const external = ['react', 'react-dom', 'react/jsx-runtime', /@company\//];
 
 const componentEntries = {
   button: 'src/Button/index.tsx',
+  'config-provider': 'src/ConfigProvider/index.ts',
   menu: 'src/Menu/index.ts',
   table: 'src/Table/index.tsx',
   form: 'src/Form/index.tsx',
@@ -56,6 +82,7 @@ const componentEntries = {
   card: 'src/Card/index.tsx',
   timeline: 'src/Timeline/index.tsx',
   tag: 'src/Tag/index.ts',
+  message: 'src/Message/index.ts',
 };
 
 export default [
@@ -65,7 +92,7 @@ export default [
     output: {
       dir: 'dist',
       format: 'cjs',
-      entryFileNames: 'index.js',
+      entryFileNames: 'index.cjs',
       exports: 'named',
       sourcemap: !isProd,
     },
@@ -90,7 +117,7 @@ export default [
     output: {
       dir: 'dist',
       format: 'es',
-      entryFileNames: 'index.esm.js',
+      entryFileNames: 'index.mjs',
       sourcemap: !isProd,
     },
     external,
@@ -114,8 +141,8 @@ export default [
     output: {
       dir: 'dist',
       format: 'es',
-      entryFileNames: '[name]/index.js',
-      chunkFileNames: 'chunks/[name]-[hash].js',
+      entryFileNames: '[name]/index.mjs',
+      chunkFileNames: 'chunks/[name]-[hash].mjs',
       exports: 'named',
       sourcemap: !isProd,
     },
@@ -140,8 +167,8 @@ export default [
     output: {
       dir: 'dist',
       format: 'cjs',
-      entryFileNames: '[name]/index.cjs.js',
-      chunkFileNames: 'chunks/[name]-[hash].cjs.js',
+      entryFileNames: '[name]/index.cjs',
+      chunkFileNames: 'chunks/[name]-[hash].cjs',
       exports: 'named',
       sourcemap: !isProd,
     },
@@ -158,28 +185,5 @@ export default [
       }),
       ...getBasePlugins({ extractCSS: false, injectCSS: true }),
     ],
-  },
-
-  // 5. 按需加载 - 类型声明文件（单独）
-  {
-    input: componentEntries,
-    output: {
-      dir: 'dist',
-      format: 'es',
-      entryFileNames: '[name]/index.d.ts',
-    },
-    plugins: [
-      ignoreStylesPlugin(),
-      typescript({
-        tsconfig: './tsconfig.build.json',
-        compilerOptions: {
-          declaration: true,
-          emitDeclarationOnly: true,
-          outDir: 'dist',
-        },
-        exclude: ['**/*.test.*', '**/*.stories.*'],
-      }),
-    ],
-    external,
   },
 ];

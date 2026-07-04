@@ -4,8 +4,8 @@
  * 支持多端适配（移动端、平板、桌面）
  */
 
-@import '../style/creamdesign';
-@import '../style/mixin';
+@use '../style/creamdesign' as *;
+@use '../style/mixin' as *;
 
 // ===== 表单基础样式 =====
 .cream-form {

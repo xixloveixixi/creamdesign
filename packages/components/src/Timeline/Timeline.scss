@@ -1,5 +1,5 @@
 // Timeline 时间轴组件样式
-@import '../style/_creamdesign.scss';
+@use '../style/creamdesign' as *;
 
 // ===== 进行中脉冲动画 =====
 @keyframes cream-timeline-pulse {

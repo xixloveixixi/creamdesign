@@ -3,8 +3,8 @@
   "version": "0.2.0",
   "private": false,
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
@@ -12,59 +12,79 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.esm.js",
-      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
       "style": "./dist/index.css"
     },
     "./button": {
       "types": "./dist/button/index.d.ts",
-      "import": "./dist/button/index.esm.js",
-      "require": "./dist/button/index.js"
+      "import": "./dist/button/index.mjs",
+      "require": "./dist/button/index.cjs"
+    },
+    "./config-provider": {
+      "types": "./dist/config-provider/index.d.ts",
+      "import": "./dist/config-provider/index.mjs",
+      "require": "./dist/config-provider/index.cjs"
     },
     "./menu": {
       "types": "./dist/menu/index.d.ts",
-      "import": "./dist/menu/index.esm.js",
-      "require": "./dist/menu/index.js"
+      "import": "./dist/menu/index.mjs",
+      "require": "./dist/menu/index.cjs"
     },
     "./table": {
       "types": "./dist/table/index.d.ts",
-      "import": "./dist/table/index.esm.js",
-      "require": "./dist/table/index.js"
+      "import": "./dist/table/index.mjs",
+      "require": "./dist/table/index.cjs"
     },
     "./form": {
       "types": "./dist/form/index.d.ts",
-      "import": "./dist/form/index.esm.js",
-      "require": "./dist/form/index.js"
+      "import": "./dist/form/index.mjs",
+      "require": "./dist/form/index.cjs"
     },
     "./input": {
       "types": "./dist/input/index.d.ts",
-      "import": "./dist/input/index.esm.js",
-      "require": "./dist/input/index.js"
+      "import": "./dist/input/index.mjs",
+      "require": "./dist/input/index.cjs"
     },
     "./progress": {
       "types": "./dist/progress/index.d.ts",
-      "import": "./dist/progress/index.esm.js",
-      "require": "./dist/progress/index.js"
+      "import": "./dist/progress/index.mjs",
+      "require": "./dist/progress/index.cjs"
     },
     "./pagination": {
       "types": "./dist/pagination/index.d.ts",
-      "import": "./dist/pagination/index.esm.js",
-      "require": "./dist/pagination/index.js"
+      "import": "./dist/pagination/index.mjs",
+      "require": "./dist/pagination/index.cjs"
     },
     "./upload": {
       "types": "./dist/upload/index.d.ts",
-      "import": "./dist/upload/index.esm.js",
-      "require": "./dist/upload/index.js"
+      "import": "./dist/upload/index.mjs",
+      "require": "./dist/upload/index.cjs"
     },
     "./icon": {
       "types": "./dist/icon/index.d.ts",
-      "import": "./dist/icon/index.esm.js",
-      "require": "./dist/icon/index.js"
+      "import": "./dist/icon/index.mjs",
+      "require": "./dist/icon/index.cjs"
     },
     "./card": {
       "types": "./dist/card/index.d.ts",
-      "import": "./dist/card/index.esm.js",
-      "require": "./dist/card/index.js"
+      "import": "./dist/card/index.mjs",
+      "require": "./dist/card/index.cjs"
+    },
+    "./timeline": {
+      "types": "./dist/timeline/index.d.ts",
+      "import": "./dist/timeline/index.mjs",
+      "require": "./dist/timeline/index.cjs"
+    },
+    "./tag": {
+      "types": "./dist/tag/index.d.ts",
+      "import": "./dist/tag/index.mjs",
+      "require": "./dist/tag/index.cjs"
+    },
+    "./message": {
+      "types": "./dist/message/index.d.ts",
+      "import": "./dist/message/index.mjs",
+      "require": "./dist/message/index.cjs"
     },
     "./style": {
       "import": "./dist/index.css"
@@ -125,9 +145,17 @@
     "typescript": "^5.9.3"
   },
   "scripts": {
-    "test": "react-scripts test",
-    "build": "rollup --config rollup.config.js && node scripts/copy-types.js",
+    "test": "node scripts/test.mjs",
+    "clean": "node scripts/clean-dist.mjs",
+    "build": "pnpm clean && node scripts/build.mjs && node scripts/copy-types.js && node scripts/smoke-package.mjs",
+    "smoke:package": "node scripts/smoke-package.mjs",
+    "smoke:consumer": "node scripts/smoke-consumer.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
+  },
+  "jest": {
+    "watchPathIgnorePatterns": [
+      "<rootDir>/src/component/style"
+    ]
   }
 }

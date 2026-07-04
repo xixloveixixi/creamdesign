@@ -1,21 +1,27 @@
 // Input组件样式
-@import '../style/_creamdesign.scss';
+@use '../style/creamdesign' as *;
 
 // 基础输入框样式
 .input {
   position: relative;
   display: inline-flex;
   align-items: center;
-  border: 1px solid $color-border;
-  border-radius: 0.375rem;
-  background-color: $color-neutral-50;
+  border: 1px solid var(--cream-color-border, $color-border);
+  border-radius: var(--cream-border-radius, 0.375rem);
+  background-color: var(--cream-color-bg-container, $color-neutral-50);
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
 
   &:focus-within {
-    border-color: $color-primary-500;
+    border-color: var(--cream-color-primary, $color-primary-500);
     box-shadow: 0 0 0 3px rgba($color-primary-500, 0.2);
+    box-shadow: 0 0 0 3px
+      color-mix(
+        in srgb,
+        var(--cream-color-primary, $color-primary-500) 20%,
+        transparent
+      );
   }
 
   // 禁用状态
@@ -83,7 +89,7 @@
   input {
     border: none;
     background-color: transparent;
-    color: $color-text-primary;
+    color: var(--cream-color-text, $color-text-primary);
     font-family: inherit;
     font-size: inherit;
     outline: none;
@@ -97,32 +103,32 @@
 
   // 图标
   .input-icon {
-    color: $color-text-tertiary;
+    color: var(--cream-color-text-secondary, $color-text-tertiary);
     margin-left: 0.25rem;
     transition: color 0.2s ease;
 
     &:hover {
-      color: $color-primary-500;
+      color: var(--cream-color-primary, $color-primary-500);
     }
   }
 
   // 前缀
   .input-prefix {
-    color: $color-text-secondary;
+    color: var(--cream-color-text-secondary, $color-text-secondary);
     margin-right: 0.5rem;
     white-space: nowrap;
   }
 
   // 后缀
   .input-suffix {
-    color: $color-text-secondary;
+    color: var(--cream-color-text-secondary, $color-text-secondary);
     margin-left: 0.5rem;
     white-space: nowrap;
   }
 }
 
 .suggestion-item-highlighted {
-  background-color: $color-primary-500;
+  background-color: var(--cream-color-primary, $color-primary-500);
   color: $color-neutral-50;
   cursor: pointer;
 }

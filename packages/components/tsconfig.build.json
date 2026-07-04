@@ -3,6 +3,7 @@
     "outDir": "dist",
     "module": "ESNext",
     "target": "es2018",
+    "lib": ["ES2019", "DOM", "DOM.Iterable"],
     "declaration": true,
     "declarationMap": true,
     "jsx": "react-jsx",

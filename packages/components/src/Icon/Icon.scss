@@ -1,5 +1,5 @@
 // 使用each
-@import '../style/_creamdesign.scss';
+@use '../style/creamdesign' as *;
 
 @each $key, $val in $theme-colors {
   .icon-#{$key} {

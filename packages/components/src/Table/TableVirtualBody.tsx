@@ -1,5 +1,5 @@
 import { useContext, useRef, useCallback, useMemo } from 'react';
-import { TableContext } from './TableContainer';
+import { TableContext } from './TableContext';
 import { useVirtualScroll } from './hooks/useVirtualScroll';
 import Icon from '../Icon';
 import {

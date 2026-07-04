@@ -1,5 +1,5 @@
 // Card 组件样式
-@import '../style/_creamdesign.scss';
+@use '../style/creamdesign' as *;
 
 // 骨架屏动画
 @keyframes cream-skeleton-shine {
@@ -14,19 +14,19 @@
 // ===== Card 根元素 =====
 .cream-card {
   position: relative;
-  background-color: $color-neutral-50;
-  border-radius: 0.5rem;
+  background-color: var(--cream-color-bg-container, $color-neutral-50);
+  border-radius: var(--cream-border-radius, 0.5rem);
   overflow: hidden;
   transition:
     box-shadow 0.2s ease,
     transform 0.2s ease;
   font-family: $font-family-base;
-  color: $color-text-primary;
+  color: var(--cream-color-text, $color-text-primary);
   box-shadow: 0 1px 4px rgba($color-neutral-900, 0.08);
 
   // ===== 变体：边框 =====
   &--bordered {
-    border: 1px solid $color-border;
+    border: 1px solid var(--cream-color-border, $color-border);
     box-shadow: none;
   }
 
@@ -42,7 +42,7 @@
 
   // 带边框时的悬停效果
   &--bordered#{&}--hoverable:hover {
-    border-color: $color-primary-400;
+    border-color: var(--cream-color-primary, $color-primary-400);
     box-shadow: 0 6px 16px rgba($color-primary-500, 0.1);
   }
 
@@ -93,7 +93,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid $color-divider;
+    border-bottom: 1px solid var(--cream-color-border, $color-divider);
     gap: 0.75rem;
   }
 
@@ -107,7 +107,7 @@
     margin: 0;
     font-size: $font-size-base;
     font-weight: $font-weight-bold;
-    color: $color-text-primary;
+    color: var(--cream-color-text, $color-text-primary);
     line-height: $line-height-sm;
     white-space: nowrap;
     overflow: hidden;
@@ -118,7 +118,7 @@
   &__extra {
     flex-shrink: 0;
     font-size: $font-size-sm;
-    color: $color-primary-600;
+    color: var(--cream-color-primary, $color-primary-600);
   }
 
   // ===== 子元素：内容区 =====
@@ -126,7 +126,7 @@
     padding: 1.25rem 1.5rem;
     font-size: $font-size-base;
     line-height: $line-height-base;
-    color: $color-text-secondary;
+    color: var(--cream-color-text-secondary, $color-text-secondary);
   }
 
   // ===== 子元素：操作按钮区 =====
@@ -136,8 +136,8 @@
     flex-wrap: wrap;
     gap: 0.75rem;
     padding: 0.875rem 1.5rem;
-    border-top: 1px solid $color-divider;
-    background-color: $color-neutral-100;
+    border-top: 1px solid var(--cream-color-border, $color-divider);
+    background-color: var(--cream-color-bg-elevated, $color-neutral-100);
   }
 
   &__action-item {

@@ -1,6 +1,6 @@
 // 导入样式文件
-@import '../style/_creamdesign.scss'; // 颜色和变量
-@import '../style/_mixin.scss'; // Mixins
+@use '../style/creamdesign' as *; // 颜色和变量
+@use '../style/mixin' as *; // Mixins
 
 // ===== 组件样式示例 =====
 // 按钮样式
@@ -11,6 +11,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  border-radius: var(--cream-button-border-radius, 0.375rem);
 }
 
 // 按钮图标样式
@@ -25,10 +26,10 @@
 // 按钮类型样式
 .btn-primary {
   @include btn-variant(
-    $color-primary-600,
+    var(--cream-button-color-primary, $color-primary-600),
     white,
-    $color-primary-700,
-    $color-primary-800
+    var(--cream-button-color-primary-hover, $color-primary-700),
+    var(--cream-button-color-primary-active, $color-primary-800)
   );
 }
 
@@ -44,10 +45,10 @@
 .btn-outline {
   @include btn-variant(
     transparent,
-    $color-primary-900,
+    var(--cream-color-primary-active, $color-primary-900),
     $color-primary-100,
     $color-primary-200,
-    $color-primary-600
+    var(--cream-button-color-primary, $color-primary-600)
   );
 }
 
@@ -107,14 +108,14 @@
 .btn-text {
   @include btn-variant(
     transparent,
-    $color-primary-600,
+    var(--cream-button-color-primary, $color-primary-600),
     $color-primary-100,
     $color-primary-100
   );
   font-weight: 400;
 
   &:hover:not(:disabled) {
-    color: $color-primary-700;
+    color: var(--cream-button-color-primary-hover, $color-primary-700);
   }
 }
 
@@ -170,6 +171,12 @@ button[disabled] {
 
 .btn:focus-visible {
   box-shadow: 0 0 0 3px rgba($color-primary-500, 0.2);
+  box-shadow: 0 0 0 3px
+    color-mix(
+      in srgb,
+      var(--cream-button-color-primary, $color-primary-500) 20%,
+      transparent
+    );
 }
 
 // 响应式设计

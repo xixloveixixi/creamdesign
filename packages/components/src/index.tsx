@@ -5,6 +5,23 @@
 export { default as Button, ButtonType, ButtonSize } from './Button';
 export type { ButtonTypeValue, ButtonSizeValue } from './Button';
 
+// ConfigProvider 主题配置
+export {
+  ConfigProvider,
+  defaultTheme,
+  mergeTheme,
+  themeToCSSVariables,
+  useTheme,
+} from './ConfigProvider';
+export type {
+  ButtonToken,
+  ComponentToken,
+  ConfigProviderProps,
+  GlobalToken,
+  ResolvedTheme,
+  ThemeConfig,
+} from './ConfigProvider';
+
 // Menu 组件
 export { default as Menu } from './Menu';
 export type { MenuProps } from './Menu/Menu';
@@ -64,6 +81,8 @@ export { Tag } from './Tag';
 export { Message } from './Message';
 export type {
   MessageProps,
+  MessageContent,
+  MessageOpenOptions,
   MessageType,
   MessagePosition,
   MessageOptions,

@@ -1,5 +1,6 @@
 import { useContext, useState, useMemo, useEffect, useRef } from 'react';
-import { TableContext, PaginationConfig } from './TableContainer';
+import { TableContext } from './TableContext';
+import type { PaginationConfig } from './TableContext';
 import Pagination from '../Pagination';
 
 // 分页器

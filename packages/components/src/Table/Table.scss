@@ -4,8 +4,8 @@
  * 充分利用色彩系统
  */
 
-@import '../style/_creamdesign.scss'; // 颜色和变量
-@import '../style/_mixin.scss'; // Mixins
+@use '../style/creamdesign' as *; // 颜色和变量
+@use '../style/mixin' as *; // Mixins
 // tableStyle.scss
 
 // ===== 表格容器样式 =====

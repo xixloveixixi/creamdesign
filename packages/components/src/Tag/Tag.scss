@@ -1,5 +1,5 @@
-@import '../style/_creamdesign.scss';
-@import '../style/_mixin.scss';
+@use '../style/creamdesign' as *;
+@use '../style/mixin' as *;
 
 .cream-tag {
   display: inline-flex;
@@ -32,7 +32,7 @@
 
   &--warning {
     background-color: rgba($color-warning, 0.15);
-    color: darken($color-warning, 15%);
+    color: darken-color($color-warning, 15%);
   }
 
   &--danger {
