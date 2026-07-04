@@ -1,1 +1,0 @@
-{"version":3,"file":"Dragger.d.ts","sourceRoot":"","sources":["../../../src/Upload/component/Dragger.tsx"],"names":[],"mappings":"AAMA,OAAO,EAAE,EAAE,EAAE,SAAS,EAAY,MAAM,OAAO,CAAC;AAChD,OAAO,gBAAgB,CAAC;AAGxB,UAAU,YAAY;IACpB,MAAM,EAAE,CAAC,KAAK,EAAE,QAAQ,KAAK,IAAI,CAAC;IAClC,QAAQ,CAAC,EAAE,SAAS,CAAC;CACtB;AAED,eAAO,MAAM,OAAO,EAAE,EAAE,CAAC,YAAY,CAqCpC,CAAC"}

@@ -1,1 +1,0 @@
-import{j as a}from"./jsx-runtime-D_zvdyIk.js";import{F as n}from"./index-B5I2_UfN.js";import{c as t}from"./index-Dd5QUkq_.js";const r=o=>{const{className:e,theme:s,...c}=o,m=t("cream-icon",e,{[`icon-${s}`]:s});return a.jsx(n,{...c,className:m})};r.__docgenInfo={description:"",methods:[],displayName:"Icon"};export{r as I};
