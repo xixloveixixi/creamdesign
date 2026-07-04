@@ -1,0 +1,53 @@
+{
+  "id": "build-warning-free",
+  "description": "运行组件包 smoke，禁止已治理过的构建 warning 和导出错误回退。",
+  "requiredFiles": [
+    "package.json",
+    "packages/components/rollup.config.js",
+    "packages/components/package.json",
+    "packages/components/scripts/build.mjs",
+    "packages/components/scripts/smoke-package.mjs",
+    "packages/components/scripts/smoke-consumer.mjs"
+  ],
+  "contains": [
+    {
+      "file": "packages/components/rollup.config.js",
+      "text": ["modernSassLoader", "sass.compileString"]
+    },
+    {
+      "file": "package.json",
+      "text": [
+        "\"smoke:components\": \"pnpm build:components && pnpm --filter creamdesign-lib smoke:consumer\""
+      ]
+    }
+  ],
+  "commandChecks": [
+    {
+      "command": "pnpm",
+      "args": ["smoke:components"],
+      "env": {
+        "CI": "true"
+      },
+      "requiredOutput": [
+        "Rollup 配置 4/4 构建完成",
+        "组件包 smoke 校验通过",
+        "组件包真实消费 smoke 校验通过"
+      ],
+      "forbiddenOutput": [
+        "DEPRECATION WARNING",
+        "Circular dependency",
+        "Object.fromEntries",
+        "Message icon",
+        "Cannot find module",
+        "ERR_PACKAGE_PATH_NOT_EXPORTED"
+      ],
+      "cleanupPaths": ["packages/components/dist"]
+    }
+  ],
+  "forbiddenTouchedPaths": ["packages/docs-site/storybook-static"],
+  "forbiddenTouchedPathsAfterCommands": [
+    "packages/components/dist",
+    "packages/docs-site/storybook-static"
+  ],
+  "commands": ["node .ai/harness/run-harness.mjs build-warning-free"]
+}

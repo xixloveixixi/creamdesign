@@ -1,0 +1,35 @@
+{
+  "id": "ai-governance-baseline",
+  "description": "检查仓库是否具备第一阶段 AI 规则、skills 和 harness 文件。",
+  "requiredFiles": [
+    "AGENTS.md",
+    ".github/copilot-instructions.md",
+    ".agents/skills/component-review/SKILL.md",
+    ".agents/skills/release-smoke/SKILL.md",
+    ".ai/harness/README.md",
+    ".ai/harness/run-harness.mjs"
+  ],
+  "contains": [
+    {
+      "file": "AGENTS.md",
+      "text": [
+        "除非任务明确要求修改生成产物",
+        "审查或修改组件时使用 `$component-review`",
+        "修改包导出、构建配置或组件包产物结构时使用 `$release-smoke`"
+      ]
+    },
+    {
+      "file": ".agents/skills/component-review/SKILL.md",
+      "text": ["审查清单", "检查公共 API 一致性", "检查可访问性"]
+    },
+    {
+      "file": ".agents/skills/release-smoke/SKILL.md",
+      "text": ["发布敏感文件", "验证消费端导入方式", "pnpm smoke:components"]
+    }
+  ],
+  "forbiddenTouchedPaths": [
+    "packages/components/dist",
+    "packages/docs-site/storybook-static"
+  ],
+  "commands": ["node .ai/harness/run-harness.mjs ai-governance-baseline"]
+}

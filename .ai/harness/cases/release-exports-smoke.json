@@ -1,0 +1,81 @@
+{
+  "id": "release-exports-smoke",
+  "description": "定义后续包导出和 Rollup 改动应满足的检查项。",
+  "requiredFiles": [
+    "packages/components/package.json",
+    "packages/components/rollup.config.js",
+    "packages/components/src/index.tsx",
+    "packages/components/scripts/build.mjs",
+    "packages/components/scripts/smoke-package.mjs",
+    "packages/components/scripts/smoke-consumer.mjs",
+    "packages/components/scripts/clean-dist.mjs",
+    ".agents/skills/release-smoke/SKILL.md"
+  ],
+  "contains": [
+    {
+      "file": "packages/components/package.json",
+      "text": [
+        "\"main\": \"dist/index.cjs\"",
+        "\"module\": \"dist/index.mjs\"",
+        "\"./button\"",
+        "\"import\": \"./dist/button/index.mjs\"",
+        "\"require\": \"./dist/button/index.cjs\"",
+        "\"./config-provider\"",
+        "\"import\": \"./dist/config-provider/index.mjs\"",
+        "\"require\": \"./dist/config-provider/index.cjs\"",
+        "\"clean\": \"node scripts/clean-dist.mjs\"",
+        "node scripts/build.mjs",
+        "\"smoke:package\": \"node scripts/smoke-package.mjs\"",
+        "\"smoke:consumer\": \"node scripts/smoke-consumer.mjs\""
+      ]
+    },
+    {
+      "file": "packages/components/rollup.config.js",
+      "text": [
+        "entryFileNames: 'index.cjs'",
+        "entryFileNames: 'index.mjs'",
+        "entryFileNames: '[name]/index.mjs'",
+        "entryFileNames: '[name]/index.cjs'",
+        "'config-provider': 'src/ConfigProvider/index.ts'"
+      ]
+    },
+    {
+      "file": "packages/components/scripts/build.mjs",
+      "text": ["await rollup", "await bundle.close()", "Rollup 配置"]
+    },
+    {
+      "file": "packages/components/scripts/smoke-package.mjs",
+      "text": [
+        "组件包 smoke 校验通过",
+        "main 应指向 .cjs 文件",
+        "module 应指向 .mjs 文件"
+      ]
+    },
+    {
+      "file": "packages/components/scripts/smoke-consumer.mjs",
+      "text": [
+        "pnpm",
+        "pack",
+        "creamdesign-lib/button",
+        "creamdesign-lib/config-provider",
+        "creamdesign-lib/style",
+        "ts-smoke.tsx",
+        "组件包真实消费 smoke 校验通过"
+      ]
+    },
+    {
+      "file": ".agents/skills/release-smoke/SKILL.md",
+      "text": [
+        "pnpm smoke:components",
+        "import {Button, Table} from 'creamdesign-lib'",
+        "import Button from 'creamdesign-lib/button'",
+        "import 'creamdesign-lib/style'"
+      ]
+    }
+  ],
+  "forbiddenTouchedPaths": ["packages/docs-site/storybook-static"],
+  "commands": [
+    "pnpm smoke:components",
+    "node .ai/harness/run-harness.mjs release-exports-smoke"
+  ]
+}
