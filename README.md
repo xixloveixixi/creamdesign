@@ -1,96 +1,193 @@
 # CreamDesign
 
-一个现代化的 React 组件库，基于 TypeScript 和 SCSS 构建。
+CreamDesign 是一个面向中后台场景的 React 组件库，基于 TypeScript、SCSS、Rollup 和 Storybook 构建。当前项目重点放在组件包的可发布性、按需引入、主题配置、测试覆盖和真实消费校验上。
 
-## 🚀 CI/CD
+## 特性
 
-项目配置了完整的 CI/CD 流程，包括：
+- React 19 + TypeScript 组件实现。
+- 支持 ESM、CJS、类型声明和样式产物。
+- 支持根入口导入和小写子路径按需导入。
+- 内置 `ConfigProvider`，支持运行时主题 token 覆盖。
+- 使用 Storybook 维护组件示例和文档站。
+- 提供测试、构建、包结构 smoke 和真实消费 smoke 校验。
 
-- ✅ **自动化测试** - 每次提交自动运行测试
-- ✅ **代码检查** - ESLint 和 Prettier 格式检查
-- ✅ **自动构建** - 构建组件库和 Storybook
-- ✅ **PR 预览** - 自动部署 Storybook 预览到 Surge
-- ✅ **自动发布** - 推送版本标签自动发布到 npm
-- ✅ **安全扫描** - CodeQL 代码安全分析
+## 环境要求
 
-### 工作流状态
+- Node.js 22，CI 当前使用 Node 22。
+- pnpm 11.7.0，版本由根目录 `packageManager` 字段声明。
+- React 和 React DOM 由业务项目作为 peer dependency 提供。
 
-[![CI](https://github.com/YOUR_USERNAME/creamdesign/workflows/CI/badge.svg)](https://github.com/YOUR_USERNAME/creamdesign/actions)
-[![Release](https://github.com/YOUR_USERNAME/creamdesign/workflows/Release/badge.svg)](https://github.com/YOUR_USERNAME/creamdesign/actions)
+## 安装
 
-### 配置指南
+```bash
+pnpm add creamdesign-lib react react-dom
+```
 
-详细的 CI/CD 配置说明请查看 [.github/CICD_SETUP.md](.github/CICD_SETUP.md)
+如果在当前 monorepo 内开发，先安装依赖：
 
----
+```bash
+pnpm install
+```
 
-## 📦 Getting Started
+## 基础使用
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+在应用入口引入组件库样式：
 
-## Available Scripts
+```tsx
+import 'creamdesign-lib/style';
+```
 
-In the project directory, you can run:
+使用根入口导入组件：
 
-### `npm start`
+```tsx
+import { Button, Table, Message } from 'creamdesign-lib';
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+export function App() {
+  return (
+    <>
+      <Button btnType="primary">提交</Button>
+      <Table
+        columns={[
+          {
+            key: 'name',
+            title: 'Name',
+            dataIndex: 'name',
+          },
+        ]}
+        dataSource={[{ key: '1', name: 'Ada' }]}
+      />
+    </>
+  );
+}
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Message.success('保存成功');
+```
 
-### `npm test`
+使用小写子路径按需导入：
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```tsx
+import Button from 'creamdesign-lib/button';
+import { Message } from 'creamdesign-lib/message';
+import ConfigProvider from 'creamdesign-lib/config-provider';
+```
 
-### `npm run build`
+当前公开子路径包括：
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```text
+creamdesign-lib/button
+creamdesign-lib/config-provider
+creamdesign-lib/menu
+creamdesign-lib/table
+creamdesign-lib/form
+creamdesign-lib/input
+creamdesign-lib/progress
+creamdesign-lib/pagination
+creamdesign-lib/upload
+creamdesign-lib/icon
+creamdesign-lib/card
+creamdesign-lib/timeline
+creamdesign-lib/tag
+creamdesign-lib/message
+creamdesign-lib/style
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 主题配置
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+`ConfigProvider` 支持全局 token 和组件级 token 覆盖，并会输出对应的 CSS Variables。
 
-### `npm run eject`
+```tsx
+import { Button, ConfigProvider } from 'creamdesign-lib';
+import 'creamdesign-lib/style';
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+export function ThemedApp() {
+  return (
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#7c3aed',
+        },
+        components: {
+          Button: {
+            borderRadius: 4,
+          },
+        },
+      }}
+    >
+      <Button btnType="primary">提交</Button>
+    </ConfigProvider>
+  );
+}
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+主题相关工具也可以直接从根入口导入：
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```tsx
+import { defaultTheme, mergeTheme, themeToCSSVariables } from 'creamdesign-lib';
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+const cssVariables = themeToCSSVariables(
+  mergeTheme({
+    token: {
+      colorPrimary: '#7c3aed',
+    },
+  })
+);
+```
 
-## Learn More
+## 组件列表
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- 通用：`Button`、`Icon`
+- 数据录入：`Input`、`Form`、`Upload`
+- 数据展示：`Table`、`Card`、`Tag`、`Timeline`、`Progress`
+- 反馈：`Message`
+- 导航：`Menu`、`Pagination`
+- 配置：`ConfigProvider`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 项目结构
 
-### Code Splitting
+```text
+creamdesign/
+  packages/components/   # 组件库源码、测试和构建配置
+  packages/docs-site/    # Storybook 文档站
+  docs/plans/            # 改造计划和设计文档
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 常用命令
 
-### Analyzing the Bundle Size
+```bash
+pnpm test
+pnpm build:components
+pnpm smoke:components
+pnpm storybook
+pnpm build-storybook
+pnpm lint
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+命令说明：
 
-### Making a Progressive Web App
+- `pnpm test`：运行组件测试。
+- `pnpm build:components`：构建组件包，并执行包结构 smoke 校验。
+- `pnpm smoke:components`：构建组件包后，在临时消费项目中验证 ESM、CJS、类型和样式导入。
+- `pnpm storybook`：启动本地 Storybook 文档站。
+- `pnpm build-storybook`：构建 Storybook 静态站点。
+- `pnpm lint`：运行 ESLint。
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 发布前校验
 
-### Advanced Configuration
+修改公共导出、构建配置、样式入口或组件入口后，至少运行：
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```bash
+pnpm test
+pnpm smoke:components
+```
 
-### Deployment
+如果改动影响文档站，再运行：
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```bash
+pnpm build-storybook
+```
 
-### `npm run build` fails to minify
+`packages/components/dist` 和 `packages/docs-site/storybook-static` 是生成产物，不应作为源码维护。
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 改造路线
+
+详细路线图见 [docs/plans/2026-06-30-creamdesign-upgrade-roadmap.md](docs/plans/2026-06-30-creamdesign-upgrade-roadmap.md)。当前优先级是稳定发布与构建体系，然后继续推进主题系统、组件 API 统一、复杂组件能力和 Storybook 文档完善。
