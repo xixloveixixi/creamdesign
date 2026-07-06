@@ -93,7 +93,12 @@ export const TagsGroup: Story = {
 TagsGroup.storyName = '标签组';
 
 export const SemanticTheme: Story = {
-  render: () => (
+  args: {
+    color: 'success',
+    size: 'large',
+  },
+
+  render: args => (
     <ConfigProvider
       theme={{
         token: {
@@ -111,6 +116,7 @@ export const SemanticTheme: Story = {
       }}
     >
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <Tag {...args}>Controlled</Tag>
         <Tag color="primary">Primary</Tag>
         <Tag color="success">Success</Tag>
         <Tag color="warning">Warning</Tag>

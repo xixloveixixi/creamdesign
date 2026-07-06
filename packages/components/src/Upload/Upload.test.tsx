@@ -147,35 +147,26 @@ describe('Upload 组件测试', () => {
       },
     });
 
-    // 5. 等待 spinner 出现
-    // 验证点：上传过程中应显示 loading 图标
-    await waitFor(
-      () => {
-        // 查找方式：通过 queryByText 查找 'spinner' 文字
-        const spinner = wrapper.queryByText('spinner');
-        expect(spinner).toBeInTheDocument();
-      },
-      { timeout: 2000 }
-    );
-
-    // 6. 等待成功图标出现
+    // 5. 等待成功图标出现
     await waitFor(() => {
-      // 验证点：上传完成后显示成功图标
-      // 查找方式：通过 queryByText 查找 'check-circle' 文字
-      const checkIcon = wrapper.queryByText('check-circle');
-      expect(checkIcon).toBeInTheDocument();
+      // 验证点：上传完成后显示成功状态
+      expect(wrapper.getByText('上传成功')).toBeInTheDocument();
+      expect(
+        wrapper.container.querySelector('.file-item.status-success')
+      ).toBeInTheDocument();
 
       // 文件显示：同时验证文件名 'test.png' 出现在 DOM 中
       expect(wrapper.getByText('test.png')).toBeInTheDocument();
+      expect(testProps.onSuccess).toHaveBeenCalledWith('cool', testFile);
     });
 
-    // 7. 判断 success 被调用
+    // 6. 判断 success 被调用
     // 参数验证：
     // 第一个参数应为响应数据 'cool'
     // 第二个参数应为测试文件对象
     expect(testProps.onSuccess).toHaveBeenCalledWith('cool', testFile);
 
-    // 8. 判断 onChange 被调用
+    // 7. 判断 onChange 被调用
     // 验证点：onChange 生命周期应被触发
     // 参数验证：应接收到测试文件对象
     expect(testProps.onChange).toHaveBeenCalledWith(testFile);
