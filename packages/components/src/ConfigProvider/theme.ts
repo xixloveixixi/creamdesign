@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 
 export interface GlobalToken {
   colorPrimary: string;
+  colorPrimaryBg: string;
   colorPrimaryHover: string;
   colorPrimaryActive: string;
   colorText: string;
@@ -58,6 +59,7 @@ export type ThemeCSSProperties = CSSProperties &
 export const defaultTheme: ResolvedTheme = {
   token: {
     colorPrimary: '#9333ea',
+    colorPrimaryBg: '#f5f3ff',
     colorPrimaryHover: '#7e22ce',
     colorPrimaryActive: '#6b21a8',
     colorText: '#212121',
@@ -127,6 +129,7 @@ export const themeToCSSVariables = (
   theme: ResolvedTheme
 ): ThemeCSSProperties => ({
   '--cream-color-primary': theme.token.colorPrimary,
+  '--cream-color-primary-bg': theme.token.colorPrimaryBg,
   '--cream-color-primary-hover': theme.token.colorPrimaryHover,
   '--cream-color-primary-active': theme.token.colorPrimaryActive,
   '--cream-color-text': theme.token.colorText,

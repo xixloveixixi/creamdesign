@@ -2,6 +2,7 @@ import React from 'react';
 import { render, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Progress from './index';
+import { ConfigProvider } from '../ConfigProvider';
 
 describe('Progress Component', () => {
   beforeEach(() => {
@@ -83,6 +84,38 @@ describe('Progress Component', () => {
     const { container } = render(<Progress percent={50} theme="info" />);
     const fill = container.querySelector('.progress-fill');
     expect(fill).toHaveClass('progress-fill-info');
+  });
+
+  test('should receive semantic theme variables from ConfigProvider', () => {
+    const { container } = render(
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: '#0f766e',
+            colorPrimaryHover: '#0d9488',
+            colorPrimaryActive: '#115e59',
+            colorBgDisabled: '#f1f5f9',
+            colorSuccess: '#16a34a',
+            colorWarning: '#ca8a04',
+            colorError: '#dc2626',
+            colorInfo: '#2563eb',
+          },
+        }}
+      >
+        <Progress percent={50} theme="success" />
+      </ConfigProvider>
+    );
+
+    const provider = container.querySelector('.cream-config-provider');
+
+    expect(provider).toHaveStyle('--cream-color-primary: #0f766e');
+    expect(provider).toHaveStyle('--cream-color-primary-hover: #0d9488');
+    expect(provider).toHaveStyle('--cream-color-primary-active: #115e59');
+    expect(provider).toHaveStyle('--cream-color-bg-disabled: #f1f5f9');
+    expect(provider).toHaveStyle('--cream-color-success: #16a34a');
+    expect(provider).toHaveStyle('--cream-color-warning: #ca8a04');
+    expect(provider).toHaveStyle('--cream-color-error: #dc2626');
+    expect(provider).toHaveStyle('--cream-color-info: #2563eb');
   });
 
   // ==================== percent=0 的行为 ====================

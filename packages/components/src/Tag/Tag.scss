@@ -16,33 +16,33 @@
 
   // 颜色
   &--default {
-    background-color: $color-neutral-200;
-    color: $color-text-primary;
+    background-color: var(--cream-color-bg-disabled, $color-neutral-200);
+    color: var(--cream-color-text, $color-text-primary);
   }
 
   &--primary {
-    background-color: $color-primary-100;
-    color: $color-primary-700;
+    background-color: var(--cream-color-primary-bg, $color-primary-100);
+    color: var(--cream-color-primary, $color-primary-700);
   }
 
   &--success {
-    background-color: rgba($color-success, 0.15);
-    color: $color-success;
+    background-color: var(--cream-color-success-bg, rgba($color-success, 0.15));
+    color: var(--cream-color-success, $color-success);
   }
 
   &--warning {
-    background-color: rgba($color-warning, 0.15);
-    color: darken-color($color-warning, 15%);
+    background-color: var(--cream-color-warning-bg, rgba($color-warning, 0.15));
+    color: var(--cream-color-warning, darken-color($color-warning, 15%));
   }
 
   &--danger {
-    background-color: rgba($color-error, 0.15);
-    color: $color-error;
+    background-color: var(--cream-color-error-bg, rgba($color-error, 0.15));
+    color: var(--cream-color-error, $color-error);
   }
 
   &--info {
-    background-color: rgba($color-info, 0.15);
-    color: $color-info;
+    background-color: var(--cream-color-info-bg, rgba($color-info, 0.15));
+    color: var(--cream-color-info, $color-info);
   }
 
   // 尺寸

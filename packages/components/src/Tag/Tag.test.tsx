@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Tag, TagColor, TagSize } from './Tag';
+import { ConfigProvider } from '../ConfigProvider';
 
 describe('Tag', () => {
   it('should render correctly', () => {
@@ -41,5 +42,33 @@ describe('Tag', () => {
   it('should apply custom className', () => {
     const { container } = render(<Tag className="custom-tag">自定义</Tag>);
     expect(container.firstChild).toHaveClass('custom-tag');
+  });
+
+  it('should receive semantic theme variables from ConfigProvider', () => {
+    const { container } = render(
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: '#7c3aed',
+            colorPrimaryBg: '#f3e8ff',
+            colorSuccess: '#16a34a',
+            colorSuccessBg: '#ecfdf3',
+            colorError: '#dc2626',
+            colorErrorBg: '#fef2f2',
+          },
+        }}
+      >
+        <Tag color="primary">主题标签</Tag>
+      </ConfigProvider>
+    );
+
+    const provider = container.querySelector('.cream-config-provider');
+
+    expect(provider).toHaveStyle('--cream-color-primary: #7c3aed');
+    expect(provider).toHaveStyle('--cream-color-primary-bg: #f3e8ff');
+    expect(provider).toHaveStyle('--cream-color-success: #16a34a');
+    expect(provider).toHaveStyle('--cream-color-success-bg: #ecfdf3');
+    expect(provider).toHaveStyle('--cream-color-error: #dc2626');
+    expect(provider).toHaveStyle('--cream-color-error-bg: #fef2f2');
   });
 });

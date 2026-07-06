@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { ConfigProvider } from 'creamdesign-lib';
 import { Tag, TagProps, TagColor, TagSize } from 'creamdesign-lib/Tag/Tag';
 
 const meta: Meta<TagProps> = {
@@ -90,3 +91,33 @@ export const TagsGroup: Story = {
   ),
 };
 TagsGroup.storyName = '标签组';
+
+export const SemanticTheme: Story = {
+  render: () => (
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#7c3aed',
+          colorPrimaryBg: '#f3e8ff',
+          colorSuccess: '#16a34a',
+          colorSuccessBg: '#ecfdf3',
+          colorWarning: '#ca8a04',
+          colorWarningBg: '#fffbeb',
+          colorError: '#dc2626',
+          colorErrorBg: '#fef2f2',
+          colorInfo: '#2563eb',
+          colorInfoBg: '#eff6ff',
+        },
+      }}
+    >
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <Tag color="primary">Primary</Tag>
+        <Tag color="success">Success</Tag>
+        <Tag color="warning">Warning</Tag>
+        <Tag color="danger">Danger</Tag>
+        <Tag color="info">Info</Tag>
+      </div>
+    </ConfigProvider>
+  ),
+};
+SemanticTheme.storyName = '主题语义变量';

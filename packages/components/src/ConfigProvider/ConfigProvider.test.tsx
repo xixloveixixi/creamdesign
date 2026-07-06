@@ -4,6 +4,7 @@ describe('ConfigProvider theme tokens', () => {
   it('should expose semantic tokens as CSS variables', () => {
     const theme = mergeTheme({
       token: {
+        colorPrimaryBg: '#f3e8ff',
         colorTextPlaceholder: '#8a8f98',
         colorTextDisabled: '#a1a1aa',
         colorBgDisabled: '#f4f4f5',
@@ -21,6 +22,7 @@ describe('ConfigProvider theme tokens', () => {
 
     const cssVariables = themeToCSSVariables(theme);
 
+    expect(cssVariables['--cream-color-primary-bg']).toBe('#f3e8ff');
     expect(cssVariables['--cream-color-text-placeholder']).toBe('#8a8f98');
     expect(cssVariables['--cream-color-text-disabled']).toBe('#a1a1aa');
     expect(cssVariables['--cream-color-bg-disabled']).toBe('#f4f4f5');

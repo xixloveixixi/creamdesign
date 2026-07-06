@@ -12,7 +12,7 @@
 /* 进度条轨道 */
 .progress-bar {
   flex: 1;
-  background-color: $color-neutral-200;
+  background-color: var(--cream-color-bg-disabled, $color-neutral-200);
   border-radius: 9999px;
   overflow: hidden;
   position: relative;
@@ -42,13 +42,17 @@
 
   /* 主题变体 */
   &.progress-fill-primary {
-    background: linear-gradient(90deg, $color-primary-500, $color-primary-600);
+    background: linear-gradient(
+      90deg,
+      var(--cream-color-primary, $color-primary-500),
+      var(--cream-color-primary-hover, $color-primary-600)
+    );
 
     &:hover {
       background: linear-gradient(
         90deg,
-        $color-primary-600,
-        $color-primary-700
+        var(--cream-color-primary-hover, $color-primary-600),
+        var(--cream-color-primary-active, $color-primary-700)
       );
     }
   }
@@ -72,7 +76,7 @@
   &.progress-fill-success {
     background: linear-gradient(
       90deg,
-      $color-success,
+      var(--cream-color-success, $color-success),
       lighten-color($color-success, 10%)
     );
 
@@ -88,7 +92,7 @@
   &.progress-fill-warning {
     background: linear-gradient(
       90deg,
-      $color-warning,
+      var(--cream-color-warning, $color-warning),
       lighten-color($color-warning, 10%)
     );
 
@@ -101,10 +105,11 @@
     }
   }
 
+  &.progress-fill-danger,
   &.progress-fill-error {
     background: linear-gradient(
       90deg,
-      $color-error,
+      var(--cream-color-error, $color-error),
       lighten-color($color-error, 10%)
     );
 
@@ -120,7 +125,7 @@
   &.progress-fill-info {
     background: linear-gradient(
       90deg,
-      $color-info,
+      var(--cream-color-info, $color-info),
       lighten-color($color-info, 10%)
     );
 
