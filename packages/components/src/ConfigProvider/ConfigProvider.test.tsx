@@ -1,4 +1,9 @@
-import { defaultTheme, mergeTheme, themeToCSSVariables } from './theme';
+import {
+  defaultTheme,
+  enterpriseTheme,
+  mergeTheme,
+  themeToCSSVariables,
+} from './theme';
 
 describe('ConfigProvider theme tokens', () => {
   it('should expose semantic tokens as CSS variables', () => {
@@ -67,5 +72,21 @@ describe('ConfigProvider theme tokens', () => {
     expect(cssVariables['--cream-control-focus-shadow']).toBe(
       defaultTheme.token.controlFocusShadow
     );
+  });
+
+  it('should expose enterprise theme as consumable CSS variables', () => {
+    const theme = mergeTheme(enterpriseTheme);
+    const cssVariables = themeToCSSVariables(theme);
+
+    expect(cssVariables['--cream-color-primary']).toBe('#2563eb');
+    expect(cssVariables['--cream-color-primary-bg']).toBe('#eff6ff');
+    expect(cssVariables['--cream-color-text']).toBe('#111827');
+    expect(cssVariables['--cream-color-border']).toBe('#d1d5db');
+    expect(cssVariables['--cream-color-bg-elevated']).toBe('#f8fafc');
+    expect(cssVariables['--cream-control-focus-shadow']).toBe(
+      '0 0 0 3px rgba(37, 99, 235, 0.18)'
+    );
+    expect(cssVariables['--cream-button-color-primary']).toBe('#2563eb');
+    expect(cssVariables['--cream-button-border-radius']).toBe('6px');
   });
 });

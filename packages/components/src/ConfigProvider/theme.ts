@@ -96,6 +96,43 @@ export const defaultTheme: ResolvedTheme = {
   },
 };
 
+export const enterpriseTheme: ThemeConfig = {
+  token: {
+    colorPrimary: '#2563eb',
+    colorPrimaryBg: '#eff6ff',
+    colorPrimaryHover: '#1d4ed8',
+    colorPrimaryActive: '#1e40af',
+    colorText: '#111827',
+    colorTextSecondary: '#4b5563',
+    colorTextPlaceholder: '#9ca3af',
+    colorTextDisabled: '#a3aab8',
+    colorBorder: '#d1d5db',
+    colorBgContainer: '#ffffff',
+    colorBgElevated: '#f8fafc',
+    colorBgDisabled: '#f3f4f6',
+    colorSuccess: '#16a34a',
+    colorSuccessBg: '#ecfdf3',
+    colorSuccessBorder: '#86efac',
+    colorWarning: '#ca8a04',
+    colorWarningBg: '#fffbeb',
+    colorWarningBorder: '#fde68a',
+    colorError: '#dc2626',
+    colorErrorBg: '#fef2f2',
+    colorErrorBorder: '#fecaca',
+    colorInfo: '#2563eb',
+    colorInfoBg: '#eff6ff',
+    colorInfoBorder: '#bfdbfe',
+    borderRadius: 6,
+    boxShadow: '0 8px 24px rgba(15, 23, 42, 0.12)',
+    controlFocusShadow: '0 0 0 3px rgba(37, 99, 235, 0.18)',
+  },
+  components: {
+    Button: {
+      borderRadius: 6,
+    },
+  },
+};
+
 const toCssSize = (value: number | string) =>
   typeof value === 'number' ? `${value}px` : value;
 

@@ -122,7 +122,12 @@ export function ThemedApp() {
 主题相关工具也可以直接从根入口导入：
 
 ```tsx
-import { defaultTheme, mergeTheme, themeToCSSVariables } from 'creamdesign-lib';
+import {
+  defaultTheme,
+  enterpriseTheme,
+  mergeTheme,
+  themeToCSSVariables,
+} from 'creamdesign-lib';
 
 const cssVariables = themeToCSSVariables(
   mergeTheme({
@@ -131,6 +136,27 @@ const cssVariables = themeToCSSVariables(
     },
   })
 );
+```
+
+`enterpriseTheme` 是内置的中后台主题示例，用于验证组件是否能通过 token 统一换肤：
+
+```tsx
+import {
+  Button,
+  ConfigProvider,
+  Input,
+  enterpriseTheme,
+} from 'creamdesign-lib';
+import 'creamdesign-lib/style';
+
+export function EnterpriseApp() {
+  return (
+    <ConfigProvider theme={enterpriseTheme}>
+      <Input placeholder="搜索项目" />
+      <Button btnType="primary">提交</Button>
+    </ConfigProvider>
+  );
+}
 ```
 
 ## 组件列表

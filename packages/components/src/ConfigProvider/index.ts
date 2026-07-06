@@ -1,5 +1,10 @@
 export { ConfigProvider, default, useTheme } from './ConfigProvider';
-export { defaultTheme, mergeTheme, themeToCSSVariables } from './theme';
+export {
+  defaultTheme,
+  enterpriseTheme,
+  mergeTheme,
+  themeToCSSVariables,
+} from './theme';
 export type { ConfigProviderProps } from './ConfigProvider';
 export type {
   ButtonToken,

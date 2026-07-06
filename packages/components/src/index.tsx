@@ -9,6 +9,7 @@ export type { ButtonTypeValue, ButtonSizeValue } from './Button';
 export {
   ConfigProvider,
   defaultTheme,
+  enterpriseTheme,
   mergeTheme,
   themeToCSSVariables,
   useTheme,

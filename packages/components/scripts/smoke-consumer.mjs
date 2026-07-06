@@ -122,19 +122,21 @@ function createConsumerProject(extractedPackageDir) {
     path.join(consumerDir, 'esm-smoke.mjs'),
     `
 import {Button, Table, Message} from 'creamdesign-lib';
-import {ConfigProvider, themeToCSSVariables, defaultTheme} from 'creamdesign-lib';
+import {ConfigProvider, themeToCSSVariables, defaultTheme, enterpriseTheme} from 'creamdesign-lib';
 import ButtonDefault, {ButtonType} from 'creamdesign-lib/button';
 import ConfigProviderDefault from 'creamdesign-lib/config-provider';
 import {Message as MessageSubpath} from 'creamdesign-lib/message';
 
 const styleUrl = import.meta.resolve('creamdesign-lib/style');
 const cssVariables = themeToCSSVariables(defaultTheme);
+const enterpriseCssVariables = themeToCSSVariables(enterpriseTheme);
 
 if (typeof Button !== 'function') throw new Error('根导入 Button 不可用');
 if (typeof Table !== 'function') throw new Error('根导入 Table 不可用');
 if (typeof ConfigProvider !== 'function') throw new Error('根导入 ConfigProvider 不可用');
 if (typeof ConfigProviderDefault !== 'function') throw new Error('子路径导入 ConfigProvider 默认导出不可用');
 if (cssVariables['--cream-color-primary'] !== defaultTheme.token.colorPrimary) throw new Error('主题 CSS 变量转换不可用');
+if (enterpriseCssVariables['--cream-color-primary'] !== enterpriseTheme.token.colorPrimary) throw new Error('enterpriseTheme CSS 变量转换不可用');
 if (typeof Message?.success !== 'function') throw new Error('根导入 Message.success 不可用');
 if (typeof ButtonDefault !== 'function') throw new Error('子路径导入 Button 默认导出不可用');
 if (ButtonType.Primary !== 'primary') throw new Error('子路径导入 ButtonType 不可用');
@@ -151,12 +153,14 @@ const button = require('creamdesign-lib/button');
 const configProvider = require('creamdesign-lib/config-provider');
 const message = require('creamdesign-lib/message');
 const cssVariables = root.themeToCSSVariables(root.defaultTheme);
+const enterpriseCssVariables = root.themeToCSSVariables(root.enterpriseTheme);
 
 if (typeof root.Button !== 'function') throw new Error('CJS 根导入 Button 不可用');
 if (typeof root.Table !== 'function') throw new Error('CJS 根导入 Table 不可用');
 if (typeof root.ConfigProvider !== 'function') throw new Error('CJS 根导入 ConfigProvider 不可用');
 if (typeof configProvider.default !== 'function') throw new Error('CJS 子路径导入 ConfigProvider 默认导出不可用');
 if (cssVariables['--cream-color-primary'] !== root.defaultTheme.token.colorPrimary) throw new Error('CJS 主题 CSS 变量转换不可用');
+if (enterpriseCssVariables['--cream-color-primary'] !== root.enterpriseTheme.token.colorPrimary) throw new Error('CJS enterpriseTheme CSS 变量转换不可用');
 if (typeof root.Message?.success !== 'function') throw new Error('CJS 根导入 Message.success 不可用');
 if (typeof button.default !== 'function') throw new Error('CJS 子路径导入 Button 默认导出不可用');
 if (button.ButtonType.Primary !== 'primary') throw new Error('CJS 子路径导入 ButtonType 不可用');
@@ -167,7 +171,7 @@ if (typeof message.Message?.info !== 'function') throw new Error('CJS 子路径�
   writeFile(
     path.join(consumerDir, 'ts-smoke.tsx'),
     `
-import {Button, ConfigProvider, Table, Message, mergeTheme, themeToCSSVariables, type MessageOptions, type TableProps, type ThemeConfig} from 'creamdesign-lib';
+import {Button, ConfigProvider, Table, Message, enterpriseTheme, mergeTheme, themeToCSSVariables, type MessageOptions, type TableProps, type ThemeConfig} from 'creamdesign-lib';
 import ButtonDefault, {ButtonType, type ButtonTypeValue} from 'creamdesign-lib/button';
 import ConfigProviderDefault from 'creamdesign-lib/config-provider';
 
@@ -217,6 +221,7 @@ const themedButton = (
 );
 const table = <Table<Row> columns={columns} dataSource={[{key: '1', name: 'Ada'}]} />;
 const cssVariables = themeToCSSVariables(mergeTheme(theme));
+const enterpriseCssVariables = themeToCSSVariables(mergeTheme(enterpriseTheme));
 
 void messageOptions;
 void closeMessage;
@@ -226,6 +231,7 @@ void subpathButton;
 void themedButton;
 void table;
 void cssVariables;
+void enterpriseCssVariables;
 void Message;
 `
   );
