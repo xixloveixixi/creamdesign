@@ -11,5 +11,6 @@ export type {
   ComponentToken,
   GlobalToken,
   ResolvedTheme,
+  TableToken,
   ThemeConfig,
 } from './theme';

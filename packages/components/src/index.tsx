@@ -20,6 +20,7 @@ export type {
   ConfigProviderProps,
   GlobalToken,
   ResolvedTheme,
+  TableToken,
   ThemeConfig,
 } from './ConfigProvider';
 

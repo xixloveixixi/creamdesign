@@ -108,6 +108,49 @@ import 'creamdesign-lib/style';
    - 默认 Cream 主题。
    - 中后台专业主题或暗色主题。
 
+### 当前进展
+
+阶段二已经完成主题能力的第一轮闭环：
+
+1. 已提供 `ConfigProvider`、`defaultTheme`、`enterpriseTheme`、`mergeTheme` 和 `themeToCSSVariables`。
+2. 已建立 global token、semantic token 和组件级 token `ButtonToken`、`TableToken`。
+3. 已迁移并验证部分组件使用 CSS Variables，包括 `Button`、`Input`、`Message`、`Tag`、`Progress`、`Card`、`Table`。
+4. 已在 Storybook 中新增 `主题/Theme` 和 Table 企业主题示例，用于对比默认主题、企业级主题和组件级覆盖。
+5. 已通过 `pnpm test`、`pnpm smoke:components`、`pnpm build-storybook` 验证主题链路。
+
+### 已完成：TableToken 第一版
+
+复杂组件主题化的第一步已经完成，范围控制在 Table 的视觉表面，未修改行为逻辑。
+
+已新增 `TableToken`：
+
+```ts
+interface TableToken {
+  headerBg?: string;
+  headerColor?: string;
+  headerBorderColor?: string;
+  rowBg?: string;
+  rowStripeBg?: string;
+  rowHoverBg?: string;
+  rowSelectedBg?: string;
+  rowSelectedBorderColor?: string;
+  cellPadding?: number | string;
+  cellBorderColor?: string;
+}
+```
+
+迁移结果：
+
+1. `Table.scss` 优先读取 `--cream-table-*` CSS Variables，保留现有 SCSS 色值作为 fallback。
+2. `enterpriseTheme` 提供中后台风格 Table token。
+3. Storybook 新增 Table 企业级主题示例。
+4. 单测覆盖 `themeToCSSVariables` 的 Table 变量输出。
+5. 未修改 Table Props，未修改排序、分页、虚拟滚动、行选择等行为。
+
+### 下一步计划
+
+继续迁移复杂组件时，优先评估 `Form` 是否只需复用现有 global/semantic token。只有布局间距或 label 视觉语义稳定后，再考虑 `FormToken`。
+
 ### 验收标准
 
 ```tsx

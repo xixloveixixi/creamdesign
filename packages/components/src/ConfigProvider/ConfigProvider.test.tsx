@@ -89,4 +89,49 @@ describe('ConfigProvider theme tokens', () => {
     expect(cssVariables['--cream-button-color-primary']).toBe('#2563eb');
     expect(cssVariables['--cream-button-border-radius']).toBe('6px');
   });
+
+  it('should expose Table component tokens as CSS variables', () => {
+    const theme = mergeTheme({
+      components: {
+        Table: {
+          headerBg: '#0f172a',
+          headerColor: '#f8fafc',
+          headerBorderColor: '#334155',
+          rowBg: '#ffffff',
+          rowStripeBg: '#f8fafc',
+          rowHoverBg: '#e0f2fe',
+          rowSelectedBg: '#dbeafe',
+          rowSelectedBorderColor: '#2563eb',
+          cellPadding: 12,
+          cellBorderColor: '#e2e8f0',
+        },
+      },
+    });
+
+    const cssVariables = themeToCSSVariables(theme);
+
+    expect(cssVariables['--cream-table-header-bg']).toBe('#0f172a');
+    expect(cssVariables['--cream-table-header-color']).toBe('#f8fafc');
+    expect(cssVariables['--cream-table-header-border-color']).toBe('#334155');
+    expect(cssVariables['--cream-table-row-bg']).toBe('#ffffff');
+    expect(cssVariables['--cream-table-row-stripe-bg']).toBe('#f8fafc');
+    expect(cssVariables['--cream-table-row-hover-bg']).toBe('#e0f2fe');
+    expect(cssVariables['--cream-table-row-selected-bg']).toBe('#dbeafe');
+    expect(cssVariables['--cream-table-row-selected-border-color']).toBe(
+      '#2563eb'
+    );
+    expect(cssVariables['--cream-table-cell-padding']).toBe('12px');
+    expect(cssVariables['--cream-table-cell-border-color']).toBe('#e2e8f0');
+  });
+
+  it('should expose enterprise Table tokens as consumable CSS variables', () => {
+    const theme = mergeTheme(enterpriseTheme);
+    const cssVariables = themeToCSSVariables(theme);
+
+    expect(cssVariables['--cream-table-header-bg']).toBe('#f8fafc');
+    expect(cssVariables['--cream-table-header-color']).toBe('#111827');
+    expect(cssVariables['--cream-table-row-hover-bg']).toBe('#eff6ff');
+    expect(cssVariables['--cream-table-cell-padding']).toBe('0.75rem 1rem');
+    expect(cssVariables['--cream-table-cell-border-color']).toBe('#e5e7eb');
+  });
 });

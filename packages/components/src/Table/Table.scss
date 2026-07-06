@@ -14,11 +14,11 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: auto;
-  border-radius: 0.5rem;
+  border-radius: var(--cream-border-radius, 0.5rem);
   @include card-shadow(1);
 
   min-height: 200px;
-  background-color: $color-background;
+  background-color: var(--cream-table-row-bg, $color-background);
 }
 
 .cream-table {
@@ -26,27 +26,28 @@
   height: 100%;
   border-collapse: collapse;
   border-spacing: 0;
-  background-color: $color-background;
+  background-color: var(--cream-table-row-bg, $color-background);
   font-family: $font-family-base;
   font-size: $font-size-base;
   font-weight: $font-weight-base;
   line-height: $line-height-base;
-  color: $color-text-primary;
+  color: var(--cream-color-text, $color-text-primary);
   table-layout: fixed; // 使用固定布局，列宽由 width 属性或平均分配
   // 移除 overflow: hidden，让外层容器控制滚动
 
-  // 表格头部样式 - 使用柔和的紫色背景
   thead {
-    background-color: $color-primary-900;
-    border-bottom: 2px solid $color-primary-300;
+    background-color: var(--cream-table-header-bg, $color-primary-900);
+    border-bottom: 2px solid
+      var(--cream-table-header-border-color, $color-primary-300);
 
     th {
-      padding: 0.875rem 1rem; // 与表体 td 的 padding 保持一致
+      padding: var(--cream-table-cell-padding, 0.875rem 1rem);
       text-align: left;
       font-weight: $font-weight-bold;
       font-size: $font-size-sm;
-      color: $color-primary-100 !important; // 确保表头文字清晰可见
-      border-bottom: 2px solid $color-primary-300;
+      color: var(--cream-table-header-color, $color-primary-100) !important;
+      border-bottom: 2px solid
+        var(--cream-table-header-border-color, $color-primary-300);
       position: relative;
       transition: background-color 0.2s ease;
       overflow: hidden;
@@ -76,50 +77,60 @@
   // 表格主体样式
   tbody {
     tr {
-      border-bottom: 1px solid rgba($color-primary-200, 0.5);
-      background-color: $color-background;
+      border-bottom: 1px solid
+        var(--cream-table-cell-border-color, rgba($color-primary-200, 0.5));
+      background-color: var(--cream-table-row-bg, $color-background);
       transition: all 0.2s ease;
 
-      // 斑马纹效果 - 使用柔和的紫色交替
       &:nth-child(even) {
-        background-color: $color-background;
+        background-color: var(--cream-table-row-bg, $color-background);
       }
 
       &:nth-child(odd) {
-        background-color: $color-primary-100;
+        background-color: var(--cream-table-row-stripe-bg, $color-primary-100);
       }
 
-      // 行悬停效果 - 使用浅紫色
       &:hover {
-        background-color: $color-primary-200 !important;
-        box-shadow: inset 0 0 0 1px $color-primary-300;
+        background-color: var(
+          --cream-table-row-hover-bg,
+          $color-primary-200
+        ) !important;
+        box-shadow: inset 0 0 0 1px
+          var(--cream-table-header-border-color, $color-primary-300);
       }
 
-      // 选中行样式 - 使用主紫色
       &.selected {
-        background-color: $color-primary-200;
-        box-shadow: inset 0 0 0 2px $color-primary-500;
+        background-color: var(
+          --cream-table-row-selected-bg,
+          $color-primary-200
+        );
+        box-shadow: inset 0 0 0 2px
+          var(--cream-table-row-selected-border-color, $color-primary-500);
 
         &:hover {
-          background-color: $color-primary-300;
+          background-color: var(--cream-table-row-hover-bg, $color-primary-300);
         }
       }
 
       // 激活行（点击）
       &.active {
-        background-color: $color-primary-200;
+        background-color: var(
+          --cream-table-row-selected-bg,
+          $color-primary-200
+        );
       }
     }
 
     td {
-      padding: 0.875rem 1rem;
+      padding: var(--cream-table-cell-padding, 0.875rem 1rem);
       text-align: left;
       font-family: $font-family-base;
       font-size: $font-size-base;
       font-weight: $font-weight-base;
       line-height: $line-height-base;
-      color: $color-text-primary !important; // 确保文字颜色始终可见
-      border-bottom: 1px solid rgba($color-primary-200, 0.5);
+      color: var(--cream-color-text, $color-text-primary) !important;
+      border-bottom: 1px solid
+        var(--cream-table-cell-border-color, rgba($color-primary-200, 0.5));
       // 文本溢出处理
       overflow: hidden; // 隐藏溢出内容
       text-overflow: ellipsis; // 文本溢出时显示省略号
@@ -139,17 +150,17 @@
 
       // 状态颜色
       &.status-success {
-        color: $color-success;
+        color: var(--cream-color-success, $color-success);
         font-weight: $font-weight-bold;
       }
 
       &.status-warning {
-        color: $color-warning;
+        color: var(--cream-color-warning, $color-warning);
         font-weight: $font-weight-bold;
       }
 
       &.status-error {
-        color: $color-error;
+        color: var(--cream-color-error, $color-error);
         font-weight: $font-weight-bold;
       }
     }
@@ -179,14 +190,18 @@
 
     // 确保整个单元格都可以点击
     &:hover {
-      background-color: rgba($color-primary-100, 0.3);
+      background-color: var(
+        --cream-table-row-hover-bg,
+        rgba($color-primary-100, 0.3)
+      );
     }
   }
 
   // 表格尾部样式
   tfoot.cream-table-foot {
-    background-color: $color-primary-100;
-    border-top: 2px solid $color-primary-300;
+    background-color: var(--cream-table-row-stripe-bg, $color-primary-100);
+    border-top: 2px solid
+      var(--cream-table-header-border-color, $color-primary-300);
 
     tr {
       text-align: center;
@@ -195,7 +210,8 @@
     td {
       padding: 1rem;
       text-align: center;
-      border-top: 2px solid $color-primary-300;
+      border-top: 2px solid
+        var(--cream-table-header-border-color, $color-primary-300);
     }
 
     // 分页器内容容器

@@ -37,8 +37,22 @@ export interface ButtonToken {
   borderRadius?: number | string;
 }
 
+export interface TableToken {
+  headerBg?: string;
+  headerColor?: string;
+  headerBorderColor?: string;
+  rowBg?: string;
+  rowStripeBg?: string;
+  rowHoverBg?: string;
+  rowSelectedBg?: string;
+  rowSelectedBorderColor?: string;
+  cellPadding?: number | string;
+  cellBorderColor?: string;
+}
+
 export interface ComponentToken {
   Button?: ButtonToken;
+  Table?: TableToken;
 }
 
 export interface ThemeConfig {
@@ -50,6 +64,7 @@ export interface ResolvedTheme {
   token: GlobalToken;
   components: {
     Button: Required<ButtonToken>;
+    Table: Required<TableToken>;
   };
 }
 
@@ -93,6 +108,18 @@ export const defaultTheme: ResolvedTheme = {
       colorPrimaryActive: '#6b21a8',
       borderRadius: '0.375rem',
     },
+    Table: {
+      headerBg: '#581c87',
+      headerColor: '#f5f3ff',
+      headerBorderColor: '#ddd6fe',
+      rowBg: '#ffffff',
+      rowStripeBg: '#f5f3ff',
+      rowHoverBg: '#ede9fe',
+      rowSelectedBg: '#ede9fe',
+      rowSelectedBorderColor: '#a855f7',
+      cellPadding: '0.875rem 1rem',
+      cellBorderColor: 'rgba(237, 233, 254, 0.5)',
+    },
   },
 };
 
@@ -130,6 +157,18 @@ export const enterpriseTheme: ThemeConfig = {
     Button: {
       borderRadius: 6,
     },
+    Table: {
+      headerBg: '#f8fafc',
+      headerColor: '#111827',
+      headerBorderColor: '#cbd5e1',
+      rowBg: '#ffffff',
+      rowStripeBg: '#f8fafc',
+      rowHoverBg: '#eff6ff',
+      rowSelectedBg: '#dbeafe',
+      rowSelectedBorderColor: '#2563eb',
+      cellPadding: '0.75rem 1rem',
+      cellBorderColor: '#e5e7eb',
+    },
   },
 };
 
@@ -157,6 +196,10 @@ export const mergeTheme = (theme?: ThemeConfig): ResolvedTheme => {
           token.colorPrimaryActive,
         borderRadius:
           theme?.components?.Button?.borderRadius ?? token.borderRadius,
+      },
+      Table: {
+        ...defaultTheme.components.Table,
+        ...(theme?.components?.Table ?? {}),
       },
     },
   };
@@ -200,6 +243,17 @@ export const themeToCSSVariables = (
   '--cream-button-border-radius': toCssSize(
     theme.components.Button.borderRadius
   ),
+  '--cream-table-header-bg': theme.components.Table.headerBg,
+  '--cream-table-header-color': theme.components.Table.headerColor,
+  '--cream-table-header-border-color': theme.components.Table.headerBorderColor,
+  '--cream-table-row-bg': theme.components.Table.rowBg,
+  '--cream-table-row-stripe-bg': theme.components.Table.rowStripeBg,
+  '--cream-table-row-hover-bg': theme.components.Table.rowHoverBg,
+  '--cream-table-row-selected-bg': theme.components.Table.rowSelectedBg,
+  '--cream-table-row-selected-border-color':
+    theme.components.Table.rowSelectedBorderColor,
+  '--cream-table-cell-padding': toCssSize(theme.components.Table.cellPadding),
+  '--cream-table-cell-border-color': theme.components.Table.cellBorderColor,
 });
 
 type ThemeCSSVariablesListener = () => void;

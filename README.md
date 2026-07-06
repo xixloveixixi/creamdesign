@@ -159,6 +159,26 @@ export function EnterpriseApp() {
 }
 ```
 
+`Table` 支持第一版组件级 token，用于覆盖表头、行背景、选中态和单元格边框等视觉表面：
+
+```tsx
+<ConfigProvider
+  theme={{
+    components: {
+      Table: {
+        headerBg: '#f8fafc',
+        headerColor: '#111827',
+        rowHoverBg: '#eff6ff',
+        rowSelectedBorderColor: '#2563eb',
+        cellPadding: '0.75rem 1rem',
+      },
+    },
+  }}
+>
+  <Table columns={columns} dataSource={data} />
+</ConfigProvider>
+```
+
 ## 组件列表
 
 - 通用：`Button`、`Icon`

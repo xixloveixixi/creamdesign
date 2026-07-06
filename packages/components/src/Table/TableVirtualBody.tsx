@@ -151,25 +151,36 @@ const TableVirtualBody = () => {
                 <Icon
                   icon={faSquareCheck}
                   style={{
-                    color: 'var(--color-primary-500)',
+                    color:
+                      'var(--cream-table-row-selected-border-color, var(--cream-color-primary, #a855f7))',
                     fontSize: '20px',
                   }}
                 />
               ) : (
                 <Icon
                   icon={faSquare}
-                  style={{ color: '#d9d9d9', fontSize: '20px' }}
+                  style={{
+                    color: 'var(--cream-color-border, #d9d9d9)',
+                    fontSize: '20px',
+                  }}
                 />
               )
             ) : selected ? (
               <Icon
                 icon={faCircleCheck}
-                style={{ color: 'var(--color-primary-500)', fontSize: '20px' }}
+                style={{
+                  color:
+                    'var(--cream-table-row-selected-border-color, var(--cream-color-primary, #a855f7))',
+                  fontSize: '20px',
+                }}
               />
             ) : (
               <Icon
                 icon={faCircle}
-                style={{ color: '#d9d9d9', fontSize: '20px' }}
+                style={{
+                  color: 'var(--cream-color-border, #d9d9d9)',
+                  fontSize: '20px',
+                }}
               />
             )}
           </div>

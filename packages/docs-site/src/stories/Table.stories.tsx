@@ -5,6 +5,8 @@ import {
   Button,
   ButtonType,
   ButtonSize,
+  ConfigProvider,
+  enterpriseTheme,
 } from 'creamdesign-lib';
 import React from 'react';
 
@@ -294,3 +296,56 @@ export const VirtualScrollTable = {
   },
 };
 VirtualScrollTable.storyName = '虚拟滚动 (大数据)';
+
+export const EnterpriseThemeTable = {
+  render: () => {
+    const columns: TableProps<DataType>['columns'] = [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+      },
+      {
+        title: 'Age',
+        dataIndex: 'age',
+        key: 'age',
+        align: 'center',
+      },
+      {
+        title: 'Address',
+        dataIndex: 'address',
+        key: 'address',
+      },
+      {
+        title: 'Tags',
+        key: 'tags',
+        dataIndex: 'tags',
+        render: (_, { tags }) => (
+          <div>{Array.isArray(tags) ? tags.join(', ') : tags}</div>
+        ),
+      },
+    ];
+
+    return (
+      <ConfigProvider theme={enterpriseTheme}>
+        <div
+          style={{
+            width: '100%',
+            maxWidth: '1000px',
+            height: '420px',
+            padding: '20px',
+          }}
+        >
+          <Table<DataType>
+            columns={columns}
+            dataSource={data.slice(0, 24)}
+            rowSelection={{
+              defaultSelectedRowKeys: ['2', '5'],
+            }}
+          />
+        </div>
+      </ConfigProvider>
+    );
+  },
+};
+EnterpriseThemeTable.storyName = '企业级主题';
