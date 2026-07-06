@@ -57,8 +57,8 @@
     animation: cream-message-fade-in 0.3s ease;
 
     &--success {
-      background: #f6ffed;
-      border: 1px solid #b7eb8f;
+      background: var(--cream-color-success-bg, #f6ffed);
+      border: 1px solid var(--cream-color-success-border, #b7eb8f);
 
       .cream-message__icon {
         color: var(--cream-color-success, $color-success);
@@ -66,8 +66,8 @@
     }
 
     &--error {
-      background: #fff2f0;
-      border: 1px solid #ffccc7;
+      background: var(--cream-color-error-bg, #fff2f0);
+      border: 1px solid var(--cream-color-error-border, #ffccc7);
 
       .cream-message__icon {
         color: var(--cream-color-error, $color-error);
@@ -75,8 +75,8 @@
     }
 
     &--warning {
-      background: #fffbe6;
-      border: 1px solid #ffe58f;
+      background: var(--cream-color-warning-bg, #fffbe6);
+      border: 1px solid var(--cream-color-warning-border, #ffe58f);
 
       .cream-message__icon {
         color: var(--cream-color-warning, $color-warning);
@@ -84,8 +84,8 @@
     }
 
     &--info {
-      background: #e6f7ff;
-      border: 1px solid #91d5ff;
+      background: var(--cream-color-info-bg, #e6f7ff);
+      border: 1px solid var(--cream-color-info-border, #91d5ff);
 
       .cream-message__icon {
         color: var(--cream-color-info, $color-info);

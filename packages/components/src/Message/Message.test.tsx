@@ -154,6 +154,8 @@ describe('Message', () => {
           token: {
             colorPrimary: '#1677ff',
             colorSuccess: '#22c55e',
+            colorSuccessBg: '#ecfdf3',
+            colorSuccessBorder: '#86efac',
           },
         }}
       >
@@ -169,5 +171,13 @@ describe('Message', () => {
     expect(
       document.querySelector('body > div[style*="--cream-color-success"]')
     ).toHaveStyle('--cream-color-success: #22c55e');
+    expect(
+      document.querySelector('body > div[style*="--cream-color-success-bg"]')
+    ).toHaveStyle('--cream-color-success-bg: #ecfdf3');
+    expect(
+      document.querySelector(
+        'body > div[style*="--cream-color-success-border"]'
+      )
+    ).toHaveStyle('--cream-color-success-border: #86efac');
   });
 });

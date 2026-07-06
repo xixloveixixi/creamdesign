@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, InputProps } from 'creamdesign-lib';
+import { ConfigProvider, Input, InputProps } from 'creamdesign-lib';
 import type { Meta, StoryObj } from '@storybook/react';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
@@ -120,4 +120,26 @@ export const 后缀输入框: StoryObj<InputProps> = {
     placeholder: '请输入',
     onChange: onChange,
   },
+};
+
+export const 主题语义变量: StoryObj<InputProps> = {
+  render: () => (
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#0f766e',
+          colorTextPlaceholder: '#64748b',
+          colorTextDisabled: '#94a3b8',
+          colorBgDisabled: '#f1f5f9',
+          controlFocusShadow: '0 0 0 3px rgba(15, 118, 110, 0.2)',
+        },
+      }}
+    >
+      <div style={{ display: 'grid', gap: 12, width: 320 }}>
+        <Input placeholder="聚焦时使用主题 focus shadow" />
+        <Input disabled placeholder="禁用态使用主题语义色" />
+        <Input prefix="https://" suffix=".com" placeholder="前后缀示例" />
+      </div>
+    </ConfigProvider>
+  ),
 };

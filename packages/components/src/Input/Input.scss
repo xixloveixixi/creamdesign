@@ -15,34 +15,31 @@
 
   &:focus-within {
     border-color: var(--cream-color-primary, $color-primary-500);
-    box-shadow: 0 0 0 3px rgba($color-primary-500, 0.2);
-    box-shadow: 0 0 0 3px
-      color-mix(
-        in srgb,
-        var(--cream-color-primary, $color-primary-500) 20%,
-        transparent
-      );
+    box-shadow: var(
+      --cream-control-focus-shadow,
+      0 0 0 3px rgba($color-primary-500, 0.2)
+    );
   }
 
   // 禁用状态
   &.input-disabled {
-    background-color: $color-neutral-100;
-    border-color: $color-neutral-300;
+    background-color: var(--cream-color-bg-disabled, $color-neutral-100);
+    border-color: var(--cream-color-border, $color-neutral-300);
     cursor: not-allowed;
 
     input {
       background-color: transparent;
-      color: $color-disabled;
+      color: var(--cream-color-text-disabled, $color-disabled);
       cursor: not-allowed;
     }
 
     .input-icon {
-      color: $color-disabled;
+      color: var(--cream-color-text-disabled, $color-disabled);
     }
 
     .input-prefix,
     .input-suffix {
-      color: $color-disabled;
+      color: var(--cream-color-text-disabled, $color-disabled);
     }
   }
 
@@ -97,7 +94,7 @@
     width: 100%;
 
     &::placeholder {
-      color: $color-text-tertiary;
+      color: var(--cream-color-text-placeholder, $color-text-tertiary);
     }
   }
 

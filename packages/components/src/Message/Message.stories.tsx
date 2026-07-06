@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Message } from './Message';
+import { ConfigProvider } from '../ConfigProvider';
 
 const meta: Meta = {
   title: 'Message',
@@ -89,5 +90,40 @@ export const DifferentPositions: Story = {
       Message.error({ content: '左下角消息', position: 'bottom-left' });
     };
     return <button onClick={showAllPositions}>显示四个位置的消息</button>;
+  },
+};
+
+export const SemanticTheme: Story = {
+  args: {},
+  render: () => {
+    const showThemedMessages = () => {
+      Message.success({ content: '成功状态使用语义 token', duration: 0 });
+      Message.warning({ content: '警告状态使用语义 token', duration: 0 });
+      Message.error({ content: '错误状态使用语义 token', duration: 0 });
+      Message.info({ content: '信息状态使用语义 token', duration: 0 });
+    };
+
+    return (
+      <ConfigProvider
+        theme={{
+          token: {
+            colorSuccess: '#16a34a',
+            colorSuccessBg: '#ecfdf3',
+            colorSuccessBorder: '#86efac',
+            colorWarning: '#ca8a04',
+            colorWarningBg: '#fffbeb',
+            colorWarningBorder: '#fde68a',
+            colorError: '#dc2626',
+            colorErrorBg: '#fef2f2',
+            colorErrorBorder: '#fecaca',
+            colorInfo: '#2563eb',
+            colorInfoBg: '#eff6ff',
+            colorInfoBorder: '#bfdbfe',
+          },
+        }}
+      >
+        <button onClick={showThemedMessages}>显示主题消息</button>
+      </ConfigProvider>
+    );
   },
 };

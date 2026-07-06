@@ -3,6 +3,7 @@ import { render, fireEvent, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Input, InputProps } from './Input';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { ConfigProvider } from '../ConfigProvider';
 
 describe('Input Component', () => {
   // 1. 基本渲染测试
@@ -77,5 +78,31 @@ describe('Input Component', () => {
 
     fireEvent.change(input, { target: { value: 'test' } });
     expect(input.value).toBe('test');
+  });
+
+  test('should receive semantic theme variables from ConfigProvider', () => {
+    const { container } = render(
+      <ConfigProvider
+        theme={{
+          token: {
+            colorTextPlaceholder: '#8a8f98',
+            colorTextDisabled: '#a1a1aa',
+            colorBgDisabled: '#f4f4f5',
+            controlFocusShadow: '0 0 0 3px rgba(124, 58, 237, 0.24)',
+          },
+        }}
+      >
+        <Input disabled placeholder="请输入" />
+      </ConfigProvider>
+    );
+
+    const provider = container.querySelector('.cream-config-provider');
+
+    expect(provider).toHaveStyle('--cream-color-text-placeholder: #8a8f98');
+    expect(provider).toHaveStyle('--cream-color-text-disabled: #a1a1aa');
+    expect(provider).toHaveStyle('--cream-color-bg-disabled: #f4f4f5');
+    expect(provider).toHaveStyle(
+      '--cream-control-focus-shadow: 0 0 0 3px rgba(124, 58, 237, 0.24)'
+    );
   });
 });
