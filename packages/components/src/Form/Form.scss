@@ -13,8 +13,8 @@
   height: 100%; // 使用百分比高度，适应容器
   margin: 0 auto;
   padding: clamp(0.75rem, 2%, 1.5rem); // 响应式内边距
-  background-color: $color-card;
-  border-radius: 0.5rem;
+  background-color: var(--cream-color-bg-container, $color-card);
+  border-radius: var(--cream-border-radius, 0.5rem);
   box-shadow: 0 2px 8px rgba($color-neutral-900, 0.1);
   @include card-shadow(1);
   font-size: clamp($font-size-sm, 1.2vw, $font-size-base); // 响应式字体
@@ -46,7 +46,7 @@
       > label.cream-form-item-required:before {
         display: inline-block;
         margin-right: 4px;
-        color: $color-error;
+        color: var(--cream-color-error, $color-error);
         font-size: clamp(0.75rem, 1vw, 0.875rem);
         font-family: SimSun, sans-serif;
         line-height: 1;
@@ -62,10 +62,15 @@
       // 错误状态
       .cream-form-item-has-error.cream-form-item-control {
         .cream-input-inner {
-          border: 1px solid $color-error;
+          border: 1px solid var(--cream-color-error, $color-error);
 
           &:focus {
-            box-shadow: 0 0 0 3px rgba($color-error, 0.2);
+            box-shadow: 0 0 0 3px
+              color-mix(
+                in srgb,
+                var(--cream-color-error, $color-error) 20%,
+                transparent
+              );
           }
         }
       }
@@ -76,7 +81,7 @@
         bottom: -25px;
         left: 0;
         line-height: 1.5;
-        color: $color-error;
+        color: var(--cream-color-error, $color-error);
         min-width: 100px;
         font-size: clamp(0.7rem, 1vw, 0.875rem);
       }

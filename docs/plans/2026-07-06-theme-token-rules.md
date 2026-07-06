@@ -146,7 +146,8 @@ TagToken;
    - `enterpriseTheme` 已提供中后台风格的 Table token，用于验证主题切换。
 
 5. `Form`
-   - 与 Input 共享 control、disabled、error、placeholder 语义 token。
+   - 已迁移为复用背景、圆角、error 等现有 global/semantic token。
+   - 未新增 `FormToken`。
    - 只有布局间距或 label 行为稳定后，再考虑 `FormToken`。
 
 ## TableToken 第一版记录

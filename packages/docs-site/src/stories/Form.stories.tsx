@@ -1,5 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Form, FormRefType } from 'creamdesign-lib';
+import {
+  ConfigProvider,
+  Form,
+  FormRefType,
+  enterpriseTheme,
+} from 'creamdesign-lib';
 import { FormItem } from 'creamdesign-lib/Form/FormItem';
 import { Button, ButtonType } from 'creamdesign-lib';
 import { CustomRule } from 'creamdesign-lib/Form/useStore';
@@ -311,3 +316,44 @@ export const FormWithRef: StoryObj<typeof Form> = {
   render: () => <FormWithRefComponent />,
 };
 FormWithRef.storyName = '使用 Ref 控制';
+
+export const EnterpriseThemeForm: StoryObj<typeof Form> = {
+  render: () => (
+    <ConfigProvider theme={enterpriseTheme}>
+      <Form
+        style={{ width: '420px' }}
+        initialValues={{
+          username: 'enterprise-user',
+          password: '',
+        }}
+      >
+        <FormItem
+          name="username"
+          label="用户名"
+          valuePropsName="value"
+          trigger="onChange"
+          getValueFormEvent={(e: any) => e.target.value}
+          rules={[{ required: true, message: '请输入用户名' }]}
+        >
+          <input type="text" />
+        </FormItem>
+        <FormItem
+          name="password"
+          label="密码"
+          valuePropsName="value"
+          trigger="onChange"
+          getValueFormEvent={(e: any) => e.target.value}
+          rules={[{ required: true, message: '请输入密码' }]}
+        >
+          <input type="password" />
+        </FormItem>
+        <div>
+          <Button btnType={ButtonType.Primary} type="submit">
+            提交
+          </Button>
+        </div>
+      </Form>
+    </ConfigProvider>
+  ),
+};
+EnterpriseThemeForm.storyName = '企业级主题';
