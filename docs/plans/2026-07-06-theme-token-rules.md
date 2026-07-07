@@ -237,6 +237,18 @@ interface TableToken {
 4. CSS Variables 输出在 `.cream-config-provider` 上，可被 Table 组件继承。
 5. `pnpm test`、`pnpm smoke:components`、`pnpm build-storybook` 通过。
 
+## 阶段二收尾审计
+
+主题迁移第一轮已覆盖 Button、Input、Icon、Message、Tag、Progress、Card、Table、Form、Upload、Menu、Pagination、Timeline。
+
+收尾审计结论：
+
+1. docs-site 的组件主题示例已统一复用 `enterpriseTheme`，用于展示默认主题和企业级主题差异。
+2. 组件包内部 story 中的 Input、Message、Tag 主题示例已同步复用 `enterpriseTheme`，避免保留漂移的内联 token 对象。
+3. 仍保留的内联 `theme={{ ...enterpriseTheme, components: { ... } }}` 仅用于 `主题/Theme` 和 Button 的组件级覆盖示例，属于有意展示 `ButtonToken` 的用法。
+4. 第一轮未新增 `InputToken`、`MessageToken`、`TagToken`、`ProgressToken`、`CardToken`、`FormToken`、`UploadToken`、`MenuToken`、`PaginationToken`、`TimelineToken`。
+5. 下一阶段如果要新增组件级 token，应先有稳定的组件私有视觉语义，再扩展 `ComponentToken`。
+
 ## 验收要求
 
 每次主题迁移至少验证：

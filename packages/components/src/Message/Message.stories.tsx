@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Message } from './Message';
-import { ConfigProvider } from '../ConfigProvider';
+import { ConfigProvider, enterpriseTheme } from '../ConfigProvider';
 
 const meta: Meta = {
   title: 'Message',
@@ -104,26 +104,10 @@ export const SemanticTheme: Story = {
     };
 
     return (
-      <ConfigProvider
-        theme={{
-          token: {
-            colorSuccess: '#16a34a',
-            colorSuccessBg: '#ecfdf3',
-            colorSuccessBorder: '#86efac',
-            colorWarning: '#ca8a04',
-            colorWarningBg: '#fffbeb',
-            colorWarningBorder: '#fde68a',
-            colorError: '#dc2626',
-            colorErrorBg: '#fef2f2',
-            colorErrorBorder: '#fecaca',
-            colorInfo: '#2563eb',
-            colorInfoBg: '#eff6ff',
-            colorInfoBorder: '#bfdbfe',
-          },
-        }}
-      >
+      <ConfigProvider theme={enterpriseTheme}>
         <button onClick={showThemedMessages}>显示主题消息</button>
       </ConfigProvider>
     );
   },
 };
+SemanticTheme.storyName = '企业级主题';
