@@ -32,6 +32,8 @@ node .ai/harness/run-harness.mjs build-warning-free
 
 Case 位于 `.ai/harness/cases/*.json`。
 
+协议文件位于 `.ai/harness/protocols/*.md`。协议用于沉淀 AI 在特定问题类型下的上下文读取流程，case 负责检查协议文件和触发入口是否存在。
+
 每个 case 可以定义：
 
 - `id`：稳定的 case id。

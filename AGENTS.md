@@ -68,4 +68,5 @@ packages/components/src/<ComponentName>/
 
 - 审查或修改组件时使用 `$component-review`。
 - 修改包导出、构建配置或组件包产物结构时使用 `$release-smoke`。
+- 用户询问“下一步是什么”“现在做到哪”“继续做什么”等项目进度问题时，先执行 `.ai/harness/protocols/next-step-context.md` 的上下文读取协议，再回答。
 - 使用 `.ai/harness` 中的 case 检查 AI 辅助改动是否满足仓库预期。

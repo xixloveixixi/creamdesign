@@ -1,0 +1,42 @@
+{
+  "id": "next-step-context-protocol",
+  "description": "检查项目进度类问题是否有可执行的上下文读取协议，并由 AGENTS.md 提供轻量触发入口。",
+  "requiredFiles": [
+    "AGENTS.md",
+    ".ai/harness/README.md",
+    ".ai/harness/protocols/next-step-context.md"
+  ],
+  "contains": [
+    {
+      "file": "AGENTS.md",
+      "text": [
+        ".ai/harness/protocols/next-step-context.md",
+        "下一步是什么",
+        "现在做到哪",
+        "继续做什么"
+      ]
+    },
+    {
+      "file": ".ai/harness/protocols/next-step-context.md",
+      "text": [
+        "下一步是什么",
+        "现在做到哪",
+        "继续做什么",
+        "docs/plans",
+        "docs/superpowers/specs",
+        "git status --short",
+        "git branch --show-current",
+        "git log --oneline -5",
+        "禁止在未读取项目阶段文档和 Git 状态时回答“没有上下文”",
+        "当前工作树状态",
+        "阶段文档里的依据",
+        "推荐的下一步动作"
+      ]
+    }
+  ],
+  "forbiddenTouchedPaths": [
+    "packages/components/dist",
+    "packages/docs-site/storybook-static"
+  ],
+  "commands": ["node .ai/harness/run-harness.mjs next-step-context-protocol"]
+}
