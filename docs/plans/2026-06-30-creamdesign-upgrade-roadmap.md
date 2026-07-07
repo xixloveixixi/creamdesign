@@ -116,7 +116,8 @@ import 'creamdesign-lib/style';
 2. 已建立 global token、semantic token 和组件级 token `ButtonToken`、`TableToken`。
 3. 已迁移并验证部分组件使用 CSS Variables，包括 `Button`、`Input`、`Icon`、`Message`、`Tag`、`Progress`、`Card`、`Table`、`Form`、`Upload`、`Menu`、`Pagination`、`Timeline`。
 4. 已在 Storybook 中新增 `主题/Theme`、Button/Input/Icon/Message/Tag/Progress/Table/Form/Upload/Menu/Pagination/Timeline/Card 企业主题示例，用于对比默认主题、企业级主题和组件级覆盖。
-5. 已通过 `pnpm test`、`pnpm smoke:components`、`pnpm build-storybook` 验证主题链路。
+5. 已补充 `主题/Theme` 文档视图、运行时主题切换示例和 CSS Variables 对照表，用于展示 `ConfigProvider`、token 分层和组件级覆盖的接入方式。
+6. 已通过 `pnpm test`、`pnpm smoke:components`、`pnpm build-storybook` 验证主题链路。
 
 ### 已完成：TableToken 第一版
 
