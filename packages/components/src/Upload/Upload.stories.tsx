@@ -56,6 +56,37 @@ export const UploadStory: StoryObj<typeof Upload> = {
 };
 
 /**
+ * 禁用态上传
+ * 禁用后不可点击、键盘触发、拖拽 drop 或删除文件。
+ */
+export const DisabledUpload: StoryObj<typeof Upload> = {
+  args: {
+    action: 'https://jsonplaceholder.typicode.com/posts',
+    disabled: true,
+    drag: true,
+    multiple: true,
+    enableLargeFileUpload: false,
+    defaultFileList: [
+      {
+        uid: 'disabled-demo',
+        size: 1024,
+        name: 'disabled-demo.pdf',
+        status: 'success',
+        percent: 100,
+        raw: new File(['demo'], 'disabled-demo.pdf', {
+          type: 'application/pdf',
+        }),
+      },
+    ],
+  },
+  render: args => (
+    <Upload {...args}>
+      <Button disabled>上传已禁用</Button>
+    </Upload>
+  ),
+};
+
+/**
  * 大文件上传 - 使用 Mock 适配器（默认）
  * 快速测试，每个分片延迟 500ms
  * 注意：上传大于 10MB 的文件才会触发分片上传

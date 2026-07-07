@@ -114,6 +114,54 @@ describe('Upload 组件测试', () => {
     jest.clearAllMocks();
   });
 
+  it('应该透传 className 和 style 到根节点', () => {
+    const wrapper = render(
+      <Upload {...testProps} className="custom-upload" style={{ width: 320 }}>
+        <button>点击上传</button>
+      </Upload>
+    );
+
+    const root = wrapper.container.querySelector(
+      '.cream-upload'
+    ) as HTMLElement;
+    expect(root).toHaveClass('custom-upload');
+    expect(root).toHaveStyle({ width: '320px' });
+  });
+
+  it('disabled 时应该禁用选择文件交互', () => {
+    const beforeUpload = jest.fn();
+    const wrapper = render(
+      <Upload {...testProps} beforeUpload={beforeUpload} disabled>
+        <button>点击上传</button>
+      </Upload>
+    );
+
+    const root = wrapper.container.querySelector(
+      '.cream-upload'
+    ) as HTMLElement;
+    const container = wrapper.container.querySelector(
+      '.upload-container'
+    ) as HTMLElement;
+    const fileInput = wrapper.container.querySelector(
+      '.upload-input'
+    ) as HTMLInputElement;
+    const testFile = new File(['xyz'], 'test.png', { type: 'image/png' });
+
+    expect(root).toHaveClass('cream-upload-disabled');
+    expect(container).toHaveAttribute('aria-disabled', 'true');
+    expect(container).toHaveAttribute('tabindex', '-1');
+    expect(fileInput).toBeDisabled();
+
+    fireEvent.change(fileInput, {
+      target: {
+        files: [testFile],
+      },
+    });
+
+    expect(beforeUpload).not.toHaveBeenCalled();
+    expect(mockedAxios.post).not.toHaveBeenCalled();
+  });
+
   it('应该能够成功上传文件', async () => {
     // 4. axios 模块的 mock（必须在触发事件之前设置）
     // 使用 mockImplementation 来模拟真实的 axios 行为，包括调用 onUploadProgress
@@ -325,6 +373,7 @@ describe('Upload 组件测试', () => {
       '.status-icon-btn'
     ) as HTMLButtonElement;
     expect(deleteButton).toBeInTheDocument();
+    expect(deleteButton).toHaveAccessibleName('删除文件 test.png');
 
     // 6. 模拟鼠标悬浮（触发 hover 状态，显示删除图标）
     fireEvent.mouseEnter(deleteButton);
@@ -342,6 +391,43 @@ describe('Upload 组件测试', () => {
     await waitFor(() => {
       expect(wrapper.queryByText('test.png')).not.toBeInTheDocument();
     });
+  });
+
+  it('disabled 时应该禁用文件删除', async () => {
+    const onRemoved = jest.fn();
+
+    const defaultFile = new File(['xyz'], 'test.png', { type: 'image/png' });
+    const wrapper = render(
+      <Upload
+        {...testProps}
+        disabled
+        onRemoved={onRemoved}
+        defaultFileList={[
+          {
+            uid: '1',
+            size: defaultFile.size,
+            name: defaultFile.name,
+            status: 'success',
+            percent: 100,
+            raw: defaultFile,
+          },
+        ]}
+      >
+        <button>点击上传</button>
+      </Upload>
+    );
+
+    const deleteButton = wrapper.container.querySelector(
+      '.status-icon-btn'
+    ) as HTMLButtonElement;
+
+    expect(deleteButton).toBeDisabled();
+    expect(deleteButton).toHaveAccessibleName('删除文件 test.png');
+    fireEvent.mouseEnter(deleteButton);
+    fireEvent.click(deleteButton);
+
+    expect(onRemoved).not.toHaveBeenCalled();
+    expect(wrapper.getByText('test.png')).toBeInTheDocument();
   });
 
   describe('拖拽上传测试', () => {
@@ -489,6 +575,43 @@ describe('Upload 组件测试', () => {
 
       // 验证 onSuccess 回调被调用
       expect(testProps.onSuccess).toHaveBeenCalledWith('cool', testFile);
+    });
+
+    it('disabled 时 drop 不应上传文件', () => {
+      const beforeUpload = jest.fn();
+      const wrapper = render(
+        <Upload {...testProps} drag={true} disabled beforeUpload={beforeUpload}>
+          <button>点击上传</button>
+        </Upload>
+      );
+
+      const dragger = wrapper.container.querySelector(
+        '.upload-dragger'
+      ) as HTMLElement;
+      const testFile = new File(['xyz'], 'test.png', { type: 'image/png' });
+      const fileList = {
+        0: testFile,
+        length: 1,
+        item: (index: number) => (index === 0 ? testFile : null),
+        [Symbol.iterator]: function* () {
+          yield testFile;
+        },
+      } as any as FileList;
+      const dropEvent = createEvent.drop(dragger);
+      Object.defineProperty(dropEvent, 'dataTransfer', {
+        value: {
+          files: fileList,
+        },
+        writable: true,
+      });
+
+      expect(dragger).toHaveClass('is-disabled');
+      expect(dragger).toHaveAttribute('aria-disabled', 'true');
+
+      fireEvent(dragger, dropEvent);
+
+      expect(beforeUpload).not.toHaveBeenCalled();
+      expect(mockedAxios.post).not.toHaveBeenCalled();
     });
   });
 });

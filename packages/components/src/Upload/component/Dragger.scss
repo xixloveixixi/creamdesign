@@ -15,7 +15,7 @@
   overflow: hidden;
 
   /* 悬停状态 */
-  &:hover {
+  &:hover:not(.is-disabled) {
     border-color: var(--cream-color-primary-hover, $color-primary-400);
     background-color: var(--cream-color-primary-bg, $color-primary-100);
     box-shadow: 0 2px 8px
@@ -27,7 +27,7 @@
   }
 
   /* 拖拽悬停状态 */
-  &.is-dragover {
+  &.is-dragover:not(.is-disabled) {
     border-color: var(--cream-color-primary, $color-primary-500);
     background-color: var(--cream-color-primary-bg, $color-primary-100);
     box-shadow: var(
@@ -59,8 +59,17 @@
   }
 
   /* 激活状态 */
-  &:active {
+  &:active:not(.is-disabled) {
     transform: scale(0.98);
+  }
+
+  &.is-disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    background-color: var(--cream-color-bg-disabled, $color-neutral-100);
+    border-color: var(--cream-color-border, $color-neutral-300);
+    box-shadow: none;
+    transform: none;
   }
 
   /* 内容样式 */
@@ -93,7 +102,7 @@
   }
 
   /* 拖拽悬停时的图标变化 */
-  &.is-dragover {
+  &.is-dragover:not(.is-disabled) {
     .dragger-icon {
       color: var(--cream-color-primary, $color-primary-500);
       transform: scale(1.1);
@@ -121,7 +130,7 @@
   }
 
   /* 脉冲动画 */
-  &.is-dragover {
+  &.is-dragover:not(.is-disabled) {
     animation: drag-pulse 2s infinite;
   }
 

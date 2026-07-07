@@ -11,16 +11,22 @@ import './Dragger.scss';
 interface DraggerProps {
   onFile: (files: FileList) => void;
   children?: ReactNode;
+  disabled?: boolean;
 }
 
 export const Dragger: FC<DraggerProps> = props => {
-  const { onFile, children } = props;
+  const { onFile, children, disabled = false } = props;
   const [isDragover, setIsDragover] = useState(false);
   const klass = classNames('upload-dragger', {
-    'is-dragover': isDragover,
+    'is-dragover': isDragover && !disabled,
+    'is-disabled': disabled,
   });
   const handelDrag = (e: React.DragEvent<HTMLElement>, isOver: boolean) => {
     e.preventDefault();
+    if (disabled) {
+      setIsDragover(false);
+      return;
+    }
     setIsDragover(isOver);
   };
 
@@ -44,8 +50,12 @@ export const Dragger: FC<DraggerProps> = props => {
       onDrop={e => {
         e.preventDefault();
         handelDrag(e, false);
+        if (disabled) {
+          return;
+        }
         onFile(e.dataTransfer.files);
       }}
+      aria-disabled={disabled}
     >
       {children || defaultContent}
     </div>

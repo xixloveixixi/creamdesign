@@ -1,0 +1,26 @@
+@use '../style/creamdesign' as *;
+
+.cream-upload {
+  display: block;
+  width: 100%;
+  color: var(--cream-color-text, $color-neutral-800);
+}
+
+.cream-upload-disabled {
+  color: var(--cream-color-text-disabled, $color-neutral-400);
+
+  .upload-container {
+    cursor: not-allowed;
+  }
+}
+
+.upload-container {
+  display: inline-block;
+  max-width: 100%;
+  cursor: pointer;
+
+  &:focus {
+    outline: 2px solid var(--cream-color-primary, $color-primary-500);
+    outline-offset: 2px;
+  }
+}

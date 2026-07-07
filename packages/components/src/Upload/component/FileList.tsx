@@ -17,12 +17,14 @@ interface FileListProps {
   onRemoved?: (file: FileItem) => void;
   // 切换文件状态回调，可选
   onToggleStatus?: (file: FileItem) => void;
+  disabled?: boolean;
 }
 
 export const FileList = ({
   fileList,
   onRemoved,
   onToggleStatus,
+  disabled = false,
 }: FileListProps) => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const getStatusIcon = (status: string, isHovered: boolean = false) => {
@@ -78,11 +80,16 @@ export const FileList = ({
                 <div className="status-section">
                   <div className="status-with-remove">
                     <button
+                      type="button"
                       className="status-icon-btn"
-                      disabled={item.status === 'uploading'}
+                      aria-label={`删除文件 ${item.name}`}
+                      disabled={disabled || item.status === 'uploading'}
                       onMouseEnter={() => setHoveredItem(item.uid)}
                       onMouseLeave={() => setHoveredItem(null)}
                       onClick={() => {
+                        if (disabled) {
+                          return;
+                        }
                         // 如果是success状态悬浮时显示error图标，此时点击就是删除
                         // 如果是error状态，直接点击删除
                         if (

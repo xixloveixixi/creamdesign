@@ -5,9 +5,11 @@ import {
   forwardRef,
   useImperativeHandle,
 } from 'react';
+import classNames from 'classnames';
 import axios from 'axios';
 import { FileList } from './component/FileList';
 import { Dragger } from './component/Dragger';
+import './Upload.scss';
 import { useLargeFileUpload } from './hooks/useLargeFileUpload';
 import { createDefaultAdapter } from './hooks/useLargeFileUpload/adapter';
 import {
@@ -23,6 +25,12 @@ import {
 export interface UploadProps {
   /** 上传接口 URL（必填） */
   action: string;
+  /** 根节点类名 */
+  className?: string;
+  /** 根节点样式 */
+  style?: React.CSSProperties;
+  /** 是否禁用上传交互 */
+  disabled?: boolean;
   /** 默认文件列表 */
   defaultFileList?: FileItem[];
   /** 自定义请求头 */
@@ -123,6 +131,9 @@ export const Upload = forwardRef<UploadRef, UploadProps>(
   (
     {
       action,
+      className,
+      style,
+      disabled = false,
       defaultFileList,
       headers,
       name,
@@ -246,6 +257,9 @@ export const Upload = forwardRef<UploadRef, UploadProps>(
       });
     };
     const handelFileChange = () => {
+      if (disabled) {
+        return;
+      }
       //触发文件选择对话框
       if (uploadInputRef.current) {
         uploadInputRef.current.click();
@@ -254,6 +268,9 @@ export const Upload = forwardRef<UploadRef, UploadProps>(
     const uploadInputRef = useRef<HTMLInputElement>(null);
     // 值变化的时候添加文件
     const handelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (disabled) {
+        return;
+      }
       const file = e.target.files;
       // 如果文件不存在，直接返回
       if (!file) {
@@ -401,6 +418,9 @@ export const Upload = forwardRef<UploadRef, UploadProps>(
 
     //   文件上传函数
     const handelFileUpload = (files: FileList) => {
+      if (disabled) {
+        return;
+      }
       // 1、把文件列表转换为数组
       const fileArray = Array.from(files);
       // 2、遍历文件数组，对每个文件进行上传
@@ -466,20 +486,45 @@ export const Upload = forwardRef<UploadRef, UploadProps>(
       });
     };
     const handelRemove = (file: FileItem) => {
+      if (disabled) {
+        return;
+      }
       // console.log('删除文件:', file);
       // 1、从文件列表中删除该文件项
       setFileList(prevList => prevList.filter(item => item.uid !== file.uid));
       // 2、调用onRemoved回调
       onRemoved?.(file);
     };
+    const handleUploadKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (disabled) {
+        return;
+      }
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handelFileChange();
+      }
+    };
+    const uploadClassName = classNames('cream-upload', className, {
+      'cream-upload-disabled': disabled,
+    });
+
     return (
-      <div style={{ margin: '20px' }}>
-        <div className="upload-container" onClick={handelFileChange}>
+      <div className={uploadClassName} style={style}>
+        <div
+          className="upload-container"
+          role="button"
+          tabIndex={disabled ? -1 : 0}
+          aria-disabled={disabled}
+          onClick={handelFileChange}
+          onKeyDown={handleUploadKeyDown}
+        >
           {/* 用child代替原本固定的button */}
           {/* 将handleClick事件移动到上层包裹的div中
         保留原有input元素作为文件选择的核心组件 */}
           {drag ? (
-            <Dragger onFile={handelFileUpload}>{children}</Dragger>
+            <Dragger onFile={handelFileUpload} disabled={disabled}>
+              {children}
+            </Dragger>
           ) : (
             children
           )}
@@ -500,9 +545,14 @@ export const Upload = forwardRef<UploadRef, UploadProps>(
             onChange={handelChange}
             accept={accept}
             multiple={multiple}
+            disabled={disabled}
           />
         </div>
-        <FileList fileList={fileList} onRemoved={handelRemove} />
+        <FileList
+          fileList={fileList}
+          onRemoved={handelRemove}
+          disabled={disabled}
+        />
       </div>
     );
   }
