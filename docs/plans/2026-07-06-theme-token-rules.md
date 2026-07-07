@@ -131,44 +131,49 @@ TagToken;
    - danger/warning/info/success、ghost/text/outline、disabled、focus 已迁移为复用现有 global/semantic token。
    - 暂不新增 `ButtonToken` 字段，除非后续出现稳定的按钮专属覆盖需求。
 
-2. `Tag`
+2. `Icon`
+   - 已迁移为复用 primary、text、success、warning、error、info、container 背景等现有 global/semantic token。
+   - 未新增 `IconToken`。
+   - `Icon` 的主题枚举保持不变，运行时颜色由 CSS Variables 继承。
+
+3. `Tag`
    - 复用状态色和背景/边框语义 token。
 
-3. `Progress`
+4. `Progress`
    - 复用 success/warning/error/info 语义色。
 
-4. `Card`
+5. `Card`
    - 已迁移为复用背景、边框、文本、primary、阴影、圆角、disabled/elevated 背景等现有 global/semantic token。
    - 未新增 `CardToken`。
    - 只有卡片头部、操作区、骨架屏等视觉语义出现稳定差异化覆盖需求后，再考虑 `CardToken`。
 
-5. `Table`
+6. `Table`
    - 已完成 `TableToken` 第一版。
    - 第一版只覆盖表格视觉表面，不修改排序、分页、虚拟滚动、行选择等行为逻辑。
    - `Table.scss` 已迁移为优先读取 `--cream-table-*` CSS Variables，保留原 SCSS 色值作为 fallback。
    - `enterpriseTheme` 已提供中后台风格的 Table token，用于验证主题切换。
 
-6. `Form`
+7. `Form`
    - 已迁移为复用背景、圆角、error 等现有 global/semantic token。
    - 未新增 `FormToken`。
    - 只有布局间距或 label 行为稳定后，再考虑 `FormToken`。
 
-7. `Upload`
+8. `Upload`
    - 已迁移为复用背景、边框、文本、primary、success、error、info 等现有 global/semantic token。
    - 未新增 `UploadToken`。
    - 只有拖拽区、文件项等视觉语义出现稳定差异化覆盖需求后，再考虑 `UploadToken`。
 
-8. `Menu`
+9. `Menu`
    - 已迁移为复用背景、边框、文本、primary、disabled、圆角、阴影等现有 global/semantic token。
    - 未新增 `MenuToken`。
    - 只有导航容器、菜单项、子菜单浮层等视觉语义出现稳定差异化覆盖需求后，再考虑 `MenuToken`。
 
-9. `Pagination`
-   - 已迁移为复用文本、边框、背景、primary、disabled、圆角、focus shadow 等现有 global/semantic token。
-   - 未新增 `PaginationToken`。
-   - 只有页码项、页大小选择器等视觉语义出现稳定差异化覆盖需求后，再考虑 `PaginationToken`。
+10. `Pagination`
+    - 已迁移为复用文本、边框、背景、primary、disabled、圆角、focus shadow 等现有 global/semantic token。
+    - 未新增 `PaginationToken`。
+    - 只有页码项、页大小选择器等视觉语义出现稳定差异化覆盖需求后，再考虑 `PaginationToken`。
 
-10. `Timeline`
+11. `Timeline`
     - 已迁移为复用文本、边框、背景、primary、success、disabled、focus shadow 等现有 global/semantic token。
     - 未新增 `TimelineToken`。
     - 只有节点、连接线、内容卡片等视觉语义出现稳定差异化覆盖需求后，再考虑 `TimelineToken`。

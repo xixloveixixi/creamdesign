@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Icon } from 'creamdesign-lib';
+import { ConfigProvider, enterpriseTheme, Icon } from 'creamdesign-lib';
 import type { IconTheme } from 'creamdesign-lib/Icon/Icon.d';
 import {
   faUser,
@@ -78,7 +78,7 @@ const THEMES = [
   { theme: 'danger' },
   { theme: 'warning' },
   { theme: 'info' },
-  { theme: 'light', bg: '#333' },
+  { theme: 'light', bg: 'var(--cream-color-text)' },
   { theme: 'dark' },
 ];
 
@@ -108,7 +108,7 @@ export const Themes: StoryObj<typeof Icon> = {
             style={{
               marginTop: '10px',
               fontSize: '12px',
-              color: bg ? '#fff' : 'inherit',
+              color: bg ? 'var(--cream-color-bg-container)' : 'inherit',
               fontWeight: 500,
             }}
           >
@@ -152,25 +152,25 @@ const STATUS_ICONS = [
     icon: faCircleCheck,
     theme: 'success' as IconTheme,
     label: '成功',
-    color: '#4caf50',
+    color: 'var(--cream-color-success)',
   },
   {
     icon: faCircleXmark,
     theme: 'danger' as IconTheme,
     label: '失败',
-    color: '#f44336',
+    color: 'var(--cream-color-error)',
   },
   {
     icon: faTriangleExclamation,
     theme: 'warning' as IconTheme,
     label: '警告',
-    color: '#ffc107',
+    color: 'var(--cream-color-warning)',
   },
   {
     icon: faCircleInfo,
     theme: 'info' as IconTheme,
     label: '信息',
-    color: '#2196f3',
+    color: 'var(--cream-color-info)',
   },
 ];
 
@@ -289,12 +289,16 @@ export const CommonIcons: StoryObj<typeof Icon> = {
             width: '88px',
             padding: '12px 8px',
             borderRadius: '8px',
-            border: '1px solid #e0e0e0',
+            border: '1px solid var(--cream-color-border, #e0e0e0)',
           }}
         >
           <Icon icon={icon} size="2x" theme="primary" />
           <div
-            style={{ marginTop: '10px', fontSize: '10px', color: '#616161' }}
+            style={{
+              marginTop: '10px',
+              fontSize: '10px',
+              color: 'var(--cream-color-text-secondary, #616161)',
+            }}
           >
             {label}
           </div>
@@ -316,10 +320,30 @@ export const InButtonContext: StoryObj<typeof Icon> = {
       }}
     >
       {[
-        { icon: faPlus, label: '新增', bg: '#9333ea', color: '#fff' },
-        { icon: faTrash, label: '删除', bg: '#f44336', color: '#fff' },
-        { icon: faPen, label: '编辑', bg: '#2196f3', color: '#fff' },
-        { icon: faDownload, label: '下载', bg: '#4caf50', color: '#fff' },
+        {
+          icon: faPlus,
+          label: '新增',
+          bg: 'var(--cream-color-primary)',
+          color: 'var(--cream-color-bg-container)',
+        },
+        {
+          icon: faTrash,
+          label: '删除',
+          bg: 'var(--cream-color-error)',
+          color: 'var(--cream-color-bg-container)',
+        },
+        {
+          icon: faPen,
+          label: '编辑',
+          bg: 'var(--cream-color-info)',
+          color: 'var(--cream-color-bg-container)',
+        },
+        {
+          icon: faDownload,
+          label: '下载',
+          bg: 'var(--cream-color-success)',
+          color: 'var(--cream-color-bg-container)',
+        },
       ].map(({ icon, label, bg, color }) => (
         <button
           key={label}
@@ -345,3 +369,67 @@ export const InButtonContext: StoryObj<typeof Icon> = {
   ),
 };
 InButtonContext.storyName = '图标按钮示例';
+
+export const EnterpriseThemeIcons: StoryObj<typeof Icon> = {
+  render: () => (
+    <ConfigProvider theme={enterpriseTheme}>
+      <div
+        style={{
+          display: 'grid',
+          gap: 24,
+          padding: 24,
+          background: 'var(--cream-color-bg-elevated)',
+          borderRadius: 12,
+        }}
+      >
+        <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
+          {THEMES.map(({ theme, bg }) => (
+            <div
+              key={theme as string}
+              style={{
+                textAlign: 'center',
+                padding: '12px',
+                borderRadius: '8px',
+                background: bg ?? 'var(--cream-color-bg-container)',
+                minWidth: '72px',
+                border: '1px solid var(--cream-color-border)',
+              }}
+            >
+              <Icon icon={faStar} theme={theme as IconTheme} size="2x" />
+              <div
+                style={{
+                  marginTop: '10px',
+                  fontSize: '12px',
+                  color: bg
+                    ? 'var(--cream-color-bg-container)'
+                    : 'var(--cream-color-text-secondary)',
+                  fontWeight: 500,
+                }}
+              >
+                {theme}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+          {STATUS_ICONS.map(({ icon, theme, label }) => (
+            <div key={label} style={{ textAlign: 'center', minWidth: 64 }}>
+              <Icon icon={icon} theme={theme} size="2x" />
+              <div
+                style={{
+                  marginTop: 8,
+                  fontSize: 12,
+                  color: 'var(--cream-color-text-secondary)',
+                }}
+              >
+                {label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </ConfigProvider>
+  ),
+};
+EnterpriseThemeIcons.storyName = '企业级主题';

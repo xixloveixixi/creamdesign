@@ -1,8 +1,33 @@
-// 使用each
 @use '../style/creamdesign' as *;
 
-@each $key, $val in $theme-colors {
-  .icon-#{$key} {
-    color: $val;
-  }
+.icon-primary {
+  color: var(--cream-color-primary, $color-primary-500);
+}
+
+.icon-secondary {
+  color: var(--cream-color-text-secondary, $color-secondary-blue-700);
+}
+
+.icon-success {
+  color: var(--cream-color-success, $color-success);
+}
+
+.icon-danger {
+  color: var(--cream-color-error, $color-error);
+}
+
+.icon-warning {
+  color: var(--cream-color-warning, $color-warning);
+}
+
+.icon-info {
+  color: var(--cream-color-info, $color-info);
+}
+
+.icon-light {
+  color: var(--cream-color-bg-container, $color-neutral-50);
+}
+
+.icon-dark {
+  color: var(--cream-color-text, $color-neutral-900);
 }
