@@ -156,6 +156,11 @@ TagToken;
    - 未新增 `MenuToken`。
    - 只有导航容器、菜单项、子菜单浮层等视觉语义出现稳定差异化覆盖需求后，再考虑 `MenuToken`。
 
+8. `Pagination`
+   - 已迁移为复用文本、边框、背景、primary、disabled、圆角、focus shadow 等现有 global/semantic token。
+   - 未新增 `PaginationToken`。
+   - 只有页码项、页大小选择器等视觉语义出现稳定差异化覆盖需求后，再考虑 `PaginationToken`。
+
 ## TableToken 第一版记录
 
 `TableToken` 是阶段二进入复杂组件 token 化的第一步。它没有一次性重构 Table，只验证复杂业务组件能通过组件级 token 做稳定换肤。

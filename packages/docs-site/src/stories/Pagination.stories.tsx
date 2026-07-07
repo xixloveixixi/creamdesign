@@ -1,7 +1,12 @@
 // Pagination组件示例
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { Pagination, PaginationProps } from 'creamdesign-lib';
+import {
+  ConfigProvider,
+  enterpriseTheme,
+  Pagination,
+  PaginationProps,
+} from 'creamdesign-lib';
 
 const meta: Meta<PaginationProps> = {
   title: 'Pagination',
@@ -98,3 +103,29 @@ export const Disabled: Story = {
   },
 };
 Disabled.storyName = '禁用状态';
+
+export const EnterpriseTheme: Story = {
+  render: args => (
+    <ConfigProvider theme={enterpriseTheme}>
+      <div style={{ display: 'grid', gap: 24 }}>
+        <Pagination {...args} />
+        <Pagination
+          total={84}
+          current={3}
+          pageSize={20}
+          showTotal
+          showSizeChanger
+        />
+        <Pagination total={48} current={2} pageSize={10} disabled />
+      </div>
+    </ConfigProvider>
+  ),
+  args: {
+    total: 268,
+    current: 6,
+    pageSize: 20,
+    showTotal: true,
+    showSizeChanger: true,
+  },
+};
+EnterpriseTheme.storyName = '企业级主题';

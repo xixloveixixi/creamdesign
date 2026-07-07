@@ -6,6 +6,35 @@
 @use '../style/creamdesign' as *; // 颜色和变量
 @use '../style/mixin' as *; // Mixins
 
+$pagination-text-color: var(--cream-color-text, $color-text-primary);
+$pagination-text-secondary: var(
+  --cream-color-text-secondary,
+  $color-text-secondary
+);
+$pagination-text-placeholder: var(
+  --cream-color-text-placeholder,
+  $color-text-tertiary
+);
+$pagination-disabled-text: var(
+  --cream-color-text-disabled,
+  $color-text-tertiary
+);
+$pagination-border-color: var(--cream-color-border, $color-primary-200);
+$pagination-hover-border-color: var(
+  --cream-color-primary-hover,
+  $color-primary-300
+);
+$pagination-bg: var(--cream-color-bg-container, $color-background);
+$pagination-hover-bg: var(--cream-color-primary-bg, $color-primary-100);
+$pagination-disabled-bg: var(--cream-color-bg-disabled, $color-surface);
+$pagination-primary: var(--cream-color-primary, $color-primary-500);
+$pagination-primary-hover: var(--cream-color-primary-hover, $color-primary-600);
+$pagination-focus-shadow: var(
+  --cream-control-focus-shadow,
+  0 0 0 3px rgba($color-primary-500, 0.2)
+);
+$pagination-border-radius: var(--cream-border-radius, 0.375rem);
+
 // ===== 分页器容器 =====
 .cream-pagination {
   display: flex;
@@ -13,16 +42,16 @@
   gap: 0.5rem;
   font-family: $font-family-base;
   font-size: $font-size-base;
-  color: $color-text-primary;
+  color: $pagination-text-color;
 
   // 总数显示
   .cream-pagination-total {
     margin-right: 0.5rem;
-    color: $color-text-secondary;
+    color: $pagination-text-secondary;
     font-size: $font-size-sm;
 
     strong {
-      color: $color-text-primary;
+      color: $pagination-text-color;
       font-weight: $font-weight-bold;
     }
   }
@@ -42,10 +71,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid $color-primary-200;
-    border-radius: 0.375rem;
-    background-color: $color-background;
-    color: $color-text-primary;
+    border: 1px solid $pagination-border-color;
+    border-radius: $pagination-border-radius;
+    background-color: $pagination-bg;
+    color: $pagination-text-color;
     font-size: $font-size-sm;
     font-weight: $font-weight-base;
     cursor: pointer;
@@ -53,26 +82,26 @@
     user-select: none;
 
     &:hover:not(:disabled) {
-      background-color: $color-primary-100;
-      border-color: $color-primary-300;
-      color: $color-primary-700;
+      background-color: $pagination-hover-bg;
+      border-color: $pagination-hover-border-color;
+      color: $pagination-primary;
     }
 
     &:active:not(:disabled) {
-      background-color: $color-primary-200;
+      background-color: $pagination-hover-bg;
       transform: scale(0.95);
     }
 
     // 激活状态
     &.cream-pagination-item-active {
-      background-color: $color-primary-500;
-      border-color: $color-primary-500;
+      background-color: $pagination-primary;
+      border-color: $pagination-primary;
       color: white;
       font-weight: $font-weight-bold;
 
       &:hover {
-        background-color: $color-primary-600;
-        border-color: $color-primary-600;
+        background-color: $pagination-primary-hover;
+        border-color: $pagination-primary-hover;
         color: white;
       }
     }
@@ -81,9 +110,9 @@
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      background-color: $color-surface;
-      border-color: $color-border;
-      color: $color-text-tertiary;
+      background-color: $pagination-disabled-bg;
+      border-color: var(--cream-color-border, $color-border);
+      color: $pagination-disabled-text;
     }
 
     // 上一页/下一页按钮
@@ -100,7 +129,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: $color-text-tertiary;
+    color: $pagination-text-placeholder;
     font-size: $font-size-sm;
     user-select: none;
   }
@@ -112,30 +141,30 @@
 
   .cream-pagination-size-selector {
     padding: 0.375rem 0.75rem;
-    border: 1px solid $color-primary-200;
-    border-radius: 0.375rem;
-    background-color: $color-background;
-    color: $color-text-primary;
+    border: 1px solid $pagination-border-color;
+    border-radius: $pagination-border-radius;
+    background-color: $pagination-bg;
+    color: $pagination-text-color;
     font-size: $font-size-sm;
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover:not(:disabled) {
-      border-color: $color-primary-300;
-      background-color: $color-primary-100;
+      border-color: $pagination-hover-border-color;
+      background-color: $pagination-hover-bg;
     }
 
     &:focus {
       outline: none;
-      border-color: $color-primary-500;
-      box-shadow: 0 0 0 3px rgba($color-primary-500, 0.2);
+      border-color: $pagination-primary;
+      box-shadow: $pagination-focus-shadow;
     }
 
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      background-color: $color-surface;
-      border-color: $color-border;
+      background-color: $pagination-disabled-bg;
+      border-color: var(--cream-color-border, $color-border);
     }
   }
 
@@ -189,18 +218,21 @@
 
       &:hover:not(:disabled) {
         background-color: $color-neutral-700;
-        border-color: $color-primary-400;
-        color: $color-primary-300;
+        border-color: var(--cream-color-primary-hover, $color-primary-400);
+        color: var(--cream-color-primary, $color-primary-300);
       }
 
       &.cream-pagination-item-active {
-        background-color: $color-primary-600;
-        border-color: $color-primary-600;
+        background-color: var(--cream-color-primary, $color-primary-600);
+        border-color: var(--cream-color-primary, $color-primary-600);
         color: white;
 
         &:hover {
-          background-color: $color-primary-700;
-          border-color: $color-primary-700;
+          background-color: var(
+            --cream-color-primary-hover,
+            $color-primary-700
+          );
+          border-color: var(--cream-color-primary-hover, $color-primary-700);
         }
       }
 
@@ -221,7 +253,7 @@
       color: $color-neutral-100;
 
       &:hover:not(:disabled) {
-        border-color: $color-primary-400;
+        border-color: var(--cream-color-primary-hover, $color-primary-400);
         background-color: $color-neutral-700;
       }
 
@@ -240,7 +272,7 @@
         color: $color-neutral-100;
 
         &:focus {
-          border-color: $color-primary-500;
+          border-color: var(--cream-color-primary, $color-primary-500);
         }
 
         &:disabled {
