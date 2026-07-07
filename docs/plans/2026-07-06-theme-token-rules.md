@@ -118,10 +118,16 @@ TagToken;
   - success/warning/error/info 边框色
   - Portal root 继承全局 CSS Variables
 
+- Tag
+  - primary/success/warning/danger/info 状态色
+  - success/warning/danger/info 状态背景色
+  - success/warning/danger/info 状态描边色
+
 暂不新增：
 
 - `InputToken`
 - `MessageToken`
+- `TagToken`
 
 ## 后续迁移顺序
 
@@ -143,7 +149,9 @@ TagToken;
    - Portal root 已通过全局 CSS Variables 同步主题。
 
 4. `Tag`
-   - 复用状态色和背景/边框语义 token。
+   - 已迁移为复用 primary、success、warning、error、info 状态色和背景/边框语义 token。
+   - 未新增 `TagToken`。
+   - `Tag` 的状态描边通过内阴影读取语义边框变量，避免改变标签布局尺寸。
 
 5. `Progress`
    - 复用 success/warning/error/info 语义色。

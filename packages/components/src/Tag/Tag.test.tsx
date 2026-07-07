@@ -53,12 +53,24 @@ describe('Tag', () => {
             colorPrimaryBg: '#f3e8ff',
             colorSuccess: '#16a34a',
             colorSuccessBg: '#ecfdf3',
+            colorSuccessBorder: '#86efac',
+            colorWarning: '#ca8a04',
+            colorWarningBg: '#fffbeb',
+            colorWarningBorder: '#fde68a',
             colorError: '#dc2626',
             colorErrorBg: '#fef2f2',
+            colorErrorBorder: '#fecaca',
+            colorInfo: '#2563eb',
+            colorInfoBg: '#eff6ff',
+            colorInfoBorder: '#bfdbfe',
           },
         }}
       >
         <Tag color="primary">主题标签</Tag>
+        <Tag color="success">成功标签</Tag>
+        <Tag color="warning">警告标签</Tag>
+        <Tag color="danger">错误标签</Tag>
+        <Tag color="info">信息标签</Tag>
       </ConfigProvider>
     );
 
@@ -68,7 +80,15 @@ describe('Tag', () => {
     expect(provider).toHaveStyle('--cream-color-primary-bg: #f3e8ff');
     expect(provider).toHaveStyle('--cream-color-success: #16a34a');
     expect(provider).toHaveStyle('--cream-color-success-bg: #ecfdf3');
+    expect(provider).toHaveStyle('--cream-color-success-border: #86efac');
+    expect(provider).toHaveStyle('--cream-color-warning: #ca8a04');
+    expect(provider).toHaveStyle('--cream-color-warning-bg: #fffbeb');
+    expect(provider).toHaveStyle('--cream-color-warning-border: #fde68a');
     expect(provider).toHaveStyle('--cream-color-error: #dc2626');
     expect(provider).toHaveStyle('--cream-color-error-bg: #fef2f2');
+    expect(provider).toHaveStyle('--cream-color-error-border: #fecaca');
+    expect(provider).toHaveStyle('--cream-color-info: #2563eb');
+    expect(provider).toHaveStyle('--cream-color-info-bg: #eff6ff');
+    expect(provider).toHaveStyle('--cream-color-info-border: #bfdbfe');
   });
 });

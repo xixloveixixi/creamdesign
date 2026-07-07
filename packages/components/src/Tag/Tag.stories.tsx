@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Tag } from './Tag';
-import { ConfigProvider } from '../ConfigProvider';
+import { ConfigProvider, enterpriseTheme } from '../ConfigProvider';
 
 const meta: Meta<typeof Tag> = {
   title: 'Tag',
@@ -22,22 +22,7 @@ export const Default: Story = {
 
 export const SemanticTheme: Story = {
   render: () => (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: '#7c3aed',
-          colorPrimaryBg: '#f3e8ff',
-          colorSuccess: '#16a34a',
-          colorSuccessBg: '#ecfdf3',
-          colorWarning: '#ca8a04',
-          colorWarningBg: '#fffbeb',
-          colorError: '#dc2626',
-          colorErrorBg: '#fef2f2',
-          colorInfo: '#2563eb',
-          colorInfoBg: '#eff6ff',
-        },
-      }}
-    >
+    <ConfigProvider theme={enterpriseTheme}>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <Tag color="primary">Primary</Tag>
         <Tag color="success">Success</Tag>
@@ -48,3 +33,4 @@ export const SemanticTheme: Story = {
     </ConfigProvider>
   ),
 };
+SemanticTheme.storyName = '企业级主题';

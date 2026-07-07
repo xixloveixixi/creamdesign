@@ -1,6 +1,21 @@
 @use '../style/creamdesign' as *;
 @use '../style/mixin' as *;
 
+$tag-success-bg: var(--cream-color-success-bg, rgba($color-success, 0.15));
+$tag-success-border: var(
+  --cream-color-success-border,
+  rgba($color-success, 0.35)
+);
+$tag-warning-bg: var(--cream-color-warning-bg, rgba($color-warning, 0.15));
+$tag-warning-border: var(
+  --cream-color-warning-border,
+  rgba($color-warning, 0.35)
+);
+$tag-error-bg: var(--cream-color-error-bg, rgba($color-error, 0.15));
+$tag-error-border: var(--cream-color-error-border, rgba($color-error, 0.35));
+$tag-info-bg: var(--cream-color-info-bg, rgba($color-info, 0.15));
+$tag-info-border: var(--cream-color-info-border, rgba($color-info, 0.35));
+
 .cream-tag {
   display: inline-flex;
   align-items: center;
@@ -26,22 +41,26 @@
   }
 
   &--success {
-    background-color: var(--cream-color-success-bg, rgba($color-success, 0.15));
+    background-color: $tag-success-bg;
+    box-shadow: inset 0 0 0 1px $tag-success-border;
     color: var(--cream-color-success, $color-success);
   }
 
   &--warning {
-    background-color: var(--cream-color-warning-bg, rgba($color-warning, 0.15));
+    background-color: $tag-warning-bg;
+    box-shadow: inset 0 0 0 1px $tag-warning-border;
     color: var(--cream-color-warning, darken-color($color-warning, 15%));
   }
 
   &--danger {
-    background-color: var(--cream-color-error-bg, rgba($color-error, 0.15));
+    background-color: $tag-error-bg;
+    box-shadow: inset 0 0 0 1px $tag-error-border;
     color: var(--cream-color-error, $color-error);
   }
 
   &--info {
-    background-color: var(--cream-color-info-bg, rgba($color-info, 0.15));
+    background-color: $tag-info-bg;
+    box-shadow: inset 0 0 0 1px $tag-info-border;
     color: var(--cream-color-info, $color-info);
   }
 
