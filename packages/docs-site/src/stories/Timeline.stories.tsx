@@ -1,6 +1,12 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Timeline, TimelineProps, TimelineItemProps } from 'creamdesign-lib';
+import {
+  ConfigProvider,
+  enterpriseTheme,
+  Timeline,
+  TimelineProps,
+  TimelineItemProps,
+} from 'creamdesign-lib';
 
 const meta: Meta<TimelineProps> = {
   title: 'Timeline',
@@ -290,3 +296,57 @@ export const RichTitle: StoryObj<TimelineProps> = {
   ),
 };
 RichTitle.storyName = '富文本标题';
+
+export const EnterpriseTheme: StoryObj<TimelineProps> = {
+  render: args => (
+    <ConfigProvider theme={enterpriseTheme}>
+      <div style={{ display: 'grid', gap: 32 }}>
+        <div style={{ width: 520 }}>
+          <Timeline {...args} />
+        </div>
+        <div style={{ maxWidth: 760 }}>
+          <Timeline
+            direction="horizontal"
+            items={[
+              { title: '立项', timestamp: 'Q1', status: 'completed' },
+              { title: '方案确认', timestamp: 'Q2', status: 'completed' },
+              { title: '上线准备', timestamp: 'Q3', status: 'processing' },
+              { title: '复盘归档', timestamp: 'Q4', status: 'pending' },
+            ]}
+          />
+        </div>
+      </div>
+    </ConfigProvider>
+  ),
+  args: {
+    items: [
+      {
+        title: '需求确认',
+        content: '完成业务范围、验收口径和排期确认。',
+        timestamp: '2026-01-08',
+        status: 'completed',
+      },
+      {
+        title: '设计评审',
+        content: '完成交互、视觉和组件状态评审。',
+        timestamp: '2026-01-18',
+        status: 'completed',
+      },
+      {
+        title: '开发联调',
+        content: '主题变量迁移和业务接入同步推进。',
+        timestamp: '2026-02-05',
+        status: 'processing',
+      },
+      {
+        title: '发布验收',
+        content: '完成回归、文档和发布检查。',
+        timestamp: '2026-02-20',
+        status: 'pending',
+      },
+    ],
+    direction: 'vertical',
+    mode: 'left',
+  },
+};
+EnterpriseTheme.storyName = '企业级主题';

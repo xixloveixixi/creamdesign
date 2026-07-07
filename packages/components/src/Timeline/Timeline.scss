@@ -1,6 +1,28 @@
 // Timeline 时间轴组件样式
 @use '../style/creamdesign' as *;
 
+$timeline-text-color: var(--cream-color-text, $color-text-primary);
+$timeline-text-secondary: var(
+  --cream-color-text-secondary,
+  $color-text-secondary
+);
+$timeline-text-placeholder: var(
+  --cream-color-text-placeholder,
+  $color-text-tertiary
+);
+$timeline-text-disabled: var(--cream-color-text-disabled, $color-neutral-500);
+$timeline-border-color: var(--cream-color-border, $color-border);
+$timeline-node-bg: var(--cream-color-bg-container, $color-neutral-50);
+$timeline-node-pending-bg: var(--cream-color-bg-disabled, $color-neutral-100);
+$timeline-primary: var(--cream-color-primary, $color-primary-500);
+$timeline-primary-hover: var(--cream-color-primary-hover, $color-primary-700);
+$timeline-primary-bg: var(--cream-color-primary-bg, $color-primary-100);
+$timeline-success: var(--cream-color-success, $color-success);
+$timeline-focus-shadow: var(
+  --cream-control-focus-shadow,
+  0 0 0 3px rgba($color-primary-500, 0.15)
+);
+
 // ===== 进行中脉冲动画 =====
 @keyframes cream-timeline-pulse {
   0% {
@@ -34,7 +56,7 @@
   margin: 0;
   padding: 0;
   font-family: $font-family-base;
-  color: $color-text-primary;
+  color: $timeline-text-color;
 
   // ===== 垂直模式 =====
   &--vertical {
@@ -59,7 +81,7 @@
       top: 1.5rem;
       bottom: 0;
       width: 2px;
-      background-color: $color-border;
+      background-color: $timeline-border-color;
       transform: translateX(-50%);
     }
 
@@ -183,7 +205,7 @@
       left: 50%;
       right: -50%;
       height: 2px;
-      background-color: $color-border;
+      background-color: $timeline-border-color;
       z-index: 0;
     }
 
@@ -211,9 +233,9 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 2px solid $color-border;
-    background-color: $color-neutral-50;
-    color: $color-neutral-50;
+    border: 2px solid $timeline-border-color;
+    background-color: $timeline-node-bg;
+    color: $timeline-node-bg;
     transition:
       border-color 0.25s ease,
       background-color 0.25s ease,
@@ -230,9 +252,9 @@
 
     // 自定义图标时撑满
     &--custom {
-      border-color: $color-primary-400;
-      background-color: $color-primary-100;
-      color: $color-primary-600;
+      border-color: var(--cream-color-primary-hover, $color-primary-400);
+      background-color: $timeline-primary-bg;
+      color: $timeline-primary;
       font-size: 0.875rem;
     }
   }
@@ -255,7 +277,7 @@
   &__timestamp {
     display: inline-block;
     font-size: $font-size-sm * 0.9;
-    color: $color-text-tertiary;
+    color: $timeline-text-placeholder;
     margin-bottom: 0.25rem;
     font-variant-numeric: tabular-nums;
   }
@@ -266,14 +288,14 @@
     &-text {
       font-size: $font-size-base;
       font-weight: $font-weight-bold;
-      color: $color-text-primary;
+      color: $timeline-text-color;
       line-height: $line-height-sm;
     }
   }
 
   &__body {
     font-size: $font-size-sm;
-    color: $color-text-secondary;
+    color: $timeline-text-secondary;
     line-height: $line-height-base;
   }
 
@@ -282,32 +304,32 @@
   // 已完成
   &__item--completed {
     .cream-timeline__node {
-      background-color: $color-success;
-      border-color: $color-success;
-      color: $color-neutral-50;
+      background-color: $timeline-success;
+      border-color: $timeline-success;
+      color: $timeline-node-bg;
     }
 
     & ~ .cream-timeline__item .cream-timeline__tail,
     .cream-timeline__tail {
-      background-color: $color-success;
+      background-color: $timeline-success;
     }
 
     .cream-timeline__title-text {
-      color: $color-text-primary;
+      color: $timeline-text-color;
     }
   }
 
   // 进行中
   &__item--processing {
     .cream-timeline__node {
-      background-color: $color-neutral-50;
-      border-color: $color-primary-500;
-      color: $color-primary-500;
-      box-shadow: 0 0 0 3px rgba($color-primary-500, 0.15);
+      background-color: $timeline-node-bg;
+      border-color: $timeline-primary;
+      color: $timeline-primary;
+      box-shadow: $timeline-focus-shadow;
     }
 
     .cream-timeline__title-text {
-      color: $color-primary-700;
+      color: $timeline-primary-hover;
       font-weight: $font-weight-bold;
     }
   }
@@ -315,17 +337,17 @@
   // 待处理
   &__item--pending {
     .cream-timeline__node {
-      background-color: $color-neutral-100;
-      border-color: $color-neutral-400;
-      color: $color-neutral-400;
+      background-color: $timeline-node-pending-bg;
+      border-color: $timeline-border-color;
+      color: $timeline-text-disabled;
     }
 
     .cream-timeline__title-text {
-      color: $color-text-tertiary;
+      color: $timeline-text-placeholder;
     }
 
     .cream-timeline__body {
-      color: $color-neutral-500;
+      color: $timeline-text-disabled;
     }
   }
 
@@ -333,7 +355,7 @@
   &--vertical {
     .cream-timeline__item--completed {
       .cream-timeline__tail {
-        background-color: $color-success;
+        background-color: $timeline-success;
       }
     }
   }
@@ -341,7 +363,11 @@
   &--horizontal {
     .cream-timeline__item--completed {
       .cream-timeline__tail {
-        background: linear-gradient(to right, $color-success, $color-success);
+        background: linear-gradient(
+          to right,
+          $timeline-success,
+          $timeline-success
+        );
       }
     }
   }
