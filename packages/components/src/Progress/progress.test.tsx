@@ -94,6 +94,7 @@ describe('Progress Component', () => {
             colorPrimary: '#0f766e',
             colorPrimaryHover: '#0d9488',
             colorPrimaryActive: '#115e59',
+            colorTextSecondary: '#475569',
             colorBgDisabled: '#f1f5f9',
             colorSuccess: '#16a34a',
             colorWarning: '#ca8a04',
@@ -111,6 +112,7 @@ describe('Progress Component', () => {
     expect(provider).toHaveStyle('--cream-color-primary: #0f766e');
     expect(provider).toHaveStyle('--cream-color-primary-hover: #0d9488');
     expect(provider).toHaveStyle('--cream-color-primary-active: #115e59');
+    expect(provider).toHaveStyle('--cream-color-text-secondary: #475569');
     expect(provider).toHaveStyle('--cream-color-bg-disabled: #f1f5f9');
     expect(provider).toHaveStyle('--cream-color-success: #16a34a');
     expect(provider).toHaveStyle('--cream-color-warning: #ca8a04');

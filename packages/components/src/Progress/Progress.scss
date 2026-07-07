@@ -2,6 +2,29 @@
 @use '../style/creamdesign' as *; // 颜色和变量
 @use '../style/mixin' as *; // Mixins
 
+$progress-track-bg: var(--cream-color-bg-disabled, $color-neutral-200);
+$progress-primary: var(--cream-color-primary, $color-primary-500);
+$progress-primary-hover: var(--cream-color-primary-hover, $color-primary-600);
+$progress-primary-active: var(--cream-color-primary-active, $color-primary-700);
+$progress-secondary: var(
+  --cream-color-text-secondary,
+  $color-secondary-blue-700
+);
+$progress-secondary-hover: color-mix(in srgb, $progress-secondary 88%, black);
+$progress-secondary-active: color-mix(in srgb, $progress-secondary 76%, black);
+$progress-success: var(--cream-color-success, $color-success);
+$progress-success-hover: color-mix(in srgb, $progress-success 88%, black);
+$progress-success-active: color-mix(in srgb, $progress-success 76%, black);
+$progress-warning: var(--cream-color-warning, $color-warning);
+$progress-warning-hover: color-mix(in srgb, $progress-warning 88%, black);
+$progress-warning-active: color-mix(in srgb, $progress-warning 76%, black);
+$progress-error: var(--cream-color-error, $color-error);
+$progress-error-hover: color-mix(in srgb, $progress-error 88%, black);
+$progress-error-active: color-mix(in srgb, $progress-error 76%, black);
+$progress-info: var(--cream-color-info, $color-info);
+$progress-info-hover: color-mix(in srgb, $progress-info 88%, black);
+$progress-info-active: color-mix(in srgb, $progress-info 76%, black);
+
 /* 进度条容器 */
 .progress-container {
   width: 100%;
@@ -12,7 +35,7 @@
 /* 进度条轨道 */
 .progress-bar {
   flex: 1;
-  background-color: var(--cream-color-bg-disabled, $color-neutral-200);
+  background-color: $progress-track-bg;
   border-radius: 9999px;
   overflow: hidden;
   position: relative;
@@ -44,15 +67,15 @@
   &.progress-fill-primary {
     background: linear-gradient(
       90deg,
-      var(--cream-color-primary, $color-primary-500),
-      var(--cream-color-primary-hover, $color-primary-600)
+      $progress-primary,
+      $progress-primary-hover
     );
 
     &:hover {
       background: linear-gradient(
         90deg,
-        var(--cream-color-primary-hover, $color-primary-600),
-        var(--cream-color-primary-active, $color-primary-700)
+        $progress-primary-hover,
+        $progress-primary-active
       );
     }
   }
@@ -60,15 +83,15 @@
   &.progress-fill-secondary {
     background: linear-gradient(
       90deg,
-      $color-secondary-blue-500,
-      $color-secondary-blue-700
+      $progress-secondary,
+      $progress-secondary-hover
     );
 
     &:hover {
       background: linear-gradient(
         90deg,
-        $color-secondary-blue-700,
-        darken-color($color-secondary-blue-700, 10%)
+        $progress-secondary-hover,
+        $progress-secondary-active
       );
     }
   }
@@ -76,15 +99,15 @@
   &.progress-fill-success {
     background: linear-gradient(
       90deg,
-      var(--cream-color-success, $color-success),
-      lighten-color($color-success, 10%)
+      $progress-success,
+      $progress-success-hover
     );
 
     &:hover {
       background: linear-gradient(
         90deg,
-        lighten-color($color-success, 10%),
-        lighten-color($color-success, 15%)
+        $progress-success-hover,
+        $progress-success-active
       );
     }
   }
@@ -92,48 +115,40 @@
   &.progress-fill-warning {
     background: linear-gradient(
       90deg,
-      var(--cream-color-warning, $color-warning),
-      lighten-color($color-warning, 10%)
+      $progress-warning,
+      $progress-warning-hover
     );
 
     &:hover {
       background: linear-gradient(
         90deg,
-        lighten-color($color-warning, 10%),
-        lighten-color($color-warning, 15%)
+        $progress-warning-hover,
+        $progress-warning-active
       );
     }
   }
 
   &.progress-fill-danger,
   &.progress-fill-error {
-    background: linear-gradient(
-      90deg,
-      var(--cream-color-error, $color-error),
-      lighten-color($color-error, 10%)
-    );
+    background: linear-gradient(90deg, $progress-error, $progress-error-hover);
 
     &:hover {
       background: linear-gradient(
         90deg,
-        lighten-color($color-error, 10%),
-        lighten-color($color-error, 15%)
+        $progress-error-hover,
+        $progress-error-active
       );
     }
   }
 
   &.progress-fill-info {
-    background: linear-gradient(
-      90deg,
-      var(--cream-color-info, $color-info),
-      lighten-color($color-info, 10%)
-    );
+    background: linear-gradient(90deg, $progress-info, $progress-info-hover);
 
     &:hover {
       background: linear-gradient(
         90deg,
-        lighten-color($color-info, 10%),
-        lighten-color($color-info, 15%)
+        $progress-info-hover,
+        $progress-info-active
       );
     }
   }

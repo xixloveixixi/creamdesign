@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ConfigProvider, Progress, ProgressProps } from 'creamdesign-lib';
+import {
+  ConfigProvider,
+  enterpriseTheme,
+  Progress,
+  ProgressProps,
+} from 'creamdesign-lib';
 
 const meta: Meta<ProgressProps> = {
   title: 'Progress',
@@ -83,20 +88,7 @@ Animated.storyName = '动画进度';
 
 export const SemanticTheme: Story = {
   render: () => (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: '#0f766e',
-          colorPrimaryHover: '#0d9488',
-          colorPrimaryActive: '#115e59',
-          colorBgDisabled: '#f1f5f9',
-          colorSuccess: '#16a34a',
-          colorWarning: '#ca8a04',
-          colorError: '#dc2626',
-          colorInfo: '#2563eb',
-        },
-      }}
-    >
+    <ConfigProvider theme={enterpriseTheme}>
       <div
         style={{
           width: 320,
@@ -114,4 +106,4 @@ export const SemanticTheme: Story = {
     </ConfigProvider>
   ),
 };
-SemanticTheme.storyName = '主题语义变量';
+SemanticTheme.storyName = '企业级主题';

@@ -51,6 +51,7 @@ export type { InputProps } from './Input/Input';
 
 // Progress 组件
 export { default as Progress } from './Progress';
+export type { ProgressProps } from './Progress';
 
 // Pagination 组件
 export { default as Pagination } from './Pagination';

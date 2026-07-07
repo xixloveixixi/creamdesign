@@ -11,7 +11,7 @@ import classNames from 'classnames';
 import type { IconTheme } from '../Icon/Icon.d';
 import { useEffect, useState } from 'react';
 import './Progress.scss';
-interface ProgressProps {
+export interface ProgressProps {
   percent: number;
   strokeHeight?: number;
   showText?: boolean;

@@ -123,11 +123,17 @@ TagToken;
   - success/warning/danger/info 状态背景色
   - success/warning/danger/info 状态描边色
 
+- Progress
+  - 轨道背景色
+  - primary/secondary/success/warning/danger/info 填充色
+  - 基于 CSS Variables 的运行时渐变和 hover 色
+
 暂不新增：
 
 - `InputToken`
 - `MessageToken`
 - `TagToken`
+- `ProgressToken`
 
 ## 后续迁移顺序
 
@@ -154,7 +160,9 @@ TagToken;
    - `Tag` 的状态描边通过内阴影读取语义边框变量，避免改变标签布局尺寸。
 
 5. `Progress`
-   - 复用 success/warning/error/info 语义色。
+   - 已迁移为复用 primary、text secondary、success、warning、error、info 和 disabled 背景等现有 global/semantic token。
+   - 未新增 `ProgressToken`。
+   - 进度条渐变和 hover 色通过运行时 `color-mix()` 从 CSS Variables 派生，避免 SCSS 编译期状态色固化。
 
 6. `Card`
    - 已迁移为复用背景、边框、文本、primary、阴影、圆角、disabled/elevated 背景等现有 global/semantic token。
