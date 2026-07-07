@@ -1,4 +1,4 @@
-import { Upload } from 'creamdesign-lib';
+import { ConfigProvider, Upload, enterpriseTheme } from 'creamdesign-lib';
 import { action } from '@storybook/addon-actions';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from 'creamdesign-lib';
@@ -87,7 +87,13 @@ export const CustomChunkConfig: StoryObj<typeof Upload> = {
       <Upload {...args}>
         <Button>自定义配置上传</Button>
       </Upload>
-      <div style={{ marginTop: '20px', fontSize: '12px', color: '#666' }}>
+      <div
+        style={{
+          marginTop: '20px',
+          fontSize: '12px',
+          color: 'var(--cream-color-text-secondary, #666)',
+        }}
+      >
         <p>配置说明：</p>
         <ul>
           <li>分片大小：1MB</li>
@@ -100,3 +106,27 @@ export const CustomChunkConfig: StoryObj<typeof Upload> = {
   ),
 };
 CustomChunkConfig.storyName = '自定义分片配置';
+
+export const EnterpriseThemeUpload: StoryObj<typeof Upload> = {
+  args: {
+    action: 'https://jsonplaceholder.typicode.com/posts',
+    onSuccess: action('success'),
+    onError: action('error'),
+    onProgress: action('progress'),
+    onChange: action('changed'),
+    name: 'file',
+    multiple: true,
+    drag: true,
+    enableLargeFileUpload: false,
+  },
+  render: args => (
+    <ConfigProvider theme={enterpriseTheme}>
+      <div style={{ width: 420 }}>
+        <Upload {...args}>
+          <Button>选择文件</Button>
+        </Upload>
+      </div>
+    </ConfigProvider>
+  ),
+};
+EnterpriseThemeUpload.storyName = '企业级主题';

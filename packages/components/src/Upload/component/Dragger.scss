@@ -4,9 +4,9 @@
 
 /* 拖拽上传区域 */
 .upload-dragger {
-  border: 2px dashed $color-neutral-300;
-  border-radius: 0.5rem;
-  background-color: $color-neutral-50;
+  border: 2px dashed var(--cream-color-border, $color-neutral-300);
+  border-radius: var(--cream-border-radius, 0.5rem);
+  background-color: var(--cream-color-bg-container, $color-neutral-50);
   padding: 24px;
   text-align: center;
   transition: all 0.3s ease;
@@ -16,16 +16,24 @@
 
   /* 悬停状态 */
   &:hover {
-    border-color: $color-primary-400;
-    background-color: lighten-color($color-primary-100, 2%);
-    box-shadow: 0 2px 8px rgba($color-primary-200, 0.2);
+    border-color: var(--cream-color-primary-hover, $color-primary-400);
+    background-color: var(--cream-color-primary-bg, $color-primary-100);
+    box-shadow: 0 2px 8px
+      color-mix(
+        in srgb,
+        var(--cream-color-primary, $color-primary-500) 12%,
+        transparent
+      );
   }
 
   /* 拖拽悬停状态 */
   &.is-dragover {
-    border-color: $color-primary-500;
-    background-color: lighten-color($color-primary-100, 3%);
-    box-shadow: 0 4px 12px rgba($color-primary-300, 0.3);
+    border-color: var(--cream-color-primary, $color-primary-500);
+    background-color: var(--cream-color-primary-bg, $color-primary-100);
+    box-shadow: var(
+      --cream-control-focus-shadow,
+      0 4px 12px rgba($color-primary-300, 0.3)
+    );
     transform: scale(1.02);
 
     /* 添加闪烁动画效果 */
@@ -39,7 +47,11 @@
       background: linear-gradient(
         90deg,
         transparent,
-        rgba($color-primary-400, 0.1),
+        color-mix(
+          in srgb,
+          var(--cream-color-primary, $color-primary-400) 10%,
+          transparent
+        ),
         transparent
       );
       animation: drag-shimmer 1.5s infinite;
@@ -63,37 +75,37 @@
 
   .dragger-icon {
     font-size: 3rem;
-    color: $color-neutral-400;
+    color: var(--cream-color-text-disabled, $color-neutral-400);
     transition: all 0.3s ease;
   }
 
   .dragger-text {
     font-size: 1rem;
-    color: $color-neutral-600;
+    color: var(--cream-color-text-secondary, $color-neutral-600);
     font-weight: 500;
     line-height: 1.5;
   }
 
   .dragger-hint {
     font-size: 0.875rem;
-    color: $color-neutral-500;
+    color: var(--cream-color-text-placeholder, $color-neutral-500);
     margin-top: 4px;
   }
 
   /* 拖拽悬停时的图标变化 */
   &.is-dragover {
     .dragger-icon {
-      color: $color-primary-500;
+      color: var(--cream-color-primary, $color-primary-500);
       transform: scale(1.1);
     }
 
     .dragger-text {
-      color: $color-primary-600;
+      color: var(--cream-color-primary, $color-primary-600);
       font-weight: 600;
     }
 
     .dragger-hint {
-      color: $color-primary-500;
+      color: var(--cream-color-primary, $color-primary-500);
     }
   }
 
@@ -116,11 +128,19 @@
   @keyframes drag-pulse {
     0%,
     100% {
-      box-shadow: 0 4px 12px rgba($color-primary-300, 0.3);
+      box-shadow: var(
+        --cream-control-focus-shadow,
+        0 4px 12px rgba($color-primary-300, 0.3)
+      );
     }
 
     50% {
-      box-shadow: 0 6px 16px rgba($color-primary-400, 0.4);
+      box-shadow: 0 6px 16px
+        color-mix(
+          in srgb,
+          var(--cream-color-primary, $color-primary-400) 24%,
+          transparent
+        );
     }
   }
 
@@ -143,7 +163,7 @@
 
   /* 无障碍设计 */
   &:focus {
-    outline: 2px solid $color-primary-500;
+    outline: 2px solid var(--cream-color-primary, $color-primary-500);
     outline-offset: 2px;
   }
 
@@ -153,7 +173,7 @@
 
     &.is-dragover {
       border-width: 4px;
-      background-color: $color-primary-100;
+      background-color: var(--cream-color-primary-bg, $color-primary-100);
     }
   }
 
@@ -178,13 +198,17 @@
   left: 0;
   right: 0;
   height: 4px;
-  background-color: $color-neutral-200;
+  background-color: var(--cream-color-border, $color-neutral-200);
   border-radius: 0 0 0.5rem 0.5rem;
   overflow: hidden;
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, $color-primary-500, $color-primary-600);
+    background: linear-gradient(
+      90deg,
+      var(--cream-color-primary, $color-primary-500),
+      var(--cream-color-primary-hover, $color-primary-600)
+    );
     border-radius: 0 0 0.5rem 0.5rem;
     transition: width 0.3s ease;
   }
@@ -201,14 +225,14 @@
   .preview-item {
     width: 60px;
     height: 60px;
-    border-radius: 0.375rem;
-    background-color: $color-neutral-100;
-    border: 1px solid $color-neutral-300;
+    border-radius: var(--cream-border-radius, 0.375rem);
+    background-color: var(--cream-color-bg-elevated, $color-neutral-100);
+    border: 1px solid var(--cream-color-border, $color-neutral-300);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
-    color: $color-neutral-500;
+    color: var(--cream-color-text-placeholder, $color-neutral-500);
     position: relative;
     overflow: hidden;
 
@@ -219,7 +243,7 @@
     }
 
     &.uploading {
-      border-color: $color-info;
+      border-color: var(--cream-color-info, $color-info);
 
       &::after {
         content: '';
@@ -227,19 +251,19 @@
         bottom: 0;
         left: 0;
         height: 2px;
-        background-color: $color-info;
+        background-color: var(--cream-color-info, $color-info);
         animation: preview-progress 2s infinite;
       }
     }
 
     &.success {
-      border-color: $color-success;
-      color: $color-success;
+      border-color: var(--cream-color-success, $color-success);
+      color: var(--cream-color-success, $color-success);
     }
 
     &.error {
-      border-color: $color-error;
-      color: $color-error;
+      border-color: var(--cream-color-error, $color-error);
+      color: var(--cream-color-error, $color-error);
     }
   }
 
