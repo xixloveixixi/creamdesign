@@ -4,16 +4,27 @@
 @use '../style/creamdesign' as *;
 
 // 菜单变量定义
-$menu-border-color: $color-border;
-$menu-shadow: 0 1px 6px rgba($color-neutral-900, 0.15);
+$menu-border-color: var(--cream-color-border, $color-border);
+$menu-bg: var(--cream-color-primary-bg, $color-primary-100);
+$menu-item-color: var(--cream-color-text-secondary, $color-text-secondary);
+$menu-item-hover-bg: color-mix(
+  in srgb,
+  var(--cream-color-primary, $color-primary-500) 10%,
+  transparent
+);
+$menu-container-shadow: var(--cream-box-shadow, 0 2px 8px rgba(0, 0, 0, 0.1));
+$menu-popup-shadow: var(
+  --cream-box-shadow,
+  0 1px 6px rgba($color-neutral-900, 0.15)
+);
 $menu-transition: all 0.3s ease;
 
 // 菜单项变量定义
 $menu-item-padding-x: 16px;
 $menu-item-padding-y: 12px;
 $menu-item-active-border-width: 2px;
-$menu-item-active-color: $color-primary-600;
-$menu-item-disabled-color: $color-disabled;
+$menu-item-active-color: var(--cream-color-primary, $color-primary-600);
+$menu-item-disabled-color: var(--cream-color-text-disabled, $color-disabled);
 
 // 基础菜单样式
 .menu {
@@ -22,15 +33,15 @@ $menu-item-disabled-color: $color-disabled;
   list-style: none;
   margin: 0;
   padding: 0;
-  background-color: $color-primary-100;
-  border-radius: 2px;
+  background-color: $menu-bg;
+  border-radius: var(--cream-border-radius, 2px);
   box-sizing: border-box;
 }
 
 // 横向菜单样式
 .menu-horizontal {
   border-bottom: 1px solid $menu-border-color;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: $menu-container-shadow;
   margin-bottom: 30px;
 }
 
@@ -59,7 +70,7 @@ $menu-item-disabled-color: $color-disabled;
 .menu-item a,
 .menu-item span {
   text-decoration: none;
-  color: $color-text-secondary;
+  color: $menu-item-color;
   transition: $menu-transition;
   display: inline-block;
   width: 100%;
@@ -69,7 +80,7 @@ $menu-item-disabled-color: $color-disabled;
 // 菜单项交互状态
 .menu-item:hover,
 .menu-item:focus {
-  background-color: rgba($color-primary-500, $opacity-hover);
+  background-color: $menu-item-hover-bg;
 }
 
 .menu-item:hover a,
@@ -93,7 +104,7 @@ $menu-item-disabled-color: $color-disabled;
 // 纵向菜单激活状态样式
 .menu-vertical .menu-item-active {
   border-left: $menu-item-active-border-width solid $menu-item-active-color;
-  background-color: rgba($color-primary-500, $opacity-hover);
+  background-color: $menu-item-hover-bg;
 }
 
 .menu-item-active a,
@@ -126,7 +137,7 @@ $menu-item-disabled-color: $color-disabled;
 .menu-vertical .menu-item:hover,
 .menu-vertical .menu-item:focus {
   border-left: $menu-item-active-border-width solid $menu-item-active-color;
-  background-color: rgba($color-primary-500, $opacity-hover);
+  background-color: $menu-item-hover-bg;
 }
 
 // 响应式设计
@@ -155,10 +166,10 @@ $menu-item-disabled-color: $color-disabled;
   position: absolute;
   top: 100%;
   left: 0;
-  background-color: $color-primary-100;
+  background-color: $menu-bg;
   border: 1px solid $menu-border-color;
-  border-radius: 2px;
-  box-shadow: $menu-shadow;
+  border-radius: var(--cream-border-radius, 2px);
+  box-shadow: $menu-popup-shadow;
   padding: 4px 0;
   margin: 0;
   list-style: none;
@@ -217,14 +228,14 @@ $menu-item-disabled-color: $color-disabled;
 
 .submenu .menu-item:hover,
 .submenu .menu-item:focus {
-  background-color: rgba($color-primary-500, $opacity-hover);
+  background-color: $menu-item-hover-bg;
   border-left: none;
 }
 
 .submenu .menu-item-active {
   border-left: none;
   border-bottom: none;
-  background-color: rgba($color-primary-500, $opacity-hover);
+  background-color: $menu-item-hover-bg;
 }
 
 // 横向子菜单中的激活项

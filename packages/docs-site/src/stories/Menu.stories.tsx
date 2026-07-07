@@ -1,5 +1,10 @@
 import React from 'react';
-import { Menu, MenuProps } from 'creamdesign-lib';
+import {
+  ConfigProvider,
+  enterpriseTheme,
+  Menu,
+  MenuProps,
+} from 'creamdesign-lib';
 import { MenuItem } from 'creamdesign-lib/Menu/MenuItems';
 import { SubMenu } from 'creamdesign-lib/Menu/SubMenu';
 import type { Meta, StoryObj } from '@storybook/react';
@@ -21,7 +26,11 @@ const menuMeta: Meta<MenuProps> = {
   decorators: [
     Story => (
       <div
-        style={{ margin: '20px', padding: '10px', border: '1px solid #ccc' }}
+        style={{
+          margin: '20px',
+          padding: '10px',
+          border: '1px solid var(--cream-color-border, #ccc)',
+        }}
       >
         <h3 style={{ marginBottom: '15px' }}>Menu组件示例</h3>
         <Story />
@@ -160,3 +169,41 @@ export const 垂直菜单带有子菜单: StoryObj<MenuProps> = {
   },
 };
 垂直菜单带有子菜单.storyName = '垂直菜单';
+
+export const 企业级主题: StoryObj<MenuProps> = {
+  render: args => (
+    <ConfigProvider theme={enterpriseTheme}>
+      <div style={{ display: 'grid', gap: 24 }}>
+        <Menu {...args}>
+          <MenuItem>工作台</MenuItem>
+          <SubMenu title="业务管理">
+            <MenuItem>客户列表</MenuItem>
+            <MenuItem>商机跟进</MenuItem>
+            <MenuItem>合同审批</MenuItem>
+          </SubMenu>
+          <SubMenu title="数据中心">
+            <MenuItem>经营看板</MenuItem>
+            <MenuItem>报表导出</MenuItem>
+          </SubMenu>
+          <MenuItem>系统设置</MenuItem>
+        </Menu>
+        <Menu mode="vertical" defaultIndex={1} style={{ width: 220 }}>
+          <MenuItem>概览</MenuItem>
+          <SubMenu title="组织架构">
+            <MenuItem>成员管理</MenuItem>
+            <MenuItem>角色权限</MenuItem>
+          </SubMenu>
+          <SubMenu title="审计日志">
+            <MenuItem>登录记录</MenuItem>
+            <MenuItem>操作记录</MenuItem>
+          </SubMenu>
+          <MenuItem disabled>高级设置</MenuItem>
+        </Menu>
+      </div>
+    </ConfigProvider>
+  ),
+  args: {
+    mode: 'horizontal',
+    defaultIndex: 0,
+  },
+};
