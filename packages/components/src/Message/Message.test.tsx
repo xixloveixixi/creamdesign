@@ -156,6 +156,15 @@ describe('Message', () => {
             colorSuccess: '#22c55e',
             colorSuccessBg: '#ecfdf3',
             colorSuccessBorder: '#86efac',
+            colorWarning: '#ca8a04',
+            colorWarningBg: '#fffbeb',
+            colorWarningBorder: '#fde68a',
+            colorError: '#dc2626',
+            colorErrorBg: '#fef2f2',
+            colorErrorBorder: '#fecaca',
+            colorInfo: '#2563eb',
+            colorInfoBg: '#eff6ff',
+            colorInfoBorder: '#bfdbfe',
           },
         }}
       >
@@ -179,5 +188,34 @@ describe('Message', () => {
         'body > div[style*="--cream-color-success-border"]'
       )
     ).toHaveStyle('--cream-color-success-border: #86efac');
+    expect(
+      document.querySelector('body > div[style*="--cream-color-warning"]')
+    ).toHaveStyle('--cream-color-warning: #ca8a04');
+    expect(
+      document.querySelector('body > div[style*="--cream-color-warning-bg"]')
+    ).toHaveStyle('--cream-color-warning-bg: #fffbeb');
+    expect(
+      document.querySelector(
+        'body > div[style*="--cream-color-warning-border"]'
+      )
+    ).toHaveStyle('--cream-color-warning-border: #fde68a');
+    expect(
+      document.querySelector('body > div[style*="--cream-color-error"]')
+    ).toHaveStyle('--cream-color-error: #dc2626');
+    expect(
+      document.querySelector('body > div[style*="--cream-color-error-bg"]')
+    ).toHaveStyle('--cream-color-error-bg: #fef2f2');
+    expect(
+      document.querySelector('body > div[style*="--cream-color-error-border"]')
+    ).toHaveStyle('--cream-color-error-border: #fecaca');
+    expect(
+      document.querySelector('body > div[style*="--cream-color-info"]')
+    ).toHaveStyle('--cream-color-info: #2563eb');
+    expect(
+      document.querySelector('body > div[style*="--cream-color-info-bg"]')
+    ).toHaveStyle('--cream-color-info-bg: #eff6ff');
+    expect(
+      document.querySelector('body > div[style*="--cream-color-info-border"]')
+    ).toHaveStyle('--cream-color-info-border: #bfdbfe');
   });
 });

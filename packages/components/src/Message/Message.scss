@@ -1,6 +1,27 @@
 @use '../style/creamdesign' as *;
 @use '../style/mixin' as *;
 
+$message-bg: var(--cream-color-bg-elevated, $color-neutral-50);
+$message-radius: var(--cream-border-radius, 8px);
+$message-shadow: var(
+  --cream-box-shadow,
+  0 4px 12px rgba($color-neutral-900, 0.15)
+);
+$message-success-bg: var(--cream-color-success-bg, rgba($color-success, 0.12));
+$message-success-border: var(
+  --cream-color-success-border,
+  rgba($color-success, 0.4)
+);
+$message-error-bg: var(--cream-color-error-bg, rgba($color-error, 0.12));
+$message-error-border: var(--cream-color-error-border, rgba($color-error, 0.4));
+$message-warning-bg: var(--cream-color-warning-bg, rgba($color-warning, 0.14));
+$message-warning-border: var(
+  --cream-color-warning-border,
+  rgba($color-warning, 0.42)
+);
+$message-info-bg: var(--cream-color-info-bg, rgba($color-info, 0.12));
+$message-info-border: var(--cream-color-info-border, rgba($color-info, 0.4));
+
 .cream-message {
   position: fixed;
   top: 16px;
@@ -50,15 +71,15 @@
     align-items: center;
     gap: 8px;
     padding: 12px 16px;
-    background: var(--cream-color-bg-elevated, $color-neutral-50);
-    border-radius: var(--cream-border-radius, 8px);
-    box-shadow: var(--cream-box-shadow, 0 4px 12px rgba(0, 0, 0, 0.15));
+    background: $message-bg;
+    border-radius: $message-radius;
+    box-shadow: $message-shadow;
     pointer-events: auto;
     animation: cream-message-fade-in 0.3s ease;
 
     &--success {
-      background: var(--cream-color-success-bg, #f6ffed);
-      border: 1px solid var(--cream-color-success-border, #b7eb8f);
+      background: $message-success-bg;
+      border: 1px solid $message-success-border;
 
       .cream-message__icon {
         color: var(--cream-color-success, $color-success);
@@ -66,8 +87,8 @@
     }
 
     &--error {
-      background: var(--cream-color-error-bg, #fff2f0);
-      border: 1px solid var(--cream-color-error-border, #ffccc7);
+      background: $message-error-bg;
+      border: 1px solid $message-error-border;
 
       .cream-message__icon {
         color: var(--cream-color-error, $color-error);
@@ -75,8 +96,8 @@
     }
 
     &--warning {
-      background: var(--cream-color-warning-bg, #fffbe6);
-      border: 1px solid var(--cream-color-warning-border, #ffe58f);
+      background: $message-warning-bg;
+      border: 1px solid $message-warning-border;
 
       .cream-message__icon {
         color: var(--cream-color-warning, $color-warning);
@@ -84,8 +105,8 @@
     }
 
     &--info {
-      background: var(--cream-color-info-bg, #e6f7ff);
-      border: 1px solid var(--cream-color-info-border, #91d5ff);
+      background: $message-info-bg;
+      border: 1px solid $message-info-border;
 
       .cream-message__icon {
         color: var(--cream-color-info, $color-info);
