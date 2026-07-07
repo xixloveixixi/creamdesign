@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/react';
 import { FormItem } from './FormItem';
-import { Form, FormRefType } from './Form';
+import { Form, FormInstance } from './Form';
 import Button from '../Button';
 import { ButtonType } from '../Button/Button';
 import { CustomRule } from './useStore';
@@ -51,7 +51,7 @@ const customRule: CustomRule[] = [
 ];
 // 基础表单示例：
 export const BasicForm = (args: any) => {
-  const ref = useRef<FormRefType>(null);
+  const ref = useRef<FormInstance>(null);
   return (
     <Form
       style={{ width: '400px' }}
@@ -163,7 +163,7 @@ export const BasicForm = (args: any) => {
   );
 };
 
-// 带必填字段的表单示例：
+// required 只控制视觉必填标记，校验仍由 rules 显式声明。
 export const RequiredForm = () => (
   <Form
     style={{ width: '400px' }}
@@ -185,6 +185,8 @@ export const RequiredForm = () => (
       trigger="onChange"
       getValueFormEvent={(e: any) => e.target.value}
       required
+      rules={[{ required: true, message: '请输入用户名' }]}
+      validateTrigger="onBlur"
     >
       <input type="text" />
     </FormItem>
@@ -195,6 +197,8 @@ export const RequiredForm = () => (
       trigger="onChange"
       getValueFormEvent={(e: any) => e.target.value}
       required
+      rules={[{ required: true, message: '请输入密码' }]}
+      validateTrigger="onBlur"
     >
       <input type="password" />
     </FormItem>
@@ -205,6 +209,8 @@ export const RequiredForm = () => (
       trigger="onChange"
       getValueFormEvent={(e: any) => e.target.value}
       required
+      rules={[{ required: true, message: '请输入邮箱' }]}
+      validateTrigger="onBlur"
     >
       <input type="email" />
     </FormItem>
@@ -216,6 +222,14 @@ export const RequiredForm = () => (
       valuePropsName="checked"
       trigger="onChange"
       getValueFormEvent={(e: any) => e.target.checked}
+      rules={[
+        {
+          type: 'boolean',
+          required: true,
+          transform: value => Boolean(value),
+          message: '请确认同意',
+        },
+      ]}
     >
       <input type="checkbox" />
       <a href="https://www.baidu.com" target="_blank" rel="noreferrer">
@@ -338,7 +352,7 @@ export const CustomWidthForm = () => (
 
 // 使用 ref 控制表单的示例：
 export const FormWithRef = () => {
-  const formRef = useRef<FormRefType>(null);
+  const formRef = useRef<FormInstance>(null);
   return (
     <Form
       style={{ width: '400px' }}

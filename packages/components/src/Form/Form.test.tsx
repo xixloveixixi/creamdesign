@@ -230,6 +230,42 @@ describe('testing Form component', () => {
     expect(submitButton).toBeInTheDocument();
   });
 
+  it('should pass className and style to form root', () => {
+    const { container } = render(
+      <Form className="custom-form" style={{ width: 320 }}>
+        <FormItem name="username" label="用户名">
+          <input type="text" />
+        </FormItem>
+      </Form>
+    );
+
+    const formElement = container.querySelector('form') as HTMLFormElement;
+    expect(formElement).toHaveClass('cream-form');
+    expect(formElement).toHaveClass('custom-form');
+    expect(formElement).toHaveStyle({ width: '320px' });
+  });
+
+  it('should apply custom FormItem label and control width variables', () => {
+    const { container } = render(
+      <Form>
+        <FormItem
+          name="username"
+          label="用户名"
+          labelWidth="40%"
+          controlWidth="60%"
+        >
+          <input type="text" />
+        </FormItem>
+      </Form>
+    );
+
+    const row = container.querySelector('.cream-row') as HTMLElement;
+    expect(row).toHaveStyle({
+      '--cream-form-label-width': '40%',
+      '--cream-form-control-width': '60%',
+    });
+  });
+
   it('submit form with invalid values should show the error message', async () => {
     const { getByText } = screen;
 
@@ -281,6 +317,22 @@ describe('testing Form component', () => {
 
     // 确保 onFinish 没有被调用
     expect(testProps.onFinish).not.toHaveBeenCalled();
+  });
+
+  it('should connect validation errors to the input with aria attributes', async () => {
+    fireEvent.change(usernameInput, { target: { value: '' } });
+    fireEvent.blur(usernameInput);
+
+    const errorMessage = await screen.findByText('请输入用户名');
+    expect(errorMessage).toHaveAttribute(
+      'id',
+      'cream-form-item-username-error'
+    );
+    expect(usernameInput).toHaveAttribute('aria-invalid', 'true');
+    expect(usernameInput).toHaveAttribute(
+      'aria-describedby',
+      'cream-form-item-username-error'
+    );
   });
 
   it('change single input to invalid values should trigger the validate', async () => {
@@ -337,5 +389,55 @@ describe('testing Form component', () => {
     await waitFor(() => {
       expect(testProps.onFinish).toHaveBeenCalled();
     });
+  });
+});
+
+describe('Form required prop boundary', () => {
+  it('should not treat required as a validation rule by itself', async () => {
+    const onFinish = jest.fn();
+    const onFinishFailed = jest.fn();
+    const { container } = render(
+      <Form onFinish={onFinish} onFinishFailed={onFinishFailed}>
+        <FormItem name="username" label="用户名" required>
+          <input type="text" />
+        </FormItem>
+        <button type="submit">提交</button>
+      </Form>
+    );
+
+    fireEvent.submit(container.querySelector('form')!);
+
+    await waitFor(() => {
+      expect(onFinish).toHaveBeenCalledWith({ username: '' });
+    });
+    expect(onFinishFailed).not.toHaveBeenCalled();
+  });
+
+  it('should fail validation when required rule is provided', async () => {
+    const onFinish = jest.fn();
+    const onFinishFailed = jest.fn();
+    const { container, getByLabelText, findByText } = render(
+      <Form onFinish={onFinish} onFinishFailed={onFinishFailed}>
+        <FormItem
+          name="username"
+          label="用户名"
+          required
+          rules={[{ required: true, message: '请输入用户名' }]}
+        >
+          <input type="text" />
+        </FormItem>
+        <button type="submit">提交</button>
+      </Form>
+    );
+
+    fireEvent.blur(getByLabelText('用户名'));
+    expect(await findByText('请输入用户名')).toBeInTheDocument();
+
+    fireEvent.submit(container.querySelector('form')!);
+
+    await waitFor(() => {
+      expect(onFinishFailed).toHaveBeenCalled();
+    });
+    expect(onFinish).not.toHaveBeenCalled();
   });
 });

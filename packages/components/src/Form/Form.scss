@@ -37,13 +37,13 @@
 
     // 表单标签样式
     .cream-form-item-label {
-      flex-basis: 30%;
+      flex-basis: var(--cream-form-label-width, 30%);
       text-align: right;
       padding-right: clamp(0.5rem, 1.5%, 1.25rem); // 响应式内边距
       font-size: clamp($font-size-sm * 0.9, 1.1vw, $font-size-base);
       line-height: 1.5;
 
-      > label.cream-form-item-required:before {
+      &.cream-form-item-required > label:before {
         display: inline-block;
         margin-right: 4px;
         color: var(--cream-color-error, $color-error);
@@ -56,11 +56,11 @@
 
     // 表单内容区域
     .cream-form-item {
-      flex-basis: 70%;
+      flex-basis: var(--cream-form-control-width, 70%);
       position: relative;
 
       // 错误状态
-      .cream-form-item-has-error.cream-form-item-control {
+      &.cream-form-item-has-error {
         .cream-input-inner {
           border: 1px solid var(--cream-color-error, $color-error);
 
@@ -170,14 +170,14 @@
 
       // 表单标签样式 - 平板端
       .cream-form-item-label {
-        flex-basis: 28%; // 稍微减小标签宽度
+        flex-basis: var(--cream-form-label-width, 28%); // 稍微减小标签宽度
         padding-right: clamp(0.75rem, 1.5%, 1rem);
         font-size: clamp($font-size-sm * 0.9, 1.2vw, $font-size-sm);
       }
 
       // 表单内容区域 - 平板端
       .cream-form-item {
-        flex-basis: 72%; // 稍微增加控件宽度
+        flex-basis: var(--cream-form-control-width, 72%); // 稍微增加控件宽度
       }
     }
 
@@ -204,13 +204,13 @@
 
       // 表单标签样式 - 桌面端
       .cream-form-item-label {
-        flex-basis: 30%;
+        flex-basis: var(--cream-form-label-width, 30%);
         padding-right: clamp(1rem, 1.5%, 1.25rem);
       }
 
       // 表单内容区域 - 桌面端
       .cream-form-item {
-        flex-basis: 70%;
+        flex-basis: var(--cream-form-control-width, 70%);
       }
     }
 

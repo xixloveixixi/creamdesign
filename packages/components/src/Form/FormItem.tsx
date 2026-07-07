@@ -1,5 +1,12 @@
 // 接收传入的组件，渲染到form-item中
-import { FC, ReactElement, ReactNode, useContext, useEffect } from 'react';
+import {
+  type CSSProperties,
+  FC,
+  ReactElement,
+  ReactNode,
+  useContext,
+  useEffect,
+} from 'react';
 import './Form.scss';
 import classNames from 'classnames';
 import { FormContext } from './Form';
@@ -37,6 +44,9 @@ export const FormItem: FC<FormItemProps> = props => {
     children,
     label,
     error,
+    labelWidth,
+    controlWidth,
+    required,
     className,
   } = props as SomeRequired<
     FormItemProps,
@@ -54,14 +64,7 @@ export const FormItem: FC<FormItemProps> = props => {
   // 构造标签样式
   const labelClassName = classNames(
     'cream-form-item-label',
-    label ? 'cream-form-item-required' : '',
-    className
-  );
-
-  // 构造控件样式
-  const controlClassName = classNames(
-    'cream-form-item',
-    error ? 'cream-form-item-has-error' : '',
+    required ? 'cream-form-item-required' : '',
     className
   );
   // 从context中获取dispatchFields和fields
@@ -72,6 +75,15 @@ export const FormItem: FC<FormItemProps> = props => {
   // 使用空字符串作为默认值，避免 uncontrolled -> controlled 警告
   const value = field?.value ?? '';
   const errors = field?.errors ?? [];
+  const currentError = errors[0]?.message || error;
+  const hasError = Boolean(currentError);
+  const errorId = `cream-form-item-${name}-error`;
+  // 构造控件样式
+  const controlClassName = classNames(
+    'cream-form-item',
+    hasError ? 'cream-form-item-has-error' : '',
+    className
+  );
   const onValueUpdate = (e: any) => {
     const value = getValueFormEvent!(e);
     // console.log('newValue', value);
@@ -125,10 +137,19 @@ export const FormItem: FC<FormItemProps> = props => {
   const filteredPropsList = Object.fromEntries(
     Object.entries(propsList).filter(([_, value]) => value !== undefined)
   );
+  const describedBy = [child.props['aria-describedby'], hasError && errorId]
+    .filter(Boolean)
+    .join(' ');
   const clonedChild = React.cloneElement(child, {
     ...child.props,
     ...filteredPropsList,
     id: name,
+    ...(hasError
+      ? {
+          'aria-invalid': true,
+          'aria-describedby': describedBy,
+        }
+      : {}),
   });
   // 在挂载的时候挂载一次form-item
   useEffect(() => {
@@ -161,8 +182,19 @@ export const FormItem: FC<FormItemProps> = props => {
     // 如果 initialValues 在挂载时已经传入，应该能正常工作
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const rowStyle =
+    labelWidth || controlWidth
+      ? ({
+          ...(labelWidth ? { '--cream-form-label-width': labelWidth } : {}),
+          ...(controlWidth
+            ? { '--cream-form-control-width': controlWidth }
+            : {}),
+        } as CSSProperties)
+      : undefined;
+
   return (
-    <div className={rowClassName}>
+    <div className={rowClassName} style={rowStyle}>
       {label && (
         <div className={labelClassName}>
           <label htmlFor={name}>{label}</label>
@@ -170,10 +202,10 @@ export const FormItem: FC<FormItemProps> = props => {
       )}
       <div className={controlClassName}>
         <div className="cream-input-wrapper">{clonedChild}</div>
-        {errors.length > 0 ? (
-          <div className="cream-form-item-explain">{errors[0].message}</div>
-        ) : (
-          error && <div className="cream-form-item-explain">{error}</div>
+        {currentError && (
+          <div id={errorId} className="cream-form-item-explain">
+            {currentError}
+          </div>
         )}
       </div>
     </div>

@@ -1,11 +1,17 @@
 // 主要渲染html原生的表单
 
-import { createContext, ReactNode, useImperativeHandle, useRef } from 'react';
+import {
+  createContext,
+  ReactNode,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 import './Form.scss';
 import useStore, { FormState } from './useStore';
 import React from 'react';
 import { ValidateError } from 'async-validator';
-import { forwardRef } from 'react';
+import classNames from 'classnames';
 export interface FormProps {
   name?: string;
   children?: ReactNode | ReactProps;
@@ -18,10 +24,11 @@ export interface FormProps {
     errors: Record<string, ValidateError[]>
   ) => void;
 }
-export type FormRefType = Omit<
+export type FormInstance = Omit<
   ReturnType<typeof useStore>,
   'form' | 'dispatchFields' | 'fields'
 >;
+export type FormRefType = FormInstance;
 export type ReactProps = (formProps: FormState) => ReactNode;
 // 这是ts的一个高级写法，可以获取useStore的返回值类型
 // 而且只获取dispatchFields这个属性
@@ -36,8 +43,7 @@ export const FormContext = createContext<IFormContext>({
   validateField: async (name: string) => {},
   initialValues: {},
 });
-// 注意这里的类型要使用泛型来定义，因为ref是React.RefObject<HTMLFormElement>类型
-export const Form = forwardRef<FormRefType, FormProps>((props, ref) => {
+export const Form = forwardRef<FormInstance, FormProps>((props, ref) => {
   const {
     name = 'form',
     children,
@@ -92,9 +98,11 @@ export const Form = forwardRef<FormRefType, FormProps>((props, ref) => {
   } else {
     childrenNode = children;
   }
+  const formClassName = classNames('cream-form', className);
+
   return (
     <form
-      className="cream-form"
+      className={formClassName}
       style={style}
       onSubmit={onFormSubmit}
       ref={formRef}

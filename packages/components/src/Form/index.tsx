@@ -691,12 +691,12 @@
 // 扩展建议：参考antd API继续完善组件功能
 // 后续任务：补充单元测试和不同场景的stories案例
 // 开发心得：复杂组件需要良好的前期设计和状态管理方案
-import { Form, FormProps, FormRefType } from './Form';
+import { Form, FormProps, FormInstance, FormRefType } from './Form';
 import { FormItem, FormItemProps } from './FormItem';
 import { ForwardRefExoticComponent, RefAttributes } from 'react';
 
 export type FormComponent = ForwardRefExoticComponent<
-  FormProps & RefAttributes<FormRefType>
+  FormProps & RefAttributes<FormInstance>
 > & {
   FormItem: typeof FormItem;
 };
@@ -705,3 +705,4 @@ const TransForm = Form as unknown as FormComponent;
 TransForm.FormItem = FormItem;
 
 export default TransForm;
+export type { FormProps, FormInstance, FormRefType, FormItemProps };

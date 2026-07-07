@@ -42,7 +42,7 @@ export type {
 
 // Form 组件
 export { default as Form } from './Form';
-export type { FormProps, FormRefType } from './Form/Form';
+export type { FormProps, FormInstance, FormRefType } from './Form/Form';
 export type { FormItemProps } from './Form/FormItem';
 
 // Input 组件
