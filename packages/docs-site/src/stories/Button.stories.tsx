@@ -1,4 +1,10 @@
-import { Button, ButtonSize, ButtonType } from 'creamdesign-lib';
+import {
+  Button,
+  ButtonSize,
+  ButtonType,
+  ConfigProvider,
+  enterpriseTheme,
+} from 'creamdesign-lib';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ButtonProps } from 'creamdesign-lib';
 
@@ -96,3 +102,43 @@ export const Success: StoryObj<typeof Button> = {
   ),
 };
 Success.storyName = 'Success';
+
+export const EnterpriseThemeButtons: StoryObj<typeof Button> = {
+  render: () => (
+    <ConfigProvider
+      theme={{
+        ...enterpriseTheme,
+        components: {
+          Button: {
+            colorPrimary: '#0f766e',
+            colorPrimaryHover: '#0d9488',
+            colorPrimaryActive: '#115e59',
+            borderRadius: 4,
+          },
+        },
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 12,
+          maxWidth: 560,
+        }}
+      >
+        <Button btnType={ButtonType.Primary}>Primary</Button>
+        <Button btnType={ButtonType.Secondary}>Secondary</Button>
+        <Button btnType={ButtonType.Outline}>Outline</Button>
+        <Button btnType={ButtonType.Ghost}>Ghost</Button>
+        <Button btnType={ButtonType.Text}>Text</Button>
+        <Button btnType={ButtonType.Success}>Success</Button>
+        <Button btnType={ButtonType.Warning}>Warning</Button>
+        <Button btnType={ButtonType.Info}>Info</Button>
+        <Button btnType={ButtonType.Danger}>Danger</Button>
+        <Button disabled>Disabled</Button>
+        <Button loading>Loading</Button>
+      </div>
+    </ConfigProvider>
+  ),
+};
+EnterpriseThemeButtons.storyName = '企业级主题';

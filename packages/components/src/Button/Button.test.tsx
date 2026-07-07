@@ -3,6 +3,7 @@ import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Button from './index';
 import { ButtonType, ButtonSize } from './Button';
+import { ConfigProvider } from '../ConfigProvider';
 
 describe('Button Component', () => {
   // 模拟Ant Design风格的图标组件
@@ -183,5 +184,58 @@ describe('Button Component', () => {
     );
     const button = wrapper.getByText('Test');
     expect(button).toHaveAttribute('aria-label', 'Accessibility Test');
+  });
+
+  test('should receive Button and semantic theme variables from ConfigProvider', () => {
+    const { container } = render(
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: '#2563eb',
+            colorPrimaryBg: '#eff6ff',
+            colorPrimaryHover: '#1d4ed8',
+            colorPrimaryActive: '#1e40af',
+            colorText: '#111827',
+            colorTextDisabled: '#9ca3af',
+            colorBorder: '#d1d5db',
+            colorBgContainer: '#ffffff',
+            colorBgDisabled: '#f3f4f6',
+            colorSuccess: '#16a34a',
+            colorWarning: '#ca8a04',
+            colorError: '#dc2626',
+            colorInfo: '#2563eb',
+            controlFocusShadow: '0 0 0 3px rgba(37, 99, 235, 0.18)',
+          },
+          components: {
+            Button: {
+              colorPrimary: '#0f766e',
+              colorPrimaryHover: '#0d9488',
+              colorPrimaryActive: '#115e59',
+              borderRadius: 4,
+            },
+          },
+        }}
+      >
+        <Button btnType={ButtonType.Success}>通过</Button>
+      </ConfigProvider>
+    );
+
+    const provider = container.querySelector('.cream-config-provider');
+
+    expect(provider).toHaveStyle('--cream-button-color-primary: #0f766e');
+    expect(provider).toHaveStyle('--cream-button-color-primary-hover: #0d9488');
+    expect(provider).toHaveStyle(
+      '--cream-button-color-primary-active: #115e59'
+    );
+    expect(provider).toHaveStyle('--cream-button-border-radius: 4px');
+    expect(provider).toHaveStyle('--cream-color-success: #16a34a');
+    expect(provider).toHaveStyle('--cream-color-warning: #ca8a04');
+    expect(provider).toHaveStyle('--cream-color-error: #dc2626');
+    expect(provider).toHaveStyle('--cream-color-info: #2563eb');
+    expect(provider).toHaveStyle('--cream-color-bg-disabled: #f3f4f6');
+    expect(provider).toHaveStyle('--cream-color-text-disabled: #9ca3af');
+    expect(provider).toHaveStyle(
+      '--cream-control-focus-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18)'
+    );
   });
 });

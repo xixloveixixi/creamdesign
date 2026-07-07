@@ -126,47 +126,52 @@ TagToken;
 
 建议迁移顺序：
 
-1. `Tag`
+1. `Button`
+   - 已保留 `ButtonToken` 只覆盖 primary 色和圆角。
+   - danger/warning/info/success、ghost/text/outline、disabled、focus 已迁移为复用现有 global/semantic token。
+   - 暂不新增 `ButtonToken` 字段，除非后续出现稳定的按钮专属覆盖需求。
+
+2. `Tag`
    - 复用状态色和背景/边框语义 token。
 
-2. `Progress`
+3. `Progress`
    - 复用 success/warning/error/info 语义色。
 
-3. `Card`
+4. `Card`
    - 已迁移为复用背景、边框、文本、primary、阴影、圆角、disabled/elevated 背景等现有 global/semantic token。
    - 未新增 `CardToken`。
    - 只有卡片头部、操作区、骨架屏等视觉语义出现稳定差异化覆盖需求后，再考虑 `CardToken`。
 
-4. `Table`
+5. `Table`
    - 已完成 `TableToken` 第一版。
    - 第一版只覆盖表格视觉表面，不修改排序、分页、虚拟滚动、行选择等行为逻辑。
    - `Table.scss` 已迁移为优先读取 `--cream-table-*` CSS Variables，保留原 SCSS 色值作为 fallback。
    - `enterpriseTheme` 已提供中后台风格的 Table token，用于验证主题切换。
 
-5. `Form`
+6. `Form`
    - 已迁移为复用背景、圆角、error 等现有 global/semantic token。
    - 未新增 `FormToken`。
    - 只有布局间距或 label 行为稳定后，再考虑 `FormToken`。
 
-6. `Upload`
+7. `Upload`
    - 已迁移为复用背景、边框、文本、primary、success、error、info 等现有 global/semantic token。
    - 未新增 `UploadToken`。
    - 只有拖拽区、文件项等视觉语义出现稳定差异化覆盖需求后，再考虑 `UploadToken`。
 
-7. `Menu`
+8. `Menu`
    - 已迁移为复用背景、边框、文本、primary、disabled、圆角、阴影等现有 global/semantic token。
    - 未新增 `MenuToken`。
    - 只有导航容器、菜单项、子菜单浮层等视觉语义出现稳定差异化覆盖需求后，再考虑 `MenuToken`。
 
-8. `Pagination`
+9. `Pagination`
    - 已迁移为复用文本、边框、背景、primary、disabled、圆角、focus shadow 等现有 global/semantic token。
    - 未新增 `PaginationToken`。
    - 只有页码项、页大小选择器等视觉语义出现稳定差异化覆盖需求后，再考虑 `PaginationToken`。
 
-9. `Timeline`
-   - 已迁移为复用文本、边框、背景、primary、success、disabled、focus shadow 等现有 global/semantic token。
-   - 未新增 `TimelineToken`。
-   - 只有节点、连接线、内容卡片等视觉语义出现稳定差异化覆盖需求后，再考虑 `TimelineToken`。
+10. `Timeline`
+    - 已迁移为复用文本、边框、背景、primary、success、disabled、focus shadow 等现有 global/semantic token。
+    - 未新增 `TimelineToken`。
+    - 只有节点、连接线、内容卡片等视觉语义出现稳定差异化覆盖需求后，再考虑 `TimelineToken`。
 
 ## TableToken 第一版记录
 

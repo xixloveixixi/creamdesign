@@ -2,6 +2,36 @@
 @use '../style/creamdesign' as *; // 颜色和变量
 @use '../style/mixin' as *; // Mixins
 
+$button-primary: var(--cream-button-color-primary, $color-primary-600);
+$button-primary-bg: var(--cream-color-primary-bg, $color-primary-100);
+$button-primary-hover: var(
+  --cream-button-color-primary-hover,
+  $color-primary-700
+);
+$button-primary-active: var(
+  --cream-button-color-primary-active,
+  $color-primary-800
+);
+$button-text: var(--cream-color-text, $color-text-primary);
+$button-text-disabled: var(--cream-color-text-disabled, $color-disabled);
+$button-border: var(--cream-color-border, $color-border);
+$button-bg-disabled: var(--cream-color-bg-disabled, $color-neutral-100);
+$button-on-color: var(--cream-color-bg-container, $color-neutral-50);
+$button-success: var(--cream-color-success, $color-success);
+$button-warning: var(--cream-color-warning, $color-warning);
+$button-error: var(--cream-color-error, $color-error);
+$button-info: var(--cream-color-info, $color-info);
+$button-success-hover: color-mix(in srgb, $button-success 88%, black);
+$button-success-active: color-mix(in srgb, $button-success 76%, black);
+$button-warning-hover: color-mix(in srgb, $button-warning 88%, black);
+$button-warning-active: color-mix(in srgb, $button-warning 76%, black);
+$button-error-hover: color-mix(in srgb, $button-error 88%, black);
+$button-error-active: color-mix(in srgb, $button-error 76%, black);
+$button-info-hover: color-mix(in srgb, $button-info 88%, black);
+$button-info-active: color-mix(in srgb, $button-info 76%, black);
+$button-subtle-hover: color-mix(in srgb, $button-primary 10%, transparent);
+$button-subtle-active: color-mix(in srgb, $button-primary 16%, transparent);
+
 // ===== 组件样式示例 =====
 // 按钮样式
 .btn {
@@ -26,96 +56,96 @@
 // 按钮类型样式
 .btn-primary {
   @include btn-variant(
-    var(--cream-button-color-primary, $color-primary-600),
-    white,
-    var(--cream-button-color-primary-hover, $color-primary-700),
-    var(--cream-button-color-primary-active, $color-primary-800)
+    $button-primary,
+    $button-on-color,
+    $button-primary-hover,
+    $button-primary-active
   );
 }
 
 .btn-secondary {
   @include btn-variant(
-    $color-primary-400,
-    white,
-    $color-primary-500,
-    $color-primary-600
+    $button-primary-hover,
+    $button-on-color,
+    $button-primary,
+    $button-primary-active
   );
 }
 
 .btn-outline {
   @include btn-variant(
     transparent,
-    var(--cream-color-primary-active, $color-primary-900),
-    $color-primary-100,
-    $color-primary-200,
-    var(--cream-button-color-primary, $color-primary-600)
+    $button-primary-active,
+    $button-primary-bg,
+    $button-subtle-active,
+    $button-primary
   );
 }
 
 // 危险按钮样式
 .btn-danger {
   @include btn-variant(
-    $color-error,
-    white,
-    darken-color($color-error, 10%),
-    darken-color($color-error, 20%)
+    $button-error,
+    $button-on-color,
+    $button-error-hover,
+    $button-error-active
   );
 }
 
 // 警告按钮样式
 .btn-warning {
   @include btn-variant(
-    $color-warning,
-    white,
-    darken-color($color-warning, 10%),
-    darken-color($color-warning, 20%)
+    $button-warning,
+    $button-on-color,
+    $button-warning-hover,
+    $button-warning-active
   );
 }
 
 // 信息按钮样式
 .btn-info {
   @include btn-variant(
-    $color-info,
-    white,
-    darken-color($color-info, 10%),
-    darken-color($color-info, 20%)
+    $button-info,
+    $button-on-color,
+    $button-info-hover,
+    $button-info-active
   );
 }
 
 // 成功按钮样式
 .btn-success {
   @include btn-variant(
-    $color-success,
-    white,
-    darken-color($color-success, 10%),
-    darken-color($color-success, 20%)
+    $button-success,
+    $button-on-color,
+    $button-success-hover,
+    $button-success-active
   );
 }
 
 .btn-ghost {
   @include btn-variant(
     transparent,
-    $color-text-primary,
-    $color-primary-100,
-    $color-primary-200
+    $button-text,
+    $button-primary-bg,
+    $button-subtle-active
   );
 
   &:hover:not(:disabled) {
-    color: $color-primary-900;
+    color: $button-primary-active;
   }
 }
 
 .btn-text {
   @include btn-variant(
     transparent,
-    var(--cream-button-color-primary, $color-primary-600),
-    $color-primary-100,
-    $color-primary-100
+    $button-primary,
+    $button-primary-bg,
+    $button-subtle-hover
   );
   font-weight: 400;
 
   &:hover:not(:disabled) {
-    color: var(--cream-button-color-primary-hover, $color-primary-700);
+    color: $button-primary-hover;
   }
 }
 
@@ -136,6 +166,12 @@
 .btn-disabled,
 button[disabled] {
   @include btn-disabled();
+
+  &:not(.btn-text):not(.btn-ghost) {
+    background-color: $button-bg-disabled;
+    border-color: $button-border;
+    color: $button-text-disabled;
+  }
 }
 
 // 加载状态
@@ -170,13 +206,10 @@ button[disabled] {
 }
 
 .btn:focus-visible {
-  box-shadow: 0 0 0 3px rgba($color-primary-500, 0.2);
-  box-shadow: 0 0 0 3px
-    color-mix(
-      in srgb,
-      var(--cream-button-color-primary, $color-primary-500) 20%,
-      transparent
-    );
+  box-shadow: var(
+    --cream-control-focus-shadow,
+    0 0 0 3px rgba($color-primary-500, 0.2)
+  );
 }
 
 // 响应式设计
