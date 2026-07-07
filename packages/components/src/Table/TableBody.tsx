@@ -19,6 +19,8 @@ const TableBody = memo(() => {
   const rowSelection = context?.rowSelection;
   const isRowSelected = context?.isRowSelected;
   const toggleRowSelection = context?.toggleRowSelection;
+  const getRowKey = context?.getRowKey;
+  const emptyText = context?.emptyText;
 
   const isRowSelectionEnabled = !!rowSelection;
   const selectionType = rowSelection?.type || 'checkbox';
@@ -129,13 +131,27 @@ const TableBody = memo(() => {
     return null;
   }
 
+  const colSpan = isRowSelectionEnabled ? columns.length + 1 : columns.length;
+
+  if (paginatedData.length === 0) {
+    return (
+      <tbody>
+        <tr className="cream-table-empty-row">
+          <td className="cream-table-empty-cell" colSpan={colSpan}>
+            {emptyText}
+          </td>
+        </tr>
+      </tbody>
+    );
+  }
+
   return (
     <tbody>
       {paginatedData.map((item, rowIndex) => {
         const selected = isRowSelected?.(item) || false;
         return (
           <tr
-            key={item.key || rowIndex}
+            key={getRowKey?.(item) ?? rowIndex}
             className={selected ? 'selected' : undefined}
           >
             {renderSelectionCell(item)}

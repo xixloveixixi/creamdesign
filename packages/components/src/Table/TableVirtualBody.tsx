@@ -38,6 +38,8 @@ const TableVirtualBody = () => {
   const rowSelection = context?.rowSelection;
   const isRowSelected = context?.isRowSelected;
   const toggleRowSelection = context?.toggleRowSelection;
+  const getRowKey = context?.getRowKey;
+  const emptyText = context?.emptyText;
 
   const isRowSelectionEnabled = !!rowSelection;
   const selectionType = rowSelection?.type || 'checkbox';
@@ -208,9 +210,9 @@ const TableVirtualBody = () => {
   if (!paginatedData || paginatedData.length === 0) {
     return (
       <tbody>
-        <tr>
-          <td colSpan={colSpan} style={{ textAlign: 'center' }}>
-            暂无数据
+        <tr className="cream-table-empty-row">
+          <td className="cream-table-empty-cell" colSpan={colSpan}>
+            {emptyText}
           </td>
         </tr>
       </tbody>
@@ -267,7 +269,7 @@ const TableVirtualBody = () => {
 
                     return (
                       <tr
-                        key={item.key || actualIndex}
+                        key={getRowKey?.(item) ?? actualIndex}
                         ref={node => measureElement(node, actualIndex)}
                         data-index={actualIndex}
                         className={selected ? 'selected' : undefined}

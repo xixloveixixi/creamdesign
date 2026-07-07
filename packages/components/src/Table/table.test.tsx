@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Table from './index';
-import { ColumnType } from './TableContainer';
+import { ColumnType } from './index';
 
 // ==================== 全局 Mock ====================
 // jsdom 不支持 ResizeObserver，需要 Mock
@@ -71,6 +71,21 @@ describe('Table - 基础渲染', () => {
     ).not.toBeInTheDocument();
   });
 
+  test('透传 className 和 style 到根容器', () => {
+    const { container } = render(
+      <Table
+        columns={columns}
+        dataSource={testData}
+        className="custom-table"
+        style={{ maxWidth: 640 }}
+        pagination={false}
+      />
+    );
+    const tableContainer = container.querySelector('.cream-table-container');
+    expect(tableContainer).toHaveClass('custom-table');
+    expect(tableContainer).toHaveStyle({ maxWidth: '640px' });
+  });
+
   test('默认启用分页，渲染表尾', () => {
     const { container } = render(
       <Table columns={columns} dataSource={testData} />
@@ -78,12 +93,28 @@ describe('Table - 基础渲染', () => {
     expect(container.querySelector('.cream-table-foot')).toBeInTheDocument();
   });
 
-  test('无数据时 tbody 为空', () => {
-    const { container } = render(
+  test('无数据时展示默认空态', () => {
+    const { container, getByText } = render(
       <Table columns={columns} dataSource={[]} pagination={false} />
     );
-    const tbody = container.querySelector('tbody');
-    expect(tbody?.children.length).toBe(0);
+    expect(getByText('暂无数据')).toBeInTheDocument();
+    expect(container.querySelector('.cream-table-empty')).toBeInTheDocument();
+    expect(container.querySelector('.cream-table-empty-cell')).toHaveAttribute(
+      'colspan',
+      '3'
+    );
+  });
+
+  test('支持自定义 emptyText', () => {
+    const { getByText } = render(
+      <Table
+        columns={columns}
+        dataSource={[]}
+        emptyText={<span>暂无客户记录</span>}
+        pagination={false}
+      />
+    );
+    expect(getByText('暂无客户记录')).toBeInTheDocument();
   });
 });
 
@@ -392,6 +423,75 @@ describe('Table - 行选择（checkbox）', () => {
     expect(rows[0]).not.toHaveClass('selected');
     expect(rows[1]).toHaveClass('selected'); // key='2'
     expect(rows[2]).not.toHaveClass('selected');
+  });
+
+  test('rowKey 函数用于行选择和回调数据匹配', async () => {
+    interface AccountData {
+      id: number;
+      name: string;
+      age: number;
+      address: string;
+    }
+
+    const accountData: AccountData[] = [
+      { id: 101, name: 'Alice', age: 30, address: 'New York' },
+      { id: 102, name: 'Bob', age: 25, address: 'London' },
+    ];
+    const accountColumns: ColumnType<AccountData>[] = [
+      { key: 'name', title: 'Name', dataIndex: 'name' },
+    ];
+    const onChange = jest.fn();
+
+    const { container } = render(
+      <Table
+        columns={accountColumns}
+        dataSource={accountData}
+        pagination={false}
+        rowKey={record => record.id}
+        rowSelection={{ type: 'checkbox', onChange }}
+      />
+    );
+
+    const firstRowSelection = container.querySelector(
+      'tbody .cream-table-selection-column'
+    ) as HTMLElement;
+    fireEvent.click(firstRowSelection);
+
+    await waitFor(() => {
+      expect(onChange).toHaveBeenCalledWith([101], [accountData[0]]);
+    });
+  });
+
+  test('rowKey 字段支持无 key 数据的受控选中', () => {
+    interface AccountData {
+      id: number;
+      name: string;
+    }
+
+    const accountData: AccountData[] = [
+      { id: 101, name: 'Alice' },
+      { id: 102, name: 'Bob' },
+    ];
+    const accountColumns: ColumnType<AccountData>[] = [
+      { key: 'name', title: 'Name', dataIndex: 'name' },
+    ];
+
+    const { container } = render(
+      <Table
+        columns={accountColumns}
+        dataSource={accountData}
+        pagination={false}
+        rowKey="id"
+        rowSelection={{
+          type: 'checkbox',
+          selectedRowKeys: [102],
+        }}
+      />
+    );
+
+    const rows = container.querySelectorAll('tbody tr');
+    expect(rows[0]).not.toHaveClass('selected');
+    expect(rows[1]).toHaveClass('selected');
   });
 
   test('getCheckboxProps disabled 时禁用选择', async () => {

@@ -1,11 +1,12 @@
 // table用例展示
 
 import { Meta } from '@storybook/react';
-import Table, { TableProps } from './TableContainer';
+import Table, { TableProps } from './index';
 import Button, { ButtonType, ButtonSize } from '../Button/Button';
 import React, { useState } from 'react';
+import { ConfigProvider, enterpriseTheme } from '../ConfigProvider';
 const meta: Meta<typeof Table> = {
-  title: 'Table组件',
+  title: 'Components/Table',
   component: Table,
 };
 export default meta;
@@ -155,6 +156,75 @@ export const BasicTable = () => {
       }}
     >
       <Table<DataType> columns={columns} dataSource={data} />
+    </div>
+  );
+};
+
+export const RowKeyTable = () => {
+  interface AccountData {
+    id: number;
+    customer: string;
+    owner: string;
+    status: string;
+  }
+
+  const accountData: AccountData[] = [
+    { id: 1001, customer: 'Acme Corp', owner: 'Alice', status: 'Active' },
+    { id: 1002, customer: 'Northwind', owner: 'Bob', status: 'Pending' },
+    { id: 1003, customer: 'Globex', owner: 'Charlie', status: 'Paused' },
+  ];
+
+  const accountColumns: TableProps<AccountData>['columns'] = [
+    { title: '客户', dataIndex: 'customer', key: 'customer' },
+    { title: '负责人', dataIndex: 'owner', key: 'owner' },
+    { title: '状态', dataIndex: 'status', key: 'status' },
+  ];
+
+  return (
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '960px',
+        height: '360px',
+        padding: '20px',
+      }}
+    >
+      <Table<AccountData>
+        columns={accountColumns}
+        dataSource={accountData}
+        rowKey="id"
+        pagination={false}
+        rowSelection={{
+          type: 'checkbox',
+          defaultSelectedRowKeys: [1002],
+        }}
+      />
+    </div>
+  );
+};
+
+export const EmptyTable = () => {
+  const emptyColumns: TableProps<DataType>['columns'] = [
+    { title: 'Name', dataIndex: 'name', key: 'name' },
+    { title: 'Age', dataIndex: 'age', key: 'age' },
+    { title: 'Address', dataIndex: 'address', key: 'address' },
+  ];
+
+  return (
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '960px',
+        height: '320px',
+        padding: '20px',
+      }}
+    >
+      <Table<DataType>
+        columns={emptyColumns}
+        dataSource={[]}
+        emptyText="暂无符合条件的客户"
+        pagination={false}
+      />
     </div>
   );
 };
@@ -373,5 +443,47 @@ export const TableWithSelectionAndVirtual = () => {
         }}
       />
     </div>
+  );
+};
+
+export const EnterpriseThemeTable = () => {
+  const enterpriseColumns: TableProps<DataType>['columns'] = [
+    {
+      title: '姓名',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '年龄',
+      dataIndex: 'age',
+      key: 'age',
+      align: 'center',
+    },
+    {
+      title: '地址',
+      dataIndex: 'address',
+      key: 'address',
+    },
+  ];
+
+  return (
+    <ConfigProvider theme={enterpriseTheme}>
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '1200px',
+          height: '520px',
+          padding: '20px',
+        }}
+      >
+        <Table<DataType>
+          columns={enterpriseColumns}
+          dataSource={data.slice(0, 12)}
+          className="enterprise-table-example"
+          pagination={{ pageSize: 6 }}
+          rowSelection={{ type: 'checkbox' }}
+        />
+      </div>
+    </ConfigProvider>
   );
 };

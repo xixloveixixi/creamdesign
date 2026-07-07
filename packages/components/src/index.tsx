@@ -38,7 +38,8 @@ export type {
   PaginationConfig,
   VirtualScrollConfig,
   RowSelectionConfig,
-} from './Table/TableContainer';
+  TableRowKey,
+} from './Table';
 
 // Form 组件
 export { default as Form } from './Form';

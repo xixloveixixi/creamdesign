@@ -313,25 +313,20 @@
 
 // ===== 空状态 =====
 .cream-table-empty {
-  tbody {
-    tr:only-child td {
-      text-align: center;
-      padding: 3rem;
-      color: $color-text-tertiary;
-      font-size: $font-size-lg;
-      border: none;
-
-      .empty-icon {
-        font-size: 3rem;
-        color: $color-primary-300;
-        margin-bottom: 1rem;
-        display: block;
-      }
-
-      .empty-text {
-        font-weight: $font-weight-base;
-        color: $color-text-secondary;
-      }
+  .cream-table-empty-row {
+    &:hover {
+      background-color: var(--cream-table-row-bg, $color-background) !important;
+      box-shadow: none;
     }
+  }
+
+  .cream-table-empty-cell {
+    text-align: center;
+    padding: 3rem;
+    color: $color-text-tertiary !important;
+    font-size: $font-size-base;
+    border: none;
+    white-space: normal;
+    max-width: none;
   }
 }

@@ -88,7 +88,7 @@ exports[`Table - 快照 空数据表格快照 1`] = `
   class="cream-table-container"
 >
   <table
-    class="cream-table"
+    class="cream-table cream-table-empty"
   >
     <thead>
       <tr>
@@ -109,7 +109,18 @@ exports[`Table - 快照 空数据表格快照 1`] = `
         </th>
       </tr>
     </thead>
-    <tbody />
+    <tbody>
+      <tr
+        class="cream-table-empty-row"
+      >
+        <td
+          class="cream-table-empty-cell"
+          colspan="3"
+        >
+          暂无数据
+        </td>
+      </tr>
+    </tbody>
   </table>
 </div>
 `;

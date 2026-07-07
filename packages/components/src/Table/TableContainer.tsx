@@ -6,11 +6,13 @@ import {
   useLayoutEffect,
   useCallback,
 } from 'react';
+import classNames from 'classnames';
 import './Table.scss';
 import { TableContext } from './TableContext';
 import type {
   TableContextType,
   TableProps,
+  TableRowKey,
   VirtualScrollConfig,
 } from './TableContext';
 import TableHeader from './TableHeader';
@@ -25,13 +27,26 @@ export type {
   RowSelectionConfig,
   TableContextType,
   TableProps,
+  TableRowKey,
   VirtualScrollConfig,
 } from './TableContext';
+
+const DEFAULT_EMPTY_TEXT = '暂无数据';
 
 const TableContainer = <T extends Record<string, any> = any>(
   props: TableProps<T>
 ) => {
-  const { columns, dataSource, pagination, virtual, rowSelection } = props;
+  const {
+    columns,
+    dataSource,
+    className,
+    style,
+    rowKey = 'key' as TableRowKey<T>,
+    emptyText = DEFAULT_EMPTY_TEXT,
+    pagination,
+    virtual,
+    rowSelection,
+  } = props;
 
   const [tableData, setTableData] = useState<T[]>(dataSource ?? []);
   const [paginatedData, setPaginatedData] = useState<T[]>(dataSource ?? []);
@@ -136,6 +151,16 @@ const TableContainer = <T extends Record<string, any> = any>(
   // 计算 total
   const total = tableData.length;
 
+  const getRowKey = useCallback(
+    (record: T): string | number => {
+      if (typeof rowKey === 'function') {
+        return rowKey(record);
+      }
+      return record[rowKey] as string | number;
+    },
+    [rowKey]
+  );
+
   // ==================== 行选择相关逻辑 ====================
   const isRowSelectionEnabled = !!rowSelection;
   const selectionType = rowSelection?.type || 'checkbox';
@@ -158,7 +183,7 @@ const TableContainer = <T extends Record<string, any> = any>(
 
       // 获取选中的行数据
       const selectedRows = tableData.filter(item => {
-        const key = (item as any).key;
+        const key = getRowKey(item);
         return keys.includes(key);
       });
 
@@ -167,22 +192,22 @@ const TableContainer = <T extends Record<string, any> = any>(
         rowSelection.onChange(keys, selectedRows);
       }
     },
-    [isControlled, tableData, rowSelection]
+    [isControlled, tableData, rowSelection, getRowKey]
   );
 
   // 判断某行是否被选中
   const isRowSelected = useCallback(
     (record: T): boolean => {
-      const key = (record as any).key;
+      const key = getRowKey(record);
       return selectedRowKeys.includes(key);
     },
-    [selectedRowKeys]
+    [selectedRowKeys, getRowKey]
   );
 
   // 切换某行的选中状态
   const toggleRowSelection = useCallback(
     (record: T, selected?: boolean) => {
-      const key = (record as any).key;
+      const key = getRowKey(record);
       const currentSelected = isRowSelected(record);
       const newSelected = selected !== undefined ? selected : !currentSelected;
 
@@ -204,7 +229,7 @@ const TableContainer = <T extends Record<string, any> = any>(
       // 触发 onSelect 回调
       if (rowSelection?.onSelect) {
         const selectedRows = tableData.filter(item => {
-          const itemKey = (item as any).key;
+          const itemKey = getRowKey(item);
           return newSelectedRowKeys.includes(itemKey);
         });
         rowSelection.onSelect(record, newSelected, selectedRows);
@@ -217,6 +242,7 @@ const TableContainer = <T extends Record<string, any> = any>(
       rowSelection,
       isRowSelected,
       setSelectedRowKeys,
+      getRowKey,
     ]
   );
 
@@ -229,7 +255,7 @@ const TableContainer = <T extends Record<string, any> = any>(
       }
 
       const currentData = paginatedData;
-      const allKeys = currentData.map(item => (item as any).key);
+      const allKeys = currentData.map(item => getRowKey(item));
       const allSelected = allKeys.every(key => selectedRowKeys.includes(key));
       const newSelected = selected !== undefined ? selected : !allSelected;
 
@@ -247,7 +273,7 @@ const TableContainer = <T extends Record<string, any> = any>(
       }
 
       const changeRows = currentData.filter(item => {
-        const key = (item as any).key;
+        const key = getRowKey(item);
         return newSelected
           ? !selectedRowKeys.includes(key)
           : selectedRowKeys.includes(key);
@@ -258,7 +284,7 @@ const TableContainer = <T extends Record<string, any> = any>(
       // 触发 onSelectAll 回调
       if (rowSelection?.onSelectAll) {
         const selectedRows = tableData.filter(item => {
-          const itemKey = (item as any).key;
+          const itemKey = getRowKey(item);
           return newSelectedRowKeys.includes(itemKey);
         });
         rowSelection.onSelectAll(newSelected, selectedRows, changeRows);
@@ -271,6 +297,7 @@ const TableContainer = <T extends Record<string, any> = any>(
       tableData,
       rowSelection,
       setSelectedRowKeys,
+      getRowKey,
     ]
   );
 
@@ -282,10 +309,10 @@ const TableContainer = <T extends Record<string, any> = any>(
     const currentData = paginatedData;
     if (currentData.length === 0) return false;
     return currentData.every(item => {
-      const key = (item as any).key;
+      const key = getRowKey(item);
       return selectedRowKeys.includes(key);
     });
-  }, [paginatedData, selectedRowKeys, selectionType]);
+  }, [paginatedData, selectedRowKeys, selectionType, getRowKey]);
 
   // 判断是否部分行被选中
   const isSomeRowsSelected = useCallback((): boolean => {
@@ -295,11 +322,11 @@ const TableContainer = <T extends Record<string, any> = any>(
     const currentData = paginatedData;
     if (currentData.length === 0) return false;
     const selectedCount = currentData.filter(item => {
-      const key = (item as any).key;
+      const key = getRowKey(item);
       return selectedRowKeys.includes(key);
     }).length;
     return selectedCount > 0 && selectedCount < currentData.length;
-  }, [paginatedData, selectedRowKeys, selectionType]);
+  }, [paginatedData, selectedRowKeys, selectionType, getRowKey]);
 
   // 同步受控的 selectedRowKeys
   useEffect(() => {
@@ -318,6 +345,8 @@ const TableContainer = <T extends Record<string, any> = any>(
     setPaginatedData,
     pagination,
     virtual: virtualConfig,
+    emptyText,
+    getRowKey,
     // 虚拟滚动相关
     virtualItems: virtualScroll.virtualItems,
     totalHeight: virtualScroll.totalHeight,
@@ -336,14 +365,20 @@ const TableContainer = <T extends Record<string, any> = any>(
     isSomeRowsSelected,
   };
 
-  const tableClassName = 'cream-table';
+  const tableClassName = classNames('cream-table', {
+    'cream-table-empty': paginatedData.length === 0,
+  });
+  const containerClassName = classNames('cream-table-container', className);
 
   return (
     <TableContext.Provider value={contextValue}>
       <div
         ref={containerRef}
-        className="cream-table-container"
-        style={virtualConfig.enabled ? { overflow: 'hidden' } : undefined}
+        className={containerClassName}
+        style={{
+          ...(virtualConfig.enabled ? { overflow: 'hidden' } : undefined),
+          ...style,
+        }}
       >
         <table ref={tableRef} className={tableClassName}>
           <TableHeader />

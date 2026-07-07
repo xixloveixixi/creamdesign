@@ -2,6 +2,7 @@ import {
   createContext,
   type ReactNode,
   type RefObject,
+  type CSSProperties,
   type UIEvent,
 } from 'react';
 
@@ -52,6 +53,8 @@ export interface RowSelectionConfig<T = any> {
   columnTitle?: ReactNode; // 自定义选择列的表头，默认为空
 }
 
+export type TableRowKey<T = any> = keyof T | ((record: T) => string | number);
+
 // TableContext 类型定义
 export interface TableContextType<T = any> {
   columns: ColumnType<T>[];
@@ -62,6 +65,8 @@ export interface TableContextType<T = any> {
   setPaginatedData?: (data: T[]) => void;
   pagination?: PaginationConfig | false | true;
   virtual?: VirtualScrollConfig | boolean;
+  emptyText?: ReactNode;
+  getRowKey: (record: T) => string | number;
   // 虚拟滚动相关
   virtualItems?: T[];
   totalHeight?: number;
@@ -89,6 +94,10 @@ export const TableContext = createContext<TableContextType<any> | undefined>(
 export interface TableProps<T = any> {
   columns: ColumnType<T>[];
   dataSource?: T[];
+  className?: string;
+  style?: CSSProperties;
+  rowKey?: TableRowKey<T>;
+  emptyText?: ReactNode;
   pagination?: PaginationConfig | false | true;
   virtual?: VirtualScrollConfig | boolean;
   rowSelection?: RowSelectionConfig<T>; // 行选择配置
