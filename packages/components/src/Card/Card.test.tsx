@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Card } from './Card';
+import { ConfigProvider } from '../ConfigProvider';
 
 describe('Card 组件', () => {
   // ===== 1. 基础渲染测试 =====
@@ -214,7 +215,48 @@ describe('Card 组件', () => {
     });
   });
 
-  // ===== 11. 无障碍访问测试 =====
+  // ===== 11. 主题变量测试 =====
+  describe('主题变量', () => {
+    it('应从 ConfigProvider 接收 Card 使用的全局主题变量', () => {
+      const { container } = render(
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: '#2563eb',
+              colorText: '#111827',
+              colorTextSecondary: '#4b5563',
+              colorBorder: '#d1d5db',
+              colorBgContainer: '#ffffff',
+              colorBgElevated: '#f8fafc',
+              colorBgDisabled: '#f1f5f9',
+              borderRadius: 6,
+              boxShadow: '0 8px 24px rgba(15, 23, 42, 0.12)',
+            },
+          }}
+        >
+          <Card title="企业主题卡片" loading>
+            内容
+          </Card>
+        </ConfigProvider>
+      );
+
+      const provider = container.querySelector('.cream-config-provider');
+
+      expect(provider).toHaveStyle('--cream-color-primary: #2563eb');
+      expect(provider).toHaveStyle('--cream-color-text: #111827');
+      expect(provider).toHaveStyle('--cream-color-text-secondary: #4b5563');
+      expect(provider).toHaveStyle('--cream-color-border: #d1d5db');
+      expect(provider).toHaveStyle('--cream-color-bg-container: #ffffff');
+      expect(provider).toHaveStyle('--cream-color-bg-elevated: #f8fafc');
+      expect(provider).toHaveStyle('--cream-color-bg-disabled: #f1f5f9');
+      expect(provider).toHaveStyle('--cream-border-radius: 6px');
+      expect(provider).toHaveStyle(
+        '--cream-box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12)'
+      );
+    });
+  });
+
+  // ===== 12. 无障碍访问测试 =====
   describe('无障碍访问', () => {
     it('卡片根元素应有 role="article"', () => {
       render(<Card>内容</Card>);

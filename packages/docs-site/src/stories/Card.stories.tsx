@@ -1,6 +1,13 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Card, CardProps, Button, ButtonType } from 'creamdesign-lib';
+import {
+  Card,
+  CardProps,
+  Button,
+  ButtonType,
+  ConfigProvider,
+  enterpriseTheme,
+} from 'creamdesign-lib';
 
 const meta: Meta<CardProps> = {
   title: 'Card',
@@ -127,7 +134,7 @@ export const NoBorder: Story = {
     <div
       style={{
         width: 360,
-        background: '#f5f3ff',
+        background: 'var(--cream-color-primary-bg, #f5f3ff)',
         padding: 24,
         borderRadius: 8,
       }}
@@ -210,7 +217,14 @@ export const CardList: Story = {
             title={`${tag}任务`}
             hoverable
             extra={
-              <span style={{ color: '#9333ea', fontSize: 12 }}>进行中</span>
+              <span
+                style={{
+                  color: 'var(--cream-color-primary, #9333ea)',
+                  fontSize: 12,
+                }}
+              >
+                进行中
+              </span>
             }
             actions={[
               <Button key="detail" btnType={ButtonType.Text} size="small">
@@ -218,7 +232,13 @@ export const CardList: Story = {
               </Button>,
             ]}
           >
-            <p style={{ margin: 0, fontSize: 14, color: '#616161' }}>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 14,
+                color: 'var(--cream-color-text-secondary, #616161)',
+              }}
+            >
               这是 {tag} 阶段的任务说明，点击详情查看更多。
             </p>
           </Card>
@@ -228,3 +248,76 @@ export const CardList: Story = {
   ),
 };
 CardList.storyName = '卡片列表';
+
+export const EnterpriseThemeCard: Story = {
+  render: () => (
+    <ConfigProvider theme={enterpriseTheme}>
+      <div
+        style={{
+          width: 760,
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          gap: 16,
+          padding: 24,
+          background: 'var(--cream-color-bg-elevated)',
+          borderRadius: 12,
+        }}
+      >
+        <Card
+          title="项目概览"
+          hoverable
+          extra={
+            <span
+              style={{
+                color: 'var(--cream-color-primary)',
+                fontSize: 12,
+              }}
+            >
+              进行中
+            </span>
+          }
+          actions={[
+            <Button key="detail" btnType={ButtonType.Text} size="small">
+              查看
+            </Button>,
+            <Button key="edit" btnType={ButtonType.Primary} size="small">
+              编辑
+            </Button>,
+          ]}
+        >
+          <p style={{ margin: 0 }}>
+            企业主题下，卡片背景、边框、文字、主色和阴影都继承全局 token。
+          </p>
+        </Card>
+
+        <Card title="加载状态" loading>
+          <p style={{ margin: 0 }}>该内容不会显示。</p>
+        </Card>
+
+        <Card bordered={false} title="无边框层级">
+          <p style={{ margin: 0 }}>
+            无边框卡片使用主题阴影表达层级，适合信息聚合区域。
+          </p>
+        </Card>
+
+        <Card
+          title="紧凑任务"
+          size="small"
+          extra={
+            <span
+              style={{
+                color: 'var(--cream-color-text-secondary)',
+                fontSize: 12,
+              }}
+            >
+              3 项
+            </span>
+          }
+        >
+          <p style={{ margin: 0 }}>小尺寸卡片保持相同主题变量继承链路。</p>
+        </Card>
+      </div>
+    </ConfigProvider>
+  ),
+};
+EnterpriseThemeCard.storyName = '企业级主题';

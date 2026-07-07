@@ -1,6 +1,18 @@
 // Card 组件样式
 @use '../style/creamdesign' as *;
 
+$card-shadow: var(--cream-box-shadow, 0 1px 4px rgba($color-neutral-900, 0.08));
+$card-hover-shadow: var(
+  --cream-box-shadow,
+  0 6px 16px rgba($color-neutral-900, 0.12)
+);
+$card-hover-primary-shadow: var(
+  --cream-box-shadow,
+  0 6px 16px rgba($color-primary-500, 0.1)
+);
+$card-skeleton-bg: var(--cream-color-bg-disabled, $color-neutral-200);
+$card-skeleton-highlight: var(--cream-color-bg-elevated, $color-neutral-100);
+
 // 骨架屏动画
 @keyframes cream-skeleton-shine {
   0% {
@@ -22,7 +34,7 @@
     transform 0.2s ease;
   font-family: $font-family-base;
   color: var(--cream-color-text, $color-text-primary);
-  box-shadow: 0 1px 4px rgba($color-neutral-900, 0.08);
+  box-shadow: $card-shadow;
 
   // ===== 变体：边框 =====
   &--bordered {
@@ -36,14 +48,14 @@
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba($color-neutral-900, 0.12);
+      box-shadow: $card-hover-shadow;
     }
   }
 
   // 带边框时的悬停效果
   &--bordered#{&}--hoverable:hover {
     border-color: var(--cream-color-primary, $color-primary-400);
-    box-shadow: 0 6px 16px rgba($color-primary-500, 0.1);
+    box-shadow: $card-hover-primary-shadow;
   }
 
   // ===== 变体：小尺寸 =====
@@ -158,9 +170,9 @@
     width: 100%;
     background: linear-gradient(
       90deg,
-      $color-neutral-200 25%,
-      $color-neutral-100 50%,
-      $color-neutral-200 75%
+      $card-skeleton-bg 25%,
+      $card-skeleton-highlight 50%,
+      $card-skeleton-bg 75%
     );
     background-size: 200% 100%;
     animation: cream-skeleton-shine 1.5s ease-in-out infinite;

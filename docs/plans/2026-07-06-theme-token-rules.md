@@ -133,7 +133,9 @@ TagToken;
    - 复用 success/warning/error/info 语义色。
 
 3. `Card`
-   - 复用背景、边框、阴影、圆角。
+   - 已迁移为复用背景、边框、文本、primary、阴影、圆角、disabled/elevated 背景等现有 global/semantic token。
+   - 未新增 `CardToken`。
+   - 只有卡片头部、操作区、骨架屏等视觉语义出现稳定差异化覆盖需求后，再考虑 `CardToken`。
 
 4. `Table`
    - 已完成 `TableToken` 第一版。
