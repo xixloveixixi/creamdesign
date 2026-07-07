@@ -203,6 +203,7 @@ creamdesign/
 pnpm test
 pnpm build:components
 pnpm smoke:components
+pnpm release:check
 pnpm storybook
 pnpm build-storybook
 pnpm lint
@@ -213,24 +214,26 @@ pnpm lint
 - `pnpm test`：运行组件测试。
 - `pnpm build:components`：构建组件包，并执行包结构 smoke 校验。
 - `pnpm smoke:components`：构建组件包后，在临时消费项目中验证 ESM、CJS、类型和样式导入。
+- `pnpm release:check`：发布前统一门禁，依次运行测试、真实消费 smoke 和 Storybook 构建。
 - `pnpm storybook`：启动本地 Storybook 文档站。
 - `pnpm build-storybook`：构建 Storybook 静态站点。
 - `pnpm lint`：运行 ESLint。
 
 ## 发布前校验
 
-修改公共导出、构建配置、样式入口或组件入口后，至少运行：
+修改公共导出、构建配置、样式入口、主题入口、组件入口或 Storybook 文档后，运行：
 
 ```bash
-pnpm test
-pnpm smoke:components
+pnpm release:check
 ```
 
-如果改动影响文档站，再运行：
+其中 `pnpm smoke:components` 会先构建组件包，再用 `pnpm pack` 产出 tarball，并在临时消费项目中验证：
 
-```bash
-pnpm build-storybook
-```
+- 根入口 ESM/CJS 导入。
+- 全部公开子路径 ESM/CJS 导入。
+- TypeScript 类型解析。
+- `creamdesign-lib/style` 样式入口解析。
+- 主题工具和关键运行时导出。
 
 `packages/components/dist` 和 `packages/docs-site/storybook-static` 是生成产物，不应作为源码维护。
 

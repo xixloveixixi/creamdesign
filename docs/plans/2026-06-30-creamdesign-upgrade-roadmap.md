@@ -61,6 +61,7 @@ CreamDesign 的改造应优先补齐这些工程化和体系化能力。
    - `pnpm build`
    - `pnpm pack`
    - 在临时项目中验证全量导入、子路径导入、样式导入和类型提示。
+   - 提供 `pnpm release:check` 作为发布前统一门禁。
 
 4. 清理构建产物管理。
    - `dist`、`storybook-static` 不再提交到 Git。
@@ -75,6 +76,15 @@ import 'creamdesign-lib/style';
 ```
 
 以上导入方式均可在新项目中正常构建和运行。
+
+### 当前进展
+
+阶段一发布与消费链路已经完成收口：
+
+1. `smoke-package` 会校验 `exports`、源码公共组件入口、产物文件、`sideEffects` 和 peer dependencies 是否一致。
+2. `smoke-consumer` 会通过 `pnpm pack` 生成 tarball，并在临时消费项目中验证根入口、全部公开子路径入口、CJS/ESM、TypeScript 类型和样式入口。
+3. 根目录已提供 `pnpm release:check`，串联组件测试、真实消费 smoke 和 Storybook 构建。
+4. `packages/components/dist` 和 `packages/docs-site/storybook-static` 均作为生成产物处理，不进入源码提交。
 
 ### 简历表达
 

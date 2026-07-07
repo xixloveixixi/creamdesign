@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-import {execFileSync} from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {fileURLToPath} from 'node:url';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,6 +16,17 @@ const packageJson = JSON.parse(
 
 const failures = [];
 let tempRoot;
+
+function getExportSubpaths() {
+  return Object.keys(packageJson.exports ?? {})
+    .filter(exportName => exportName.startsWith('./'))
+    .map(exportName => exportName.slice(2))
+    .sort();
+}
+
+function getRuntimeExportSubpaths() {
+  return getExportSubpaths().filter(subpath => subpath !== 'style');
+}
 
 function fail(message) {
   failures.push(message);
@@ -70,30 +81,68 @@ function linkDependency(consumerNodeModules, dependencyName) {
   }
 
   const target = path.join(consumerNodeModules, dependencyName);
-  fs.mkdirSync(path.dirname(target), {recursive: true});
+  fs.mkdirSync(path.dirname(target), { recursive: true });
 
   if (fs.existsSync(target)) {
     return;
   }
 
-  fs.symlinkSync(source, target, process.platform === 'win32' ? 'junction' : 'dir');
+  fs.symlinkSync(
+    source,
+    target,
+    process.platform === 'win32' ? 'junction' : 'dir'
+  );
 }
 
 function writeFile(filePath, content) {
-  fs.mkdirSync(path.dirname(filePath), {recursive: true});
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, content);
+}
+
+function createEsmSubpathSmoke() {
+  return getRuntimeExportSubpaths()
+    .map(
+      (subpath, index) => `
+const subpathModule${index} = await import('creamdesign-lib/${subpath}');
+if (Object.keys(subpathModule${index}).length === 0) throw new Error('ESM 子路径 ${subpath} 没有导出内容');
+`
+    )
+    .join('\n');
+}
+
+function createCjsSubpathSmoke() {
+  return getRuntimeExportSubpaths()
+    .map(
+      (subpath, index) => `
+const subpathModule${index} = require('creamdesign-lib/${subpath}');
+if (Object.keys(subpathModule${index}).length === 0) throw new Error('CJS 子路径 ${subpath} 没有导出内容');
+`
+    )
+    .join('\n');
+}
+
+function createTsSubpathSmoke() {
+  return getRuntimeExportSubpaths()
+    .map(
+      (subpath, index) =>
+        `import * as SubpathModule${index} from 'creamdesign-lib/${subpath}';`
+    )
+    .join('\n');
+}
+
+function createTsSubpathUsageSmoke() {
+  return getRuntimeExportSubpaths()
+    .map((subpath, index) => `void SubpathModule${index};`)
+    .join('\n');
 }
 
 function createConsumerProject(extractedPackageDir) {
   const consumerDir = path.join(tempRoot, 'consumer');
   const consumerNodeModules = path.join(consumerDir, 'node_modules');
-  const installedPackageDir = path.join(
-    consumerNodeModules,
-    packageJson.name
-  );
+  const installedPackageDir = path.join(consumerNodeModules, packageJson.name);
 
-  fs.mkdirSync(consumerNodeModules, {recursive: true});
-  fs.cpSync(extractedPackageDir, installedPackageDir, {recursive: true});
+  fs.mkdirSync(consumerNodeModules, { recursive: true });
+  fs.cpSync(extractedPackageDir, installedPackageDir, { recursive: true });
 
   const dependencies = new Set([
     ...Object.keys(packageJson.peerDependencies ?? {}),
@@ -142,6 +191,7 @@ if (typeof ButtonDefault !== 'function') throw new Error('子路径导入 Button
 if (ButtonType.Primary !== 'primary') throw new Error('子路径导入 ButtonType 不可用');
 if (typeof MessageSubpath?.info !== 'function') throw new Error('子路径导入 Message 不可用');
 if (!styleUrl.endsWith('/dist/index.css')) throw new Error('样式子路径没有解析到 dist/index.css');
+${createEsmSubpathSmoke()}
 `
   );
 
@@ -165,6 +215,7 @@ if (typeof root.Message?.success !== 'function') throw new Error('CJS 根导入 
 if (typeof button.default !== 'function') throw new Error('CJS 子路径导入 Button 默认导出不可用');
 if (button.ButtonType.Primary !== 'primary') throw new Error('CJS 子路径导入 ButtonType 不可用');
 if (typeof message.Message?.info !== 'function') throw new Error('CJS 子路径导入 Message 不可用');
+${createCjsSubpathSmoke()}
 `
   );
 
@@ -174,6 +225,7 @@ if (typeof message.Message?.info !== 'function') throw new Error('CJS 子路径�
 import {Button, ConfigProvider, Table, Message, enterpriseTheme, mergeTheme, themeToCSSVariables, type MessageOptions, type TableProps, type ThemeConfig} from 'creamdesign-lib';
 import ButtonDefault, {ButtonType, type ButtonTypeValue} from 'creamdesign-lib/button';
 import ConfigProviderDefault from 'creamdesign-lib/config-provider';
+${createTsSubpathSmoke()}
 
 type Row = {
   key: string;
@@ -233,6 +285,7 @@ void table;
 void cssVariables;
 void enterpriseCssVariables;
 void Message;
+${createTsSubpathUsageSmoke()}
 `
   );
 
@@ -265,8 +318,8 @@ try {
   const packDir = path.join(tempRoot, 'pack');
   const extractDir = path.join(tempRoot, 'extract');
 
-  fs.mkdirSync(packDir, {recursive: true});
-  fs.mkdirSync(extractDir, {recursive: true});
+  fs.mkdirSync(packDir, { recursive: true });
+  fs.mkdirSync(extractDir, { recursive: true });
 
   const packOutput = run('pnpm', ['pack', '--pack-destination', packDir]);
   const tarballName = packOutput
@@ -296,10 +349,22 @@ try {
   assertTarEntry(tarEntries, 'dist/index.d.ts', '根类型入口');
   assertTarEntry(tarEntries, 'dist/index.css', '样式入口');
 
-  for (const subpath of ['button', 'config-provider', 'table', 'form', 'upload', 'message']) {
-    assertTarEntry(tarEntries, `dist/${subpath}/index.mjs`, `${subpath} ESM 入口`);
-    assertTarEntry(tarEntries, `dist/${subpath}/index.cjs`, `${subpath} CJS 入口`);
-    assertTarEntry(tarEntries, `dist/${subpath}/index.d.ts`, `${subpath} 类型入口`);
+  for (const subpath of getRuntimeExportSubpaths()) {
+    assertTarEntry(
+      tarEntries,
+      `dist/${subpath}/index.mjs`,
+      `${subpath} ESM 入口`
+    );
+    assertTarEntry(
+      tarEntries,
+      `dist/${subpath}/index.cjs`,
+      `${subpath} CJS 入口`
+    );
+    assertTarEntry(
+      tarEntries,
+      `dist/${subpath}/index.d.ts`,
+      `${subpath} 类型入口`
+    );
   }
 
   run('tar', ['-xzf', tarballPath, '-C', extractDir]);
@@ -310,8 +375,8 @@ try {
     const consumerDir = createConsumerProject(extractedPackageDir);
     const tscBin = path.join(repoRoot, 'node_modules/typescript/bin/tsc');
 
-    run(process.execPath, ['esm-smoke.mjs'], {cwd: consumerDir});
-    run(process.execPath, ['cjs-smoke.cjs'], {cwd: consumerDir});
+    run(process.execPath, ['esm-smoke.mjs'], { cwd: consumerDir });
+    run(process.execPath, ['cjs-smoke.cjs'], { cwd: consumerDir });
     run(
       process.execPath,
       [tscBin, '-p', 'tsconfig.json', '--noEmit', '--pretty', 'false'],
@@ -324,7 +389,7 @@ try {
   fail(error.message);
 } finally {
   if (tempRoot) {
-    fs.rmSync(tempRoot, {recursive: true, force: true});
+    fs.rmSync(tempRoot, { recursive: true, force: true });
   }
 }
 

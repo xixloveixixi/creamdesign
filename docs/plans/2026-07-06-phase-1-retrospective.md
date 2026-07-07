@@ -30,6 +30,8 @@
    - `pnpm build:components` 构建组件包，并运行包结构 smoke。
    - `pnpm smoke:components` 会先构建组件包，再运行真实消费 smoke。
    - 真实消费 smoke 会通过 `pnpm pack` 产出 tarball，再解包到临时消费项目中验证导入。
+   - 包结构 smoke 会对齐源码公共组件入口和 `package.json exports`，避免新增组件后漏配子路径。
+   - 真实消费 smoke 会遍历全部公开子路径，而不是只抽样核心组件。
 
 4. 清理生成产物管理。
    - `packages/components/dist` 和 `packages/docs-site/storybook-static` 不作为源码维护。
@@ -38,6 +40,10 @@
 5. 替换根 README。
    - 移除 Create React App 模板内容。
    - 补充安装、样式引入、根导入、子路径导入、主题示例、组件列表和发布前校验说明。
+
+6. 增加发布前统一门禁。
+   - 根目录提供 `pnpm release:check`。
+   - 该命令串联组件测试、真实消费 smoke 和 Storybook 构建。
 
 ## 发布风险如何被降低
 
@@ -86,20 +92,16 @@
 改动公共导出、构建配置、组件入口或样式入口时，至少运行：
 
 ```bash
-pnpm test
-pnpm smoke:components
+pnpm release:check
 ```
 
 其中：
 
 - `pnpm test` 验证组件行为没有回归。
 - `pnpm smoke:components` 验证组件包能被真实消费项目接入。
+- `pnpm build-storybook` 验证文档站可以构建。
 
-如果改动影响 Storybook 或文档站，再运行：
-
-```bash
-pnpm build-storybook
-```
+如果只改动组件内部实现且需要更快反馈，可以先单独运行 `pnpm test` 或 `pnpm smoke:components`；合并前仍以 `pnpm release:check` 为准。
 
 ### 新增组件的发布要求
 
@@ -113,6 +115,8 @@ pnpm build-storybook
 6. Storybook 示例。
 7. 聚焦测试。
 8. 真实消费 smoke 中的代表性导入校验。
+
+当前 `smoke-package` 和 `smoke-consumer` 已经会自动遍历公开子路径，新增组件时仍需要保证源码入口、Rollup entry、根导出和 `exports` 都同步更新。
 
 ## AI 工作流复盘
 

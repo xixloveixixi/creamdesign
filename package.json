@@ -11,6 +11,7 @@
     "build:all": "pnpm -r build",
     "build:components": "cd packages/components && pnpm build",
     "smoke:components": "pnpm build:components && pnpm --filter creamdesign-lib smoke:consumer",
+    "release:check": "pnpm test && pnpm smoke:components && pnpm build-storybook",
     "test": "cd packages/components && pnpm test",
     "prepare": "husky install",
     "lint": "eslint packages --ext .ts,.tsx,.js,.jsx",
