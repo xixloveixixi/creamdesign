@@ -107,6 +107,7 @@ TagToken;
 已覆盖：
 
 - Input
+  - primary、文本、次级文本、边框和容器背景
   - placeholder 文本色
   - disabled 文本色
   - disabled 背景色

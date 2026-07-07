@@ -2,7 +2,7 @@ import React from 'react';
 import { Input, InputProps } from './Input';
 import type { Meta, StoryObj } from '@storybook/react';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { ConfigProvider } from '../ConfigProvider';
+import { ConfigProvider, enterpriseTheme } from '../ConfigProvider';
 
 const inputMeta: Meta<InputProps> = {
   title: '表单组件',
@@ -128,17 +128,7 @@ export const 后缀输入框: StoryObj<InputProps> = {
 
 export const 主题语义变量: StoryObj<InputProps> = {
   render: () => (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: '#0f766e',
-          colorTextPlaceholder: '#64748b',
-          colorTextDisabled: '#94a3b8',
-          colorBgDisabled: '#f1f5f9',
-          controlFocusShadow: '0 0 0 3px rgba(15, 118, 110, 0.2)',
-        },
-      }}
-    >
+    <ConfigProvider theme={enterpriseTheme}>
       <div style={{ display: 'grid', gap: 12, width: 320 }}>
         <Input placeholder="聚焦时使用主题 focus shadow" />
         <Input disabled placeholder="禁用态使用主题语义色" />
@@ -147,3 +137,4 @@ export const 主题语义变量: StoryObj<InputProps> = {
     </ConfigProvider>
   ),
 };
+主题语义变量.storyName = '企业级主题';

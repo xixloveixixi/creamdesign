@@ -85,8 +85,13 @@ describe('Input Component', () => {
       <ConfigProvider
         theme={{
           token: {
+            colorPrimary: '#7c3aed',
+            colorText: '#18181b',
+            colorTextSecondary: '#52525b',
             colorTextPlaceholder: '#8a8f98',
             colorTextDisabled: '#a1a1aa',
+            colorBorder: '#d4d4d8',
+            colorBgContainer: '#ffffff',
             colorBgDisabled: '#f4f4f5',
             controlFocusShadow: '0 0 0 3px rgba(124, 58, 237, 0.24)',
           },
@@ -98,8 +103,13 @@ describe('Input Component', () => {
 
     const provider = container.querySelector('.cream-config-provider');
 
+    expect(provider).toHaveStyle('--cream-color-primary: #7c3aed');
+    expect(provider).toHaveStyle('--cream-color-text: #18181b');
+    expect(provider).toHaveStyle('--cream-color-text-secondary: #52525b');
     expect(provider).toHaveStyle('--cream-color-text-placeholder: #8a8f98');
     expect(provider).toHaveStyle('--cream-color-text-disabled: #a1a1aa');
+    expect(provider).toHaveStyle('--cream-color-border: #d4d4d8');
+    expect(provider).toHaveStyle('--cream-color-bg-container: #ffffff');
     expect(provider).toHaveStyle('--cream-color-bg-disabled: #f4f4f5');
     expect(provider).toHaveStyle(
       '--cream-control-focus-shadow: 0 0 0 3px rgba(124, 58, 237, 0.24)'
