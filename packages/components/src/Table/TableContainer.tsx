@@ -11,8 +11,12 @@ import './Table.scss';
 import { TableContext } from './TableContext';
 import type {
   TableContextType,
+  TableFilterState,
+  TableFilterValue,
+  PaginationConfig,
   TableProps,
   TableRowKey,
+  TableSorterState,
   VirtualScrollConfig,
 } from './TableContext';
 import TableHeader from './TableHeader';
@@ -25,13 +29,95 @@ export type {
   ColumnType,
   PaginationConfig,
   RowSelectionConfig,
+  TableFilterOption,
+  TableFilterState,
+  TableFilterValue,
   TableContextType,
   TableProps,
   TableRowKey,
+  TableSorterState,
+  TableSortOrder,
   VirtualScrollConfig,
 } from './TableContext';
 
 const DEFAULT_EMPTY_TEXT = '暂无数据';
+const DEFAULT_LOADING_TEXT = '加载中...';
+const EMPTY_DATA: any[] = [];
+
+const getInitialSorterState = <T,>(
+  columns: TableProps<T>['columns']
+): TableSorterState | null => {
+  const defaultSortColumn = columns.find(
+    column => column.sorter && column.defaultSortOrder
+  );
+
+  if (!defaultSortColumn?.defaultSortOrder) {
+    return null;
+  }
+
+  return {
+    columnKey: defaultSortColumn.key,
+    order: defaultSortColumn.defaultSortOrder,
+  };
+};
+
+const getInitialFilterState = <T,>(
+  columns: TableProps<T>['columns']
+): TableFilterState =>
+  columns.reduce<TableFilterState>((state, column) => {
+    if (column.onFilter && column.defaultFilteredValue?.length) {
+      state[column.key] = [...column.defaultFilteredValue];
+    }
+    return state;
+  }, {});
+
+const applyFilters = <T,>(
+  data: T[],
+  columns: TableProps<T>['columns'],
+  filterState: TableFilterState
+): T[] => {
+  const activeFilters = Object.entries(filterState).filter(
+    ([, values]) => values.length > 0
+  );
+
+  if (activeFilters.length === 0) {
+    return data;
+  }
+
+  return activeFilters.reduce((filteredData, [columnKey, values]) => {
+    const column = columns.find(item => item.key === columnKey);
+
+    if (!column?.onFilter) {
+      return filteredData;
+    }
+
+    return filteredData.filter(record =>
+      values.some(value => column.onFilter!(value, record))
+    );
+  }, data);
+};
+
+const applySorter = <T,>(
+  data: T[],
+  columns: TableProps<T>['columns'],
+  sorterState: TableSorterState | null
+): T[] => {
+  if (!sorterState) {
+    return data;
+  }
+
+  const column = columns.find(item => item.key === sorterState.columnKey);
+
+  if (!column?.sorter) {
+    return data;
+  }
+
+  const direction = sorterState.order === 'ascend' ? 1 : -1;
+
+  return [...data].sort(
+    (current, next) => column.sorter!(current, next) * direction
+  );
+};
 
 const TableContainer = <T extends Record<string, any> = any>(
   props: TableProps<T>
@@ -46,17 +132,68 @@ const TableContainer = <T extends Record<string, any> = any>(
     pagination,
     virtual,
     rowSelection,
+    loading = false,
+    loadingText = DEFAULT_LOADING_TEXT,
   } = props;
 
-  const [tableData, setTableData] = useState<T[]>(dataSource ?? []);
-  const [paginatedData, setPaginatedData] = useState<T[]>(dataSource ?? []);
+  const [sorterState, setSorterState] = useState<TableSorterState | null>(() =>
+    getInitialSorterState(columns)
+  );
+  const [filterState, setFilterState] = useState<TableFilterState>(() =>
+    getInitialFilterState(columns)
+  );
 
-  // 同步 dataSource 变化
-  useEffect(() => {
-    if (dataSource !== undefined) {
-      setTableData(dataSource);
+  const sourceData = (dataSource ?? EMPTY_DATA) as T[];
+  const tableData = useMemo(() => {
+    const filteredData = applyFilters(sourceData, columns, filterState);
+    return applySorter(filteredData, columns, sorterState);
+  }, [sourceData, columns, filterState, sorterState]);
+
+  const isPaginationDisabled = pagination === false;
+  const paginationConfig = useMemo<PaginationConfig | undefined>(() => {
+    if (isPaginationDisabled) {
+      return undefined;
     }
-  }, [dataSource]);
+
+    if (pagination === true || pagination === undefined) {
+      return {};
+    }
+
+    return pagination;
+  }, [isPaginationDisabled, pagination]);
+  const total = tableData.length;
+  const paginationTotal = paginationConfig?.total ?? total;
+  const initialPageSize =
+    paginationConfig?.pageSize ?? paginationConfig?.defaultPageSize ?? 10;
+  const initialCurrent =
+    paginationConfig?.current ?? paginationConfig?.defaultCurrent ?? 1;
+  const [current, setInternalCurrent] = useState(initialCurrent);
+  const [pageSize, setInternalPageSize] = useState(initialPageSize);
+  const isCurrentControlled = paginationConfig?.current !== undefined;
+  const isPageSizeControlled = paginationConfig?.pageSize !== undefined;
+  const controlledCurrent = paginationConfig?.current;
+  const controlledPageSize = paginationConfig?.pageSize;
+  const finalCurrent = isCurrentControlled ? controlledCurrent! : current;
+  const finalPageSize = isPageSizeControlled ? controlledPageSize! : pageSize;
+  const maxPage = Math.max(1, Math.ceil(paginationTotal / finalPageSize));
+  const safeCurrent =
+    finalCurrent < 1 || finalCurrent > maxPage ? 1 : finalCurrent;
+
+  const paginatedData = useMemo(() => {
+    if (isPaginationDisabled || paginationConfig?.total !== undefined) {
+      return tableData;
+    }
+
+    const startIndex = (safeCurrent - 1) * finalPageSize;
+    const endIndex = startIndex + finalPageSize;
+    return tableData.slice(startIndex, endIndex);
+  }, [
+    finalPageSize,
+    isPaginationDisabled,
+    paginationConfig?.total,
+    safeCurrent,
+    tableData,
+  ]);
 
   // 容器和表头的 ref
   const containerRef = useRef<HTMLDivElement>(null); //容器ref
@@ -148,8 +285,188 @@ const TableContainer = <T extends Record<string, any> = any>(
     overscan: virtualConfig.overscan || 2,
   });
 
-  // 计算 total
-  const total = tableData.length;
+  const handlePageChange = useCallback(
+    (newPage: number, newPageSize?: number) => {
+      if (loading) {
+        return;
+      }
+
+      const finalNewPageSize = newPageSize ?? finalPageSize;
+
+      if (!isCurrentControlled) {
+        setInternalCurrent(newPage);
+      }
+
+      if (newPageSize !== undefined && !isPageSizeControlled) {
+        setInternalPageSize(newPageSize);
+      }
+
+      paginationConfig?.onChange?.(newPage, finalNewPageSize);
+    },
+    [
+      finalPageSize,
+      isCurrentControlled,
+      isPageSizeControlled,
+      loading,
+      paginationConfig,
+    ]
+  );
+
+  const handlePageSizeChange = useCallback(
+    (newPageSize: number) => {
+      if (loading) {
+        return;
+      }
+
+      const newTotalPages = Math.max(
+        1,
+        Math.ceil(paginationTotal / newPageSize)
+      );
+      const newCurrent = Math.min(safeCurrent, newTotalPages);
+
+      if (!isPageSizeControlled) {
+        setInternalPageSize(newPageSize);
+      }
+
+      if (!isCurrentControlled) {
+        setInternalCurrent(newCurrent);
+      }
+
+      paginationConfig?.onShowSizeChange?.(newCurrent, newPageSize);
+    },
+    [
+      isCurrentControlled,
+      isPageSizeControlled,
+      loading,
+      paginationConfig,
+      paginationTotal,
+      safeCurrent,
+    ]
+  );
+
+  useEffect(() => {
+    if (isCurrentControlled && controlledCurrent !== undefined) {
+      setInternalCurrent(controlledCurrent);
+    }
+  }, [controlledCurrent, isCurrentControlled]);
+
+  useEffect(() => {
+    if (isPageSizeControlled && controlledPageSize !== undefined) {
+      setInternalPageSize(controlledPageSize);
+    }
+  }, [controlledPageSize, isPageSizeControlled]);
+
+  useEffect(() => {
+    if (
+      loading ||
+      isPaginationDisabled ||
+      (finalCurrent >= 1 && finalCurrent <= maxPage)
+    ) {
+      return;
+    }
+
+    if (!isCurrentControlled) {
+      setInternalCurrent(1);
+      return;
+    }
+
+    paginationConfig?.onChange?.(1, finalPageSize);
+  }, [
+    finalCurrent,
+    finalPageSize,
+    isCurrentControlled,
+    isPaginationDisabled,
+    loading,
+    maxPage,
+    paginationConfig,
+  ]);
+
+  const toggleSort = useCallback(
+    (columnKey: string) => {
+      if (loading) {
+        return;
+      }
+
+      const column = columns.find(item => item.key === columnKey);
+
+      if (!column?.sorter) {
+        return;
+      }
+
+      setSorterState(currentSorterState => {
+        if (currentSorterState?.columnKey !== columnKey) {
+          return { columnKey, order: 'ascend' };
+        }
+
+        if (currentSorterState.order === 'ascend') {
+          return { columnKey, order: 'descend' };
+        }
+
+        return null;
+      });
+    },
+    [columns, loading]
+  );
+
+  const toggleFilter = useCallback(
+    (columnKey: string, value: TableFilterValue) => {
+      if (loading) {
+        return;
+      }
+
+      const column = columns.find(item => item.key === columnKey);
+
+      if (!column?.onFilter) {
+        return;
+      }
+
+      setFilterState(currentFilterState => {
+        const currentValues = currentFilterState[columnKey] ?? [];
+        const nextValues = currentValues.includes(value)
+          ? currentValues.filter(item => item !== value)
+          : [...currentValues, value];
+
+        if (nextValues.length === 0) {
+          const { [columnKey]: _removedValue, ...nextFilterState } =
+            currentFilterState;
+          return nextFilterState;
+        }
+
+        return {
+          ...currentFilterState,
+          [columnKey]: nextValues,
+        };
+      });
+    },
+    [columns, loading]
+  );
+
+  const clearFilter = useCallback(
+    (columnKey: string) => {
+      if (loading) {
+        return;
+      }
+
+      setFilterState(currentFilterState => {
+        if (!currentFilterState[columnKey]) {
+          return currentFilterState;
+        }
+
+        const { [columnKey]: _removedValue, ...nextFilterState } =
+          currentFilterState;
+        return nextFilterState;
+      });
+    },
+    [loading]
+  );
+
+  const isColumnFiltered = useCallback(
+    (columnKey: string) => {
+      const values = filterState[columnKey];
+      return !!values && values.length > 0;
+    },
+    [filterState]
+  );
 
   const getRowKey = useCallback(
     (record: T): string | number => {
@@ -207,6 +524,10 @@ const TableContainer = <T extends Record<string, any> = any>(
   // 切换某行的选中状态
   const toggleRowSelection = useCallback(
     (record: T, selected?: boolean) => {
+      if (loading) {
+        return;
+      }
+
       const key = getRowKey(record);
       const currentSelected = isRowSelected(record);
       const newSelected = selected !== undefined ? selected : !currentSelected;
@@ -243,12 +564,17 @@ const TableContainer = <T extends Record<string, any> = any>(
       isRowSelected,
       setSelectedRowKeys,
       getRowKey,
+      loading,
     ]
   );
 
   // 切换所有行的选中状态
   const toggleAllRowsSelection = useCallback(
     (selected?: boolean) => {
+      if (loading) {
+        return;
+      }
+
       if (selectionType === 'radio') {
         // 单选模式不支持全选
         return;
@@ -298,6 +624,7 @@ const TableContainer = <T extends Record<string, any> = any>(
       rowSelection,
       setSelectedRowKeys,
       getRowKey,
+      loading,
     ]
   );
 
@@ -339,14 +666,32 @@ const TableContainer = <T extends Record<string, any> = any>(
   const contextValue: TableContextType<T> = {
     columns,
     tableData,
-    setTableData,
     total,
     paginatedData,
-    setPaginatedData,
     pagination,
+    paginationState: paginationConfig
+      ? {
+          current: safeCurrent,
+          pageSize: finalPageSize,
+          total: paginationTotal,
+          showTotal: paginationConfig.showTotal ?? true,
+          showSizeChanger: paginationConfig.showSizeChanger ?? true,
+          disabled: loading,
+          onChange: handlePageChange,
+          onPageSizeChange: handlePageSizeChange,
+        }
+      : undefined,
     virtual: virtualConfig,
     emptyText,
     getRowKey,
+    sorterState,
+    filterState,
+    loading,
+    loadingText,
+    toggleSort,
+    toggleFilter,
+    clearFilter,
+    isColumnFiltered,
     // 虚拟滚动相关
     virtualItems: virtualScroll.virtualItems,
     totalHeight: virtualScroll.totalHeight,
@@ -368,7 +713,9 @@ const TableContainer = <T extends Record<string, any> = any>(
   const tableClassName = classNames('cream-table', {
     'cream-table-empty': paginatedData.length === 0,
   });
-  const containerClassName = classNames('cream-table-container', className);
+  const containerClassName = classNames('cream-table-container', className, {
+    'cream-table-container-loading': loading,
+  });
 
   return (
     <TableContext.Provider value={contextValue}>
@@ -377,6 +724,9 @@ const TableContainer = <T extends Record<string, any> = any>(
         className={containerClassName}
         style={{
           ...(virtualConfig.enabled ? { overflow: 'hidden' } : undefined),
+          ...(loading
+            ? { position: style?.position ?? 'relative' }
+            : undefined),
           ...style,
         }}
       >
@@ -385,6 +735,25 @@ const TableContainer = <T extends Record<string, any> = any>(
           {virtualConfig.enabled ? <VirtualScrollBody /> : <TableBody />}
           <TableFoot />
         </table>
+        {loading ? (
+          <div
+            className="cream-table-loading-overlay"
+            role="status"
+            aria-live="polite"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              zIndex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'rgba(255, 255, 255, 0.72)',
+              pointerEvents: 'none',
+            }}
+          >
+            {loadingText}
+          </div>
+        ) : null}
       </div>
     </TableContext.Provider>
   );

@@ -39,6 +39,11 @@ export type {
   VirtualScrollConfig,
   RowSelectionConfig,
   TableRowKey,
+  TableFilterOption,
+  TableFilterState,
+  TableFilterValue,
+  TableSorterState,
+  TableSortOrder,
 } from './Table';
 
 // Form 组件

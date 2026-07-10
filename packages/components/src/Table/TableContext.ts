@@ -6,6 +6,22 @@ import {
   type UIEvent,
 } from 'react';
 
+export type TableSortOrder = 'ascend' | 'descend' | null;
+
+export interface TableSorterState {
+  columnKey: string;
+  order: Exclude<TableSortOrder, null>;
+}
+
+export type TableFilterValue = string | number | boolean;
+
+export interface TableFilterOption {
+  text: ReactNode;
+  value: TableFilterValue;
+}
+
+export type TableFilterState = Record<string, TableFilterValue[]>;
+
 // 定义通用的列接口
 export interface ColumnType<T = any> {
   key: string;
@@ -15,6 +31,11 @@ export interface ColumnType<T = any> {
   render?: (value: any, record: T, index: number) => ReactNode;
   align?: 'left' | 'center' | 'right';
   fixed?: 'left' | 'right';
+  sorter?: (a: T, b: T) => number;
+  defaultSortOrder?: Exclude<TableSortOrder, null>;
+  filters?: TableFilterOption[];
+  defaultFilteredValue?: TableFilterValue[];
+  onFilter?: (value: TableFilterValue, record: T) => boolean;
 }
 
 // 分页配置类型
@@ -64,9 +85,27 @@ export interface TableContextType<T = any> {
   paginatedData: T[];
   setPaginatedData?: (data: T[]) => void;
   pagination?: PaginationConfig | false | true;
+  paginationState?: {
+    current: number;
+    pageSize: number;
+    total: number;
+    showTotal: boolean;
+    showSizeChanger: boolean;
+    disabled: boolean;
+    onChange: (page: number, pageSize?: number) => void;
+    onPageSizeChange: (pageSize: number) => void;
+  };
   virtual?: VirtualScrollConfig | boolean;
   emptyText?: ReactNode;
   getRowKey: (record: T) => string | number;
+  sorterState: TableSorterState | null;
+  filterState: TableFilterState;
+  loading?: boolean;
+  loadingText?: ReactNode;
+  toggleSort: (columnKey: string) => void;
+  toggleFilter: (columnKey: string, value: TableFilterValue) => void;
+  clearFilter: (columnKey: string) => void;
+  isColumnFiltered: (columnKey: string) => boolean;
   // 虚拟滚动相关
   virtualItems?: T[];
   totalHeight?: number;
@@ -101,4 +140,6 @@ export interface TableProps<T = any> {
   pagination?: PaginationConfig | false | true;
   virtual?: VirtualScrollConfig | boolean;
   rowSelection?: RowSelectionConfig<T>; // 行选择配置
+  loading?: boolean;
+  loadingText?: ReactNode;
 }

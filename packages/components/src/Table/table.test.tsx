@@ -1,8 +1,15 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import {
+  render,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import Table from './index';
-import { ColumnType } from './index';
+import { ColumnType, TableProps } from './index';
 
 // ==================== 全局 Mock ====================
 // jsdom 不支持 ResizeObserver，需要 Mock
@@ -38,6 +45,175 @@ const columns: ColumnType<TestData>[] = [
   { key: 'age', title: 'Age', dataIndex: 'age' },
   { key: 'address', title: 'Address', dataIndex: 'address' },
 ];
+
+type PipelineFilterValue = string | number | boolean;
+
+interface PipelineFilterOption {
+  text: React.ReactNode;
+  value: PipelineFilterValue;
+}
+
+type PipelineSortOrder = 'ascend' | 'descend';
+
+type PipelineColumnType<T = any> = ColumnType<T> & {
+  sorter?: (a: T, b: T) => number;
+  defaultSortOrder?: PipelineSortOrder;
+  filters?: PipelineFilterOption[];
+  defaultFilteredValue?: PipelineFilterValue[];
+  onFilter?: (value: PipelineFilterValue, record: T) => boolean;
+};
+
+type PipelineTableProps<T extends Record<string, any>> = Omit<
+  TableProps<T>,
+  'columns'
+> & {
+  columns: PipelineColumnType<T>[];
+  loading?: boolean;
+  loadingText?: React.ReactNode;
+};
+
+const PipelineTable = Table as <T extends Record<string, any>>(
+  props: PipelineTableProps<T>
+) => React.ReactElement;
+
+interface PipelineData {
+  key: string;
+  name: string;
+  age: number;
+  status: 'Active' | 'Paused' | 'Archived';
+  city: string;
+}
+
+const pipelineData: PipelineData[] = [
+  { key: '1', name: 'Alice', age: 30, status: 'Active', city: 'London' },
+  { key: '2', name: 'Bob', age: 25, status: 'Paused', city: 'London' },
+  { key: '3', name: 'Charlie', age: 35, status: 'Active', city: 'Tokyo' },
+  { key: '4', name: 'Diana', age: 28, status: 'Archived', city: 'Berlin' },
+  { key: '5', name: 'Ethan', age: 40, status: 'Active', city: 'Paris' },
+  { key: '6', name: 'Fiona', age: 22, status: 'Paused', city: 'Tokyo' },
+];
+
+const pipelineColumns: PipelineColumnType<PipelineData>[] = [
+  { key: 'name', title: 'Name', dataIndex: 'name' },
+  {
+    key: 'age',
+    title: 'Age',
+    dataIndex: 'age',
+    sorter: (a, b) => a.age - b.age,
+  },
+  {
+    key: 'status',
+    title: 'Status',
+    dataIndex: 'status',
+    filters: [
+      { text: 'Active', value: 'Active' },
+      { text: 'Paused', value: 'Paused' },
+      { text: 'Archived', value: 'Archived' },
+    ],
+    onFilter: (value, record) => record.status === value,
+  },
+  {
+    key: 'city',
+    title: 'City',
+    dataIndex: 'city',
+    filters: [
+      { text: 'London', value: 'London' },
+      { text: 'Tokyo', value: 'Tokyo' },
+      { text: 'Berlin', value: 'Berlin' },
+      { text: 'Paris', value: 'Paris' },
+    ],
+    onFilter: (value, record) => record.city === value,
+  },
+];
+
+const getBodyRows = (container: HTMLElement) =>
+  Array.from(container.querySelectorAll('tbody tr')).filter(
+    row => !row.classList.contains('cream-table-empty-row')
+  );
+
+const getRenderedNames = (container: HTMLElement, nameCellIndex = 0) =>
+  getBodyRows(container).map(row => {
+    const cells = Array.from(row.querySelectorAll('td'));
+    return cells[nameCellIndex]?.textContent?.trim() ?? '';
+  });
+
+const expectRenderedNames = (
+  container: HTMLElement,
+  expectedNames: string[],
+  nameCellIndex = 0
+) => {
+  expect(getRenderedNames(container, nameCellIndex)).toEqual(expectedNames);
+};
+
+const getColumnHeader = (columnName: string) =>
+  screen.getByRole('columnheader', {
+    name: new RegExp(columnName, 'i'),
+  });
+
+const clickSortColumn = async (columnName: string) => {
+  const header = getColumnHeader(columnName);
+  const sortTrigger =
+    within(header).queryByRole('button', {
+      name: /sort|排序|升序|降序/i,
+    }) ??
+    (header.querySelector(
+      '[aria-sort], [data-sorter], .cream-table-sorter'
+    ) as HTMLElement | null) ??
+    header;
+
+  await userEvent.click(sortTrigger);
+};
+
+const queryFilterTrigger = (columnName: string) => {
+  const header = getColumnHeader(columnName);
+  return (
+    within(header).queryByRole('button', {
+      name: /filter|筛选/i,
+    }) ??
+    (header.querySelector(
+      '[aria-haspopup], [aria-expanded], [data-filter-trigger], .cream-table-filter-trigger'
+    ) as HTMLElement | null) ??
+    within(header).queryByRole('button') ??
+    header
+  );
+};
+
+const openFilterPanel = async (columnName: string) => {
+  const filterTrigger = queryFilterTrigger(columnName);
+  expect(filterTrigger).toBeInTheDocument();
+  await userEvent.click(filterTrigger);
+};
+
+const toggleFilterOption = async (columnName: string, optionName: string) => {
+  let option = screen.queryByRole('checkbox', {
+    name: new RegExp(optionName, 'i'),
+  });
+
+  if (!option) {
+    await openFilterPanel(columnName);
+    option = await screen.findByRole('checkbox', {
+      name: new RegExp(optionName, 'i'),
+    });
+  }
+
+  await userEvent.click(option);
+};
+
+const clickClearFilter = async () => {
+  await userEvent.click(
+    screen.getByRole('button', {
+      name: /clear|清空/i,
+    })
+  );
+};
+
+const getSelectAllControl = (container: HTMLElement) =>
+  screen.queryByRole('checkbox', {
+    name: /select all|全选/i,
+  }) ??
+  (container.querySelector(
+    'thead .cream-table-selection-column [title="全选"], thead .cream-table-selection-column input, thead .cream-table-selection-column button, thead .cream-table-selection-column div'
+  ) as HTMLElement | null);
 
 // ==================== 基础渲染 ====================
 describe('Table - 基础渲染', () => {
@@ -583,6 +759,417 @@ describe('Table - 行选择（radio）', () => {
       'thead .cream-table-selection-column'
     );
     expect(headerSelection).toBeInTheDocument();
+  });
+});
+
+// ==================== 阶段四：本地数据管线 ====================
+describe('Table - 本地数据管线', () => {
+  test('可排序列点击后升序、再次点击降序、第三次恢复原始顺序', async () => {
+    const { container } = render(
+      <PipelineTable
+        columns={pipelineColumns}
+        dataSource={pipelineData}
+        pagination={false}
+      />
+    );
+
+    expectRenderedNames(container, [
+      'Alice',
+      'Bob',
+      'Charlie',
+      'Diana',
+      'Ethan',
+      'Fiona',
+    ]);
+
+    await clickSortColumn('Age');
+    await waitFor(() => {
+      expect(getRenderedNames(container)).toEqual([
+        'Fiona',
+        'Bob',
+        'Diana',
+        'Alice',
+        'Charlie',
+        'Ethan',
+      ]);
+    });
+
+    await clickSortColumn('Age');
+    await waitFor(() => {
+      expect(getRenderedNames(container)).toEqual([
+        'Ethan',
+        'Charlie',
+        'Alice',
+        'Diana',
+        'Bob',
+        'Fiona',
+      ]);
+    });
+
+    await clickSortColumn('Age');
+    await waitFor(() => {
+      expect(getRenderedNames(container)).toEqual([
+        'Alice',
+        'Bob',
+        'Charlie',
+        'Diana',
+        'Ethan',
+        'Fiona',
+      ]);
+    });
+  });
+
+  test('单列筛选只展示匹配数据', async () => {
+    const { container } = render(
+      <PipelineTable
+        columns={pipelineColumns}
+        dataSource={pipelineData}
+        pagination={false}
+      />
+    );
+
+    await toggleFilterOption('Status', 'Active');
+
+    await waitFor(() => {
+      expect(getRenderedNames(container)).toEqual([
+        'Alice',
+        'Charlie',
+        'Ethan',
+      ]);
+    });
+  });
+
+  test('多选筛选展示匹配任一值的数据', async () => {
+    const { container } = render(
+      <PipelineTable
+        columns={pipelineColumns}
+        dataSource={pipelineData}
+        pagination={false}
+      />
+    );
+
+    await toggleFilterOption('Status', 'Active');
+    await toggleFilterOption('Status', 'Paused');
+
+    await waitFor(() => {
+      expect(getRenderedNames(container)).toEqual([
+        'Alice',
+        'Bob',
+        'Charlie',
+        'Ethan',
+        'Fiona',
+      ]);
+    });
+  });
+
+  test('清空筛选恢复全部数据', async () => {
+    const { container } = render(
+      <PipelineTable
+        columns={pipelineColumns}
+        dataSource={pipelineData}
+        pagination={false}
+      />
+    );
+
+    await toggleFilterOption('City', 'Tokyo');
+    await waitFor(() => {
+      expect(getRenderedNames(container)).toEqual(['Charlie', 'Fiona']);
+    });
+
+    await clickClearFilter();
+
+    await waitFor(() => {
+      expect(getRenderedNames(container)).toEqual([
+        'Alice',
+        'Bob',
+        'Charlie',
+        'Diana',
+        'Ethan',
+        'Fiona',
+      ]);
+    });
+  });
+
+  test('筛选/排序先于分页生效', async () => {
+    const { container } = render(
+      <PipelineTable
+        columns={pipelineColumns}
+        dataSource={pipelineData}
+        pagination={{ defaultPageSize: 2, showSizeChanger: false }}
+      />
+    );
+
+    await waitFor(() => {
+      expect(getRenderedNames(container)).toEqual(['Alice', 'Bob']);
+    });
+
+    await toggleFilterOption('Status', 'Active');
+    await waitFor(() => {
+      expect(getRenderedNames(container)).toEqual(['Alice', 'Charlie']);
+      expect(
+        container.querySelector('.cream-pagination-total')
+      ).toHaveTextContent('共 3 条');
+      expect(screen.queryByText('Bob')).not.toBeInTheDocument();
+    });
+
+    await clickSortColumn('Age');
+    await waitFor(() => {
+      expect(getRenderedNames(container)).toEqual(['Alice', 'Charlie']);
+    });
+
+    await clickSortColumn('Age');
+    await waitFor(() => {
+      expect(getRenderedNames(container)).toEqual(['Ethan', 'Charlie']);
+    });
+  });
+
+  test('筛选后当前页超过最大页时回到第一页', async () => {
+    const { container } = render(
+      <PipelineTable
+        columns={pipelineColumns}
+        dataSource={pipelineData}
+        pagination={{ defaultPageSize: 2, showSizeChanger: false }}
+      />
+    );
+
+    await userEvent.click(
+      screen.getByRole('button', {
+        name: '第 3 页',
+      })
+    );
+    await waitFor(() => {
+      expect(getRenderedNames(container)).toEqual(['Ethan', 'Fiona']);
+    });
+
+    await toggleFilterOption('Status', 'Active');
+
+    await waitFor(() => {
+      expect(getRenderedNames(container)).toEqual(['Alice', 'Charlie']);
+      expect(
+        screen.getByRole('button', {
+          name: '第 1 页',
+        })
+      ).toHaveAttribute('aria-current', 'page');
+    });
+  });
+
+  test('受控分页筛选后越界时通知外部回到第一页', async () => {
+    const onChange = jest.fn();
+
+    const ControlledPipelineTable = () => {
+      const [current, setCurrent] = React.useState(3);
+
+      return (
+        <PipelineTable
+          columns={pipelineColumns}
+          dataSource={pipelineData}
+          pagination={{
+            current,
+            pageSize: 2,
+            showSizeChanger: false,
+            onChange: (page, size) => {
+              onChange(page, size);
+              setCurrent(page);
+            },
+          }}
+        />
+      );
+    };
+
+    const { container } = render(<ControlledPipelineTable />);
+
+    expectRenderedNames(container, ['Ethan', 'Fiona']);
+
+    await toggleFilterOption('Status', 'Active');
+
+    await waitFor(() => {
+      expect(onChange).toHaveBeenCalledWith(1, 2);
+      expect(getRenderedNames(container)).toEqual(['Alice', 'Charlie']);
+    });
+  });
+
+  test('loading=true 展示 loadingText，保留表格结构，并阻止排序或筛选改变状态', async () => {
+    const { container } = render(
+      <PipelineTable
+        columns={pipelineColumns}
+        dataSource={pipelineData}
+        loading
+        loadingText="正在同步客户数据"
+        pagination={false}
+      />
+    );
+
+    expect(screen.getByText('正在同步客户数据')).toBeInTheDocument();
+    expect(container.querySelector('thead')).toBeInTheDocument();
+    expect(container.querySelector('tbody')).toBeInTheDocument();
+    expectRenderedNames(container, [
+      'Alice',
+      'Bob',
+      'Charlie',
+      'Diana',
+      'Ethan',
+      'Fiona',
+    ]);
+
+    await clickSortColumn('Age');
+    expect(
+      screen.getByRole('button', {
+        name: /Age 当前未排序，点击切换为升序/i,
+      })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', {
+        name: /Status筛选/i,
+      })
+    ).toBeDisabled();
+
+    await waitFor(() => {
+      expect(getRenderedNames(container)).toEqual([
+        'Alice',
+        'Bob',
+        'Charlie',
+        'Diana',
+        'Ethan',
+        'Fiona',
+      ]);
+    });
+  });
+
+  test('loading=true 时禁用分页交互', async () => {
+    const onChange = jest.fn();
+    const loadingData: PipelineData[] = Array.from(
+      { length: 12 },
+      (_, index) => ({
+        key: String(index + 1),
+        name: `User ${index + 1}`,
+        age: 20 + index,
+        status: 'Active',
+        city: 'London',
+      })
+    );
+
+    const { container } = render(
+      <PipelineTable
+        columns={pipelineColumns}
+        dataSource={loadingData}
+        loading
+        pagination={{ defaultPageSize: 10, onChange }}
+      />
+    );
+
+    const secondPageButton = screen.getByRole('button', {
+      name: '第 2 页',
+    });
+    const pageSizeSelect = screen.getByRole('combobox', {
+      name: '每页显示条数',
+    });
+
+    expect(secondPageButton).toBeDisabled();
+    expect(pageSizeSelect).toBeDisabled();
+
+    await userEvent.click(secondPageButton);
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(getRenderedNames(container)).toEqual(
+      loadingData.slice(0, 10).map(item => item.name)
+    );
+  });
+
+  test('loading=true 时受控分页越界不触发自动回到第一页', () => {
+    const onChange = jest.fn();
+
+    const { container } = render(
+      <PipelineTable
+        columns={pipelineColumns}
+        dataSource={[]}
+        loading
+        pagination={{
+          current: 3,
+          pageSize: 2,
+          showSizeChanger: false,
+          onChange,
+        }}
+      />
+    );
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(
+      container.querySelector('.cream-table-loading-overlay')
+    ).toBeInTheDocument();
+  });
+
+  test('rowSelection 全选只作用于筛选和分页后的当前页', async () => {
+    const onChange = jest.fn();
+    const onSelectAll = jest.fn();
+    const { container } = render(
+      <PipelineTable
+        columns={pipelineColumns}
+        dataSource={pipelineData}
+        pagination={{ defaultPageSize: 2, showSizeChanger: false }}
+        rowSelection={{
+          type: 'checkbox',
+          onChange,
+          onSelectAll,
+        }}
+      />
+    );
+
+    await toggleFilterOption('Status', 'Active');
+    await waitFor(() => {
+      expect(getRenderedNames(container, 1)).toEqual(['Alice', 'Charlie']);
+    });
+
+    const selectAllControl = getSelectAllControl(container);
+    expect(selectAllControl).toBeInTheDocument();
+    await userEvent.click(selectAllControl as HTMLElement);
+
+    await waitFor(() => {
+      expect(onChange).toHaveBeenLastCalledWith(
+        ['1', '3'],
+        [pipelineData[0], pipelineData[2]]
+      );
+      expect(onSelectAll).toHaveBeenLastCalledWith(
+        true,
+        [pipelineData[0], pipelineData[2]],
+        [pipelineData[0], pipelineData[2]]
+      );
+    });
+
+    expect(onChange).not.toHaveBeenLastCalledWith(
+      ['1', '3', '5'],
+      expect.anything()
+    );
+  });
+
+  test('defaultSortOrder/defaultFilteredValue 初始化生效', () => {
+    const initializedColumns: PipelineColumnType<PipelineData>[] =
+      pipelineColumns.map(column => {
+        if (column.key === 'age') {
+          return {
+            ...column,
+            defaultSortOrder: 'descend',
+          };
+        }
+
+        if (column.key === 'status') {
+          return {
+            ...column,
+            defaultFilteredValue: ['Active'],
+          };
+        }
+
+        return column;
+      });
+
+    const { container } = render(
+      <PipelineTable
+        columns={initializedColumns}
+        dataSource={pipelineData}
+        pagination={false}
+      />
+    );
+
+    expectRenderedNames(container, ['Ethan', 'Charlie', 'Alice']);
   });
 });
 
